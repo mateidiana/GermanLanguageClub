@@ -7,5 +7,5 @@ student can only register once, the data being stored in a JSON file. A student 
 one class and receive a score. A student can also abandon a class. A teacher on the other hand is assigned
 a single class which they can modify (add exercises to/ delete exercises from). Teachers can also create 
 or delete exams for their respective class. Overall, this app handles a real life scenario of managing a
-learning setting for student, teachers and learning materials.
+learning setting for students, teachers and learning materials.
 
