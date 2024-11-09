@@ -1,32 +1,12 @@
 package org.example.model;
-import java.util.Objects;
 
-public class Person {
-    private int ID;
-    private String name;
-    private String surname;
+public abstract class Person {
+    protected String name;
+    protected Integer id;
 
-    public Person(int ID, String name, String surname){
-        this.ID=ID;
-        this.name=name;
-        this.surname=surname;
-    }
-
-    @Override
-    public String toString() {
-        return "Person{" +
-                "id=" + ID +
-                ", username='" + name + '\'' +
-                ", password='" + surname + '\'' +
-                '}';
-    }
-
-    public int getId() {
-        return ID;
-    }
-
-    public void setId(int id) {
-        this.ID = id;
+    protected Person(Integer id, String name) {
+        this.name = name;
+        this.id = id;
     }
 
     public String getName() {
@@ -37,11 +17,11 @@ public class Person {
         this.name = name;
     }
 
-    public String getSurname() {
-        return surname;
+    public Integer getId() {
+        return id;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setId(Integer id) {
+        this.id = id;
     }
 }
