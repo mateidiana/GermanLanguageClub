@@ -46,7 +46,7 @@ public class Main {
 
         Reading r1=new Reading(6,"Reading6",new Teacher("Teacher6",6),20);
 
-
+        //DIANA UNDE STOCAM ASTEA!!!!!!!!!!!
         String[][] exercises = {
                 {"Du brauchst Hilfe.", "Du _ Hilfe.", "a. brauchst", "b. braucht", "c. brauche", "You need help."},
                 {"Eine rote Jacke.", "Eine _ Jacke .", "a. rote", "b. roten", "c. roter", "A red jacket."},

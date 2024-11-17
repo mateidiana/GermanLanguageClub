@@ -1,4 +1,5 @@
 package org.example.repo;
+import org.example.model.Grammar;
 import org.example.model.Writing;
 
 import java.util.ArrayList;
@@ -28,6 +29,14 @@ public class WritingRepository implements IRepository<Writing> {
             writingCourses.set(index, WritingRepl);
         }
     }
+    public Writing getById(Integer id){
+        for (Writing write : writingCourses) {
+            if (write.getId() == id)
+                return write;
+        }
+        return null;
+    }
+
 
     @Override
     public void delete(Writing object) {

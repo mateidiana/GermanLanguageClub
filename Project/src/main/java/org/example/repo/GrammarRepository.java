@@ -1,5 +1,6 @@
 package org.example.repo;
 import org.example.model.Grammar;
+import org.example.model.Vocabulary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,14 @@ public class GrammarRepository implements IRepository<Grammar> {
             grammarCourses.set(index, grammarRepl);
         }
     }
+    public Grammar getById(Integer id){
+        for (Grammar gram : grammarCourses) {
+            if (gram.getId() == id)
+                return gram;
+        }
+        return null;
+    }
+
 
     @Override
     public void delete(Grammar object) {
