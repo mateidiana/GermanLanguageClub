@@ -20,7 +20,7 @@ public class StudentView {
         boolean continueLoop = true;
 
         while (continueLoop) {
-            System.out.print("Select an option:\n\n1. View students\n2. View reading courses\n3. View students enrolled in reading courses\n4. Delete course\n5. Enroll student in a reading course\n0. Exit\n");
+            System.out.print("Select an option:\n\n1. View students\n2. View reading courses\n3. View students enrolled in reading courses\n4. Practice reading\n5. Enroll student in a reading course\n0. Exit\n");
 
             String option = scanner.nextLine();
 
@@ -38,7 +38,7 @@ public class StudentView {
                     readingController.viewEnrolled(readCourseId(scanner));
                     break;
                 case "4":
-                    readingController.deleteCourse(readCourseId(scanner));
+                    readingController.practiceReading(readStudentId(scanner),readCourseId(scanner));
                     break;
                 case "5":
                     readingController.enrollStudent(readStudentId(scanner), readCourseId(scanner));

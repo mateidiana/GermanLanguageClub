@@ -12,6 +12,10 @@ public class ReadingController {
         System.out.println("Enrolled student " + studentId + " with course " + courseId);
     }
 
+    public void practiceReading(Integer studentId, Integer courseId) {
+        readingService.practiceReading(studentId,courseId);
+    }
+
     public void viewCourses() {
         StringBuilder output = new StringBuilder("Available courses:\n");
         readingService.getAvailableCourses().forEach(course -> output.append(course.toString()).append("\n"));
