@@ -16,6 +16,10 @@ public class ReadingController {
         readingService.practiceReading(studentId,courseId);
     }
 
+    public void reviewPastMistakes(Integer studentId) {
+        readingService.reviewPastMistakes(studentId);
+    }
+
     public void viewCourses() {
         StringBuilder output = new StringBuilder("Available courses:\n");
         readingService.getAvailableCourses().forEach(course -> output.append(course.toString()).append("\n"));
