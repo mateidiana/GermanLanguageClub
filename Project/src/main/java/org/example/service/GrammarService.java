@@ -34,16 +34,33 @@ public class GrammarService {
     public void practiceGrammar(Integer studentId, Integer courseId) {
         Student student = studentRepo.getById(studentId);
         Grammar course = grammarRepo.getById(courseId);
-
+        String exercise;
+        String[][] exercises=course.getExercises();
         Scanner scanner = new Scanner(System.in);
-
+        int correctAnswers=0;
         //aici e cu string matching merge matricea vietii si fac vf la atribute
 
         int foundCourse=0;
-        if (foundCourse==0)
-            System.out.println("\n\n\nYou are not enrolled in this course!");
-
-
+        for (Course findCourse : student.getCourses()){
+            if (findCourse.getId()==course.getId())
+            {
+                foundCourse=1;
+                break;}
+            else if (foundCourse==0){
+            System.out.println("\n\n\nYou are not enrolled in this course!");}}
+        if(foundCourse==1){
+            System.out.println("PLease fill in the gaps with the correct word:");
+            for(int i=1; i<10; i++){
+                exercise=exercises[i][0];
+                System.out.println("Question "+i+": "+exercise);
+                System.out.print("Answer: ");
+                String answer=scanner.nextLine();
+                if(answer.toLowerCase()==exercises[i][1])
+                    correctAnswers++;
+            }
+            if(correctAnswers>5) System.out.println("You have passed this test with the grade "+correctAnswers+"!");
+            else System.out.println("You have failed this test with the grade "+correctAnswers+". Do better, loser");
+        }
 
     }
     public List<Student> getAllStudents() {
