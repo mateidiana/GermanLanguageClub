@@ -6,6 +6,7 @@ import java.util.stream.IntStream;
 import org.example.controller.ExamController;
 import org.example.controller.ReadingController;
 import org.example.repo.ExamRepository;
+import org.example.repo.WritingRepository;
 import org.example.service.ExamService;
 import org.example.service.ReadingService;
 import org.example.model.Reading;
@@ -14,6 +15,7 @@ import org.example.model.Teacher;
 import org.example.model.Exam;
 import org.example.repo.StudentRepository;
 import org.example.repo.ReadingRepository;
+import org.example.service.WritingService;
 import org.example.view.StudentView;
 import org.example.view.TeacherView;
 import org.example.view.View;
@@ -24,6 +26,14 @@ public class Main {
         ReadingRepository readingRepo = createInMemoryCourseRepository();
         StudentRepository studentRepo = createInMemoryStudentRepository();
         ExamRepository examRepo = createInMemoryExamRepository();
+
+        ////////
+        //WritingRepository writrepo=new WritingRepository();
+        //WritingService wrs=new WritingService(writrepo, studentRepo);
+        ////// sa modifici constructorul dupa stefipls  in provate iar :3
+        //String testare=wrs.chatGPT("hello chat gpt!");
+        //String testare2=wrs.extractContentFromResponse(testare);
+        //System.out.println(testare2);
 
         ReadingService readingService = new ReadingService(readingRepo, studentRepo);
         ReadingController readingController = new ReadingController(readingService);

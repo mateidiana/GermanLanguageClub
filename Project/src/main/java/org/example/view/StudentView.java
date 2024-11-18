@@ -1,8 +1,11 @@
 package org.example.view;
 import java.util.Scanner;
 import java.util.stream.IntStream;
+
+import org.example.controller.GrammarController;
 import org.example.controller.ReadingController;
-import org.example.controller.ExamController;
+import org.example.controller.*;
+
 import org.example.service.ReadingService;
 import org.example.model.Reading;
 import org.example.model.Student;
@@ -13,6 +16,8 @@ import org.example.repo.ReadingRepository;
 public class StudentView {
     private ReadingController readingController;
     private ExamController examController;
+    private GrammarController grammarController;
+    private VocabController vocabController;
     public StudentView(ReadingController readingController, ExamController examController){
         this.readingController=readingController;
         this.examController=examController;

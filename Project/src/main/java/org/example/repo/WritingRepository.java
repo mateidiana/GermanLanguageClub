@@ -8,7 +8,7 @@ import java.util.List;
 public class WritingRepository implements IRepository<Writing> {
     private List<Writing> writingCourses;
     private static WritingRepository instance;
-    private WritingRepository() {
+    public WritingRepository() {
         this.writingCourses=new ArrayList<>();
     }
 

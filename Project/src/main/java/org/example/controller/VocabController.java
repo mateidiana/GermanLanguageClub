@@ -35,6 +35,10 @@ public class VocabController {
         System.out.println(output);
     }
 
+    public void reviewPastMistakes(Integer studentId, Integer courseId) {
+        vocabService.reviewPastMistakes(studentId, courseId);
+    }
+
     public void deleteCourse(Integer courseId) {
         vocabService.removeCourse(courseId);
         System.out.println("Removed course " + courseId);
