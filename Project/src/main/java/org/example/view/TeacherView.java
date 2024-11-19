@@ -74,7 +74,7 @@ public class TeacherView {
                     readingController.viewStudents();
                     break;
                 case "3":
-                    readingController.createOrUpdateReadingCourse(readCourseId(scanner),readTeacherId(scanner),readCourseName(scanner),readMaxStudents(scanner));
+                    readingController.createOrUpdateReadingCourse(readCourseId(scanner),readTeacherId(scanner),readCourseName(scanner),readMaxStudents(scanner),readExerciseSetId(scanner));
                     break;
                 case "4":
                     readingController.deleteCourse(readCourseId(scanner),readTeacherId(scanner));
@@ -239,6 +239,11 @@ public class TeacherView {
 
     private static int readTeacherId(Scanner scanner) {
         System.out.println("Enter teacher ID: ");
+        return Integer.parseInt(scanner.nextLine());
+    }
+
+    private static int readExerciseSetId(Scanner scanner) {
+        System.out.println("Enter exercises ID between 1 and 5: ");
         return Integer.parseInt(scanner.nextLine());
     }
 

@@ -80,6 +80,7 @@ public class ExamService {
                 results=exam.getResults();
                 results.put(student,score);
                 exam.setResults(results);
+                return;
             }
         }
         if (foundCourse==0)

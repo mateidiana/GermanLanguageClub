@@ -51,8 +51,8 @@ public class ReadingController {
         readingService.changeTeacherAccessToCourse(courseId,teacherId);
     }
 
-    public void createOrUpdateReadingCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents){
-        readingService.createOrUpdateReadingCourse(courseId,teacherId,courseName,maxStudents);
+    public void createOrUpdateReadingCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents, Integer exerciseSet){
+        readingService.createOrUpdateReadingCourse(courseId,teacherId,courseName,maxStudents,exerciseSet);
     }
 
     public void viewCourseTaughtByTeacher(Integer teacherId){
