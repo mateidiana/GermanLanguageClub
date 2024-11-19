@@ -8,7 +8,7 @@ import java.util.List;
 public class GrammarRepository implements IRepository<Grammar> {
     private List<Grammar> grammarCourses;
     private static GrammarRepository instance;
-    private GrammarRepository() {
+    public GrammarRepository() {
         this.grammarCourses=new ArrayList<>();
     }
 

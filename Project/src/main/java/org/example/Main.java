@@ -4,16 +4,13 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 import java.util.List;
-import org.example.controller.ExamController;
-import org.example.controller.ReadingController;
-import org.example.controller.StudentController;
-import org.example.controller.TeacherController;
+import org.example.controller.*;
 import org.example.repo.*;
 import org.example.service.*;
 import org.example.model.Reading;
 import org.example.model.Student;
 import org.example.model.Teacher;
-import org.example.model.Exam;
+import org.example.model.*;
 import org.example.view.StudentView;
 import org.example.view.TeacherView;
 import org.example.view.View;
@@ -22,18 +19,14 @@ import org.example.view.View;
 public class Main {
     public static void main(String[] args) {
 
-        ReadingRepository readingRepo = createInMemoryCourseRepository();
+        ReadingRepository readingRepo = createInMemoryReadingRepository();
         StudentRepository studentRepo = createInMemoryStudentRepository();
         TeacherRepository teacherRepo = createInMemoryTeacherRepository();
+        GrammarRepository grammarRepo= createInMemoryGrammarRepository();
         ExamRepository examRepo = createInMemoryExamRepository();
 
-        ////////
-        //WritingRepository writrepo=new WritingRepository();
-        //WritingService wrs=new WritingService(writrepo, studentRepo);
-        ////// sa modifici constructorul dupa stefipls  in provate iar :3
-        //String testare=wrs.chatGPT("hello chat gpt!");
-        //String testare2=wrs.extractContentFromResponse(testare);
-        //System.out.println(testare2);
+        GrammarService grammarService= new GrammarService(grammarRepo, studentRepo);
+        GrammarController grammarController = new GrammarController(grammarService);
 
         StudentService studentService = new StudentService(studentRepo);
         StudentController studentController = new StudentController(studentService);
@@ -47,6 +40,8 @@ public class Main {
         ExamService examService = new ExamService(examRepo,studentRepo);
         ExamController examController = new ExamController(examService);
 
+
+
         readingController.changeTeacherAccess(1,1);
         readingController.changeTeacherAccess(2,1);
         readingController.changeTeacherAccess(3,1);
@@ -55,7 +50,8 @@ public class Main {
         readingController.changeTeacherAccess(6,1);
         readingController.enrollStudent(1,6);
 
-        StudentView studentView = new StudentView(studentController,readingController,examController);
+        grammarController.enrollStudent(1,10);
+        StudentView studentView = new StudentView(studentController,readingController,examController, grammarController);
         TeacherView teacherView = new TeacherView(teacherController,readingController);
 
         View view = new View(studentView,teacherView);
@@ -75,7 +71,7 @@ public class Main {
         return teacherRepo;
     }
 
-    private static ReadingRepository createInMemoryCourseRepository() {
+    private static ReadingRepository createInMemoryReadingRepository() {
         ReadingRepository readingRepo = new ReadingRepository();
         readingRepo.save(new Reading(1, "Reading1", new Teacher("Teacher11", 11), 25));
         readingRepo.save(new Reading(2, "Reading2", new Teacher("Teacher21", 21), 25));
@@ -178,9 +174,48 @@ public class Main {
         return readingRepo;
     }
 
+    private static GrammarRepository createInMemoryGrammarRepository() {
+        Grammar g1 = new Grammar(10, "Grammar1", new Teacher("Teacher1", 31), 25);
+        Grammar g2 = new Grammar(11, "Grammar2", new Teacher("Teacher2", 32), 30);
+        Grammar g3 = new Grammar(12, "Grammar3", new Teacher("Teacher3", 33), 35);
+        Grammar g4 = new Grammar(13, "Grammar4", new Teacher("Teacher4", 34), 40);
+        Grammar g5 = new Grammar(14, "Grammar5", new Teacher("Teacher5", 35), 45);
+
+        GrammarRepository grammarRepo=new GrammarRepository();
+        String [][] grammarExercises={
+                { "Du (brauchen) _ Hilfe.", "brauchst" },
+                { "Ich bin _ Hause.", "zu" },
+                { "Er trägt _.", "bei" },
+                { "Diana (setzen)_ sich auf das Sofa.", "setzt" },
+                { "Stefi klettert auf _ Baum.", "den" },
+                { "Ich (besuchen) _ diese Kirche.", "besuche" },
+                { "Wir spielen DOTA in _ Klasse.", "der" },
+                { "Mama kocht immer (lecker)_ Essen", "leckeres" },
+                { "Der Ball ist unter _ Tisch gerollt.", "den" },
+                { "Mein Mann kommt immer betrunken _ Hause.", "nach" }
+        };
+        g1.setExercises(grammarExercises);
+        grammarRepo.save(g1);
+
+        g2.setExercises(grammarExercises);
+        grammarRepo.save(g2);
+
+        g3.setExercises(grammarExercises);
+        grammarRepo.save(g3);
+
+        g4.setExercises(grammarExercises);
+        grammarRepo.save(g4);
+
+        g5.setExercises(grammarExercises);
+        grammarRepo.save(g5);
+
+        return grammarRepo;
+    }
+
     private static ExamRepository createInMemoryExamRepository(){
         ExamRepository examRepo=new ExamRepository();
         Exam exam1=new Exam(1,"ReadingExam1",new Teacher("Teacher1",1));
+        Exam exam2=new Exam(2,"GrammarExam1",new Teacher("Teacher1",1));
         String[][] exercises = {
                 {"Du brauchst Hilfe.", "Du _ Hilfe.", "a. brauchst", "b. braucht", "c. brauche", "You need help.", "a. brauchst"},
                 {"Eine rote Jacke.", "Eine _ Jacke.", "a. rote", "b. roten", "c. roter", "A red jacket.", "a. rote"},
@@ -197,6 +232,18 @@ public class Main {
                 {"Du hast einen Hund, nicht?", "Du hast _ Hund, nicht?", "a. ein", "b. einen", "c. einer", "You have a dog, right?", "b. einen"},
                 {"Ich mag diese Wohnung.", "Ich mag _ Wohnung.", "a. dieses", "b. dieser", "c. diese", "I like this living space.", "c. diese"}
         };
+        String [][] grammarExercises={
+                { "Du (brauchen) _ Hilfe.", "brauchst" },
+                { "Ich bin _ Hause.", "zu" },
+                { "Er trägt _.", "bei" },
+                { "Diana (setzen)_ sich auf das Sofa.", "setzt" },
+                { "Stefi klettert auf _ Baum.", "den" },
+                { "Ich (besuchen) _ diese Kirche.", "besuche" },
+                { "Wir spielen DOTA in _ Klasse.", "der" },
+                { "Mama kocht immer (lecker)_ Essen", "leckeres" },
+                { "Der Ball ist unter _ Tisch gerollt.", "den" },
+                { "Mein Mann kommt immer betrunken _ Hause.", "nach" }
+        };
 
         String[][] readingExercises = {
                 {"Der Aufbruch\n" + "Franz Kafka","","",""},
@@ -209,6 +256,8 @@ public class Main {
 
         exam1.setExercises(readingExercises);
         examRepo.save(exam1);
+        exam2.setExercises(grammarExercises);
+        examRepo.save(exam2);
         return examRepo;
     }
 }

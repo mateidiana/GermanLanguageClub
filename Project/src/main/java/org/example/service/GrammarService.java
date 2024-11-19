@@ -67,19 +67,18 @@ public class GrammarService {
             if (findCourse.getId() == course.getId()) {
                 foundCourse = 1;
                 break;
-            } else if (foundCourse == 0) {
-                System.out.println("\n\n\nYou are not enrolled in this course!");
             }
         }
+        if (foundCourse == 0)
+            System.out.println("\n\n\nYou are not enrolled in this course!");
         if (foundCourse == 1) {
             System.out.println("PLease fill in the gaps with the correct word:");
             for (int i = 1; i <student.getPastGrammarMistakes().length; i++) {
                 exercise = pastGrammarMistakes[i];
-                System.out.println("Question " + i + ": " + exercise);
+                System.out.println("Question " + i + ": " + exercise[0]);
                 System.out.print("Answer: ");
                 String answer = scanner.nextLine();
-                if (answer.toLowerCase() != pastGrammarMistakes[i][1])
-
+                if (!answer.equals(exercise[1]))
                     newMistakes=appendRow(newMistakes, exercise);
             }
             student.setPastGrammarMistakes(newMistakes);
@@ -100,18 +99,22 @@ public class GrammarService {
             {
                 foundCourse=1;
                 break;}
-            else if (foundCourse==0){
-            System.out.println("\n\n\nYou are not enrolled in this course!");}}
+        }
+        if (foundCourse==0){
+            System.out.println("\n\n\nYou are not enrolled in this course!");}
         if(foundCourse==1){
             System.out.println("PLease fill in the gaps with the correct word:");
             for(int i=1; i<10; i++){
                 exercise=exercises[i];
-                System.out.println("Question "+i+": "+exercise);
+                System.out.println("Question "+i+": "+exercise[0]);
                 System.out.print("Answer: ");
                 String answer=scanner.nextLine();
-                if(answer.toLowerCase()==exercises[i][1])
+                if(answer.equals(exercise[1])) {
                     correctAnswers++;
+                    System.out.println("Corect coaie!");
+                }
                 else{
+                    System.out.println(answer+" "+exercise[1]+" pt debug");
                     student.setPastGrammarMistakes(appendRow(student.getPastGrammarMistakes(), exercise ));
                 }
             }

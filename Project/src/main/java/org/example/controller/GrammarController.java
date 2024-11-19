@@ -12,7 +12,7 @@ public class GrammarController {
         System.out.println("Enrolled student " + studentId + " with course " + courseId);
     }
 
-    public void practiceGrammarulary(Integer studentId, Integer courseId) {
+    public void practiceGrammar(Integer studentId, Integer courseId) {
         grammarService.practiceGrammar(studentId,courseId);
     }
 
@@ -37,5 +37,9 @@ public class GrammarController {
     public void deleteCourse(Integer courseId) {
         grammarService.removeCourse(courseId);
         System.out.println("Removed course " + courseId);
+    }
+
+    public void reviewPastMistakes(Integer studentId, Integer courseId){
+        grammarService.reviewPastMistakes(studentId, courseId);
     }
 }

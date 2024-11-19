@@ -1,15 +1,11 @@
 package org.example.service;
-import java.util.Scanner;
-import java.util.List;
-import java.util.Random;
-import java.util.Map;
-import java.util.HashMap;
+import java.util.*;
 
-import org.example.model.Exam;
-import org.example.model.Course;
-import org.example.model.Student;
+import org.example.model.*;
 import org.example.repo.ExamRepository;
+import org.example.repo.GrammarRepository;
 import org.example.repo.StudentRepository;
+import org.example.service.*;
 
 public class ExamService {
     private ExamRepository examRepo;
@@ -98,6 +94,120 @@ public class ExamService {
         }
     }
 
+    public void takeGrammarExam(Integer studentId, Integer examId){
+        Student student = studentRepo.getById(studentId);
+        Exam exam = examRepo.getById(examId);
+        String []exercise;
+        String[][] exercises=exam.getExercises();
+        Scanner scanner = new Scanner(System.in);
+        int correctAnswers=0;
+        //aici e cu string matching merge matricea vietii si fac vf la atribute
+
+        int foundCourse=0;
+        for (Course findCourse : student.getCourses()){
+            if (findCourse.getCourseName().contains("Grammar"))
+            {
+                foundCourse=1;
+                break;}
+        }
+        if (foundCourse==0){
+            System.out.println("\n\n\nYou are not enrolled in this course!");}
+        if(foundCourse==1){
+            System.out.println("PLease fill in the gaps with the correct word:");
+            for(int i=1; i<10; i++){
+                exercise=exercises[i];
+                System.out.println("Question "+i+": "+exercise[0]);
+                System.out.print("Answer: ");
+                String answer=scanner.nextLine();
+                if(answer.equals(exercise[1]))
+                    correctAnswers++;
+            }
+            if(correctAnswers>5) System.out.println("You have passed this exam with the grade "+correctAnswers+"!");
+            else System.out.println("You have failed this exam with the grade "+correctAnswers+". Do better, loser");
+            float grade=(float) correctAnswers;
+            Map<Integer, Float> grammarExamResults=new HashMap<>();
+            grammarExamResults=student.getGrammarResults();
+            grammarExamResults.put(examId,grade);
+            student.setGrammarResults(grammarExamResults);
+
+            List<Student> examined;
+            examined=exam.getExaminedStudents();
+            examined.add(student);
+            exam.setExaminedStudents(examined);
+
+            Map<Student,Float> results;
+            results=exam.getResults();
+            results.put(student,grade);
+            exam.setResults(results);
+        }
+    }
+
+    public void showGrammarResults(Integer studentId){
+        Student student = studentRepo.getById(studentId);
+        Map<Integer, Float> grammarExamResults=new HashMap<>();
+        grammarExamResults=student.getGrammarResults();
+        System.out.println("Your past scores: ");
+        for (Map.Entry<Integer, Float> entry : grammarExamResults.entrySet()) {
+            System.out.println("Grammar exam id: " + entry.getKey() + ", Score: " + entry.getValue());
+        }
+    }
+
+    public void takeVocabExam(Integer studentId, Integer examId){
+        Student student = studentRepo.getById(studentId);
+        Exam exam = examRepo.getById(examId);
+
+        Scanner scanner = new Scanner(System.in);
+        int correctAnswers=0;
+        int foundCourse=0;
+        Map <String, String> tempother=new HashMap<>();
+        for (Course findCourse : student.getCourses()){
+            if (findCourse.getCourseName().contains("Vocabulary"))
+            {
+                foundCourse=1;
+                break;}
+        }
+        if (foundCourse==0){
+            System.out.println("\n\n\nYou are not enrolled in this course!");}
+        if(foundCourse==1){
+            System.out.println("PLease write the correct translation for evey word (capital letter if needed):");
+            String placeholderKey=new String();
+            String placeholderValue=new String();
+            for(int i=1; i<10; i++) {
+                List<String> values = new ArrayList<>(exam.getWorter().values());
+                Random random = new Random();
+                int randomIndex = random.nextInt(values.size());
+                String ubung = values.get(randomIndex);
+                String answer = scanner.nextLine();
+                boolean found = false;
+                for (Map.Entry<String, String> entry : exam.getWorter().entrySet()) {
+                    String key = entry.getKey();
+                    String value = entry.getValue();
+                    if (value == ubung && key == answer) {
+                        System.out.println("Correct!");
+                        found = true;
+                    } else {
+                        placeholderKey = key;
+                        placeholderKey = value;
+                    }
+                }
+                if (found == true)
+                    correctAnswers++;
+            }
+            if(correctAnswers>5) System.out.println("You have passed this practice test with the grade "+correctAnswers+"!");
+            else System.out.println("You have failed this practice test with the grade "+correctAnswers+". Do better, loser");
+        }
+
+    }
+    public void showVocabResults(Integer studentId){
+        Student student = studentRepo.getById(studentId);
+        Map<Integer, Float> vocabExamResults=new HashMap<>();
+        vocabExamResults=student.getGrammarResults();
+        System.out.println("Your past scores: ");
+        for (Map.Entry<Integer, Float> entry : vocabExamResults.entrySet()) {
+            System.out.println("Vocabulary exam id: " + entry.getKey() + ", Score: " + entry.getValue());
+        }
+    }
+
     public Map<Integer,Float> showReadingResults1(Integer studentId){
         Student student = studentRepo.getById(studentId);
         return student.getReadingResults();
@@ -109,4 +219,5 @@ public class ExamService {
             if(exam.getExamName().contains("Reading"))
                 System.out.println(exam);
     }
+
 }

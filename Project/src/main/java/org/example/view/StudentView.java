@@ -19,10 +19,13 @@ public class StudentView {
     private ExamController examController;
     private GrammarController grammarController;
     private VocabController vocabController;
-    public StudentView(StudentController studentController, ReadingController readingController, ExamController examController){
+    private WritingController writingController;
+    public StudentView(StudentController studentController, ReadingController readingController, ExamController examController, GrammarController grammarController){ //,VocabController vocabController
         this.studentController=studentController;
         this.readingController=readingController;
         this.examController=examController;
+        this.grammarController=grammarController;
+        //this.vocabController=vocabController;
     }
 
     public void start(){
@@ -145,19 +148,18 @@ public class StudentView {
                     continueLoop = false;
                     break;
                 case "1":
-                    System.out.println("To be implemented");
+                    grammarController.viewCourses();
                     break;
                 case "2":
-                    System.out.println("To be implemented1");
+                    grammarController.practiceGrammar(readStudentId(scanner),readCourseId(scanner));
                     break;
                 case "3":
-                    System.out.println("To be implemented2");
+                    grammarController.reviewPastMistakes(readStudentId(scanner),readCourseId(scanner));
                     break;
-                case "4":
-                    System.out.println("To be implemented3");
+                case "4": examController.takeGrammarExam(readStudentId(scanner),readExamId(scanner));
                     break;
                 case "5":
-                    System.out.println("To be implemented4");
+                    examController.showGrammarResults(readStudentId(scanner));
                     break;
                 default:
             }
@@ -178,19 +180,19 @@ public class StudentView {
                     continueLoop = false;
                     break;
                 case "1":
-                    System.out.println("To be implemented");
+                    vocabController.viewCourses();
                     break;
                 case "2":
-                    System.out.println("To be implemented1");
+                    vocabController.practiceVocabulary(readStudentId(scanner),readCourseId(scanner));
                     break;
                 case "3":
-                    System.out.println("To be implemented2");
+                    vocabController.reviewPastMistakes(readStudentId(scanner),readCourseId(scanner));
                     break;
                 case "4":
-                    System.out.println("To be implemented3");
+                    examController.takeVocabExam(readStudentId(scanner),readExamId(scanner));
                     break;
                 case "5":
-                    System.out.println("To be implemented4");
+                    examController.showVocabResults(readStudentId(scanner));
                     break;
                 default:
             }

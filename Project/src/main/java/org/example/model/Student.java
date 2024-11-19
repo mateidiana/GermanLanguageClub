@@ -12,6 +12,8 @@ public class Student extends Person {
 
     private Map<Integer, Float> readingExamResults=new HashMap<>();
 
+    private Map<Integer, Float> grammarExamResults=new HashMap<>();
+    private Map<Integer, Float> vocabExamResults=new HashMap<>();
     public Student(String name, Integer studentId) {
         super(studentId, name);
     }
@@ -44,11 +46,34 @@ public class Student extends Person {
         this.pastGrammarMistakes=pastGrammarMistakes;
     }
 
-
-
     public Map<String, String> getPastVocabMistakes(){return pastVocabMistakes;}
 
     public void setPastVocabMistakes(Map<String, String> vocabs){this.pastVocabMistakes=vocabs;}
+
+    public Map<Integer, Float> getGrammarResults() {
+        return grammarExamResults;
+    }
+
+    public void setGrammarResults(Map<Integer, Float> grammarExamResults) {
+        if (grammarExamResults != null) {
+            this.grammarExamResults = grammarExamResults;
+        } else {
+            throw new IllegalArgumentException("Grammar exam results cannot be null.");
+        }
+    }
+
+    public Map<Integer, Float> getVocabResults() {
+        return vocabExamResults;
+    }
+
+    public void setVocabResults(Map<Integer, Float> vocabExamResults) {
+        if (vocabExamResults != null) {
+            this.vocabExamResults = vocabExamResults;
+        } else {
+            throw new IllegalArgumentException("Vocabulary exam results cannot be null.");
+        }
+    }
+
     @Override
     public String toString() {
         return "Student{" +

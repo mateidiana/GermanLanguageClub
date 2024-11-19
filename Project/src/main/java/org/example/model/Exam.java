@@ -9,7 +9,7 @@ public class Exam {
     private Teacher teacher;
     private List<Student> examinedStudents;
     private String[][] exercises;
-
+    Map <String, String> worter=new HashMap<>();
     Map<Student,Float> results = new HashMap<>();
 
     public Exam(Integer id, String examName, Teacher teacher) {
@@ -67,6 +67,17 @@ public class Exam {
 
     public void setExercises(String[][] exercises) {
         this.exercises=exercises;
+    }
+
+    public Map<String, String> getWorter() {
+        return worter;
+    }
+
+    public void setWorter(Map<String, String> worter) {
+        this.worter = worter;
+    }
+    public void addWort(String key, String value) {
+        this.worter.put(key, value);
     }
 
     @Override
