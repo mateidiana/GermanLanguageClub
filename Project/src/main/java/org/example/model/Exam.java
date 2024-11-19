@@ -10,7 +10,7 @@ public class Exam {
     private List<Student> examinedStudents;
     private String[][] exercises;
 
-    Map<Student,Integer> results = new HashMap<>();
+    Map<Student,Float> results = new HashMap<>();
 
     public Exam(Integer id, String examName, Teacher teacher) {
         this.id = id;
@@ -53,11 +53,11 @@ public class Exam {
         this.examinedStudents = examinedStudents;
     }
 
-    public Map<Student,Integer> getResults() {
+    public Map<Student,Float> getResults() {
         return results;
     }
 
-    public void setResults(Map<Student,Integer> results) {
+    public void setResults(Map<Student,Float> results) {
         this.results = results;
     }
 

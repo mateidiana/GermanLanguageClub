@@ -10,6 +10,8 @@ public class Student extends Person {
     private String[][] pastGrammarMistakes;
     private Map<String, String> pastVocabMistakes=new HashMap<>();
 
+    private Map<Integer, Float> readingExamResults=new HashMap<>();
+
     public Student(String name, Integer studentId) {
         super(studentId, name);
     }
@@ -24,6 +26,14 @@ public class Student extends Person {
 
     public void setPastMistakes(String[][] pastMistakes){
         this.pastMistakes=pastMistakes;
+    }
+
+    public Map<Integer,Float> getReadingResults() {
+        return readingExamResults;
+    }
+
+    public void setReadingResults(Map<Integer,Float> results) {
+        this.readingExamResults = results;
     }
 
     public String[][] getPastGrammarMistakes() {

@@ -62,7 +62,7 @@ public class Main {
 
     private static TeacherRepository createInMemoryTeacherRepository() {
         TeacherRepository teacherRepo = new TeacherRepository();
-        IntStream.range(7, 10).forEach(i -> teacherRepo.save(new Teacher("Teacher" + i, i)));
+        IntStream.range(1, 6).forEach(i -> teacherRepo.save(new Teacher("Teacher" + i, i)));
         return teacherRepo;
     }
 

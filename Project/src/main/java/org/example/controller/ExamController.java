@@ -11,4 +11,9 @@ public class ExamController {
     public void takeReadingExam(Integer studentId, Integer examId){
         examService.takeReadingExam(studentId,examId);
     }
+
+    public void showReadingResults(Integer studentId){examService.showReadingResults(studentId);}
+
+    public void showAllReadingExams(){examService.showAllReadingExams();}
+
 }

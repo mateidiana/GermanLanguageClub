@@ -75,7 +75,7 @@ public class StudentView {
                     continueLoop = false;
                     break;
                 case "1":
-                    System.out.println("To be implemented");
+                    readingController.showEnrolledCourses(readStudentId(scanner));
                     break;
                 case "2":
                     readingController.practiceReading(readStudentId(scanner),readCourseId(scanner));
@@ -84,10 +84,11 @@ public class StudentView {
                     readingController.reviewPastMistakes(readStudentId(scanner));
                     break;
                 case "4":
+                    examController.showAllReadingExams();
                     examController.takeReadingExam(readStudentId(scanner),readExamId(scanner));
                     break;
                 case "5":
-                    System.out.println("To be implemented1");
+                    examController.showReadingResults(readStudentId(scanner));
                     break;
                 default:
             }

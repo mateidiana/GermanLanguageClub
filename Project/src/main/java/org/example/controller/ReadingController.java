@@ -12,6 +12,10 @@ public class ReadingController {
         System.out.println("Enrolled student " + studentId + " with course " + courseId);
     }
 
+    public void showEnrolledCourses(Integer studentId) {
+        readingService.showEnrolledReadingCourses(studentId);
+    }
+
     public void practiceReading(Integer studentId, Integer courseId) {
         readingService.practiceReading(studentId,courseId);
     }

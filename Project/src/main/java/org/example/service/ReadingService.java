@@ -265,6 +265,13 @@ public class ReadingService {
         return course.getEnrolledStudents();
     }
 
+    public void showEnrolledReadingCourses(Integer studentId){
+        Student student = studentRepo.getById(studentId);
+        for (Course course:student.getCourses())
+            if (course.getCourseName().contains("Reading"))
+                System.out.println(course);
+    }
+
     public void removeCourse(Integer courseId) {
 //        courseRepo.get(courseId).getEnrolledStudents().forEach(student -> {
 //            student.getCourses().removeIf(course -> course.getId().equals(courseId));
