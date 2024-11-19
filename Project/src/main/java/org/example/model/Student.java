@@ -4,6 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+
+
+/**
+ * The {@code Student} class extends {@code Person} and represents a student who can enroll in courses
+ * and maintain a record of various exam results, feedback, and past mistakes.
+ * It provides methods to access and manipulate these records.
+ */
 public class Student extends Person {
     private final List<Course> courses = new ArrayList<>();
     private String[][] pastMistakes;

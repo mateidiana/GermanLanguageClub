@@ -4,9 +4,22 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.List;
+
+/**
+ * The {@code Teacher} class represents a teacher who can teach multiple courses
+ * and provide grades and feedback for writing assignments. This class extends
+ * the {@code Person} class, inheriting its properties and methods.
+ */
 public class Teacher extends Person {
 
     private List<Course> teaches;
+
+    /**
+     * Constructs a new {@code Teacher} with the specified name and ID.
+     *
+     * @param name      The name of the teacher.
+     * @param teacherId The unique identifier for the teacher.
+     */
     public Teacher(String name, Integer teacherId) {
         super(teacherId, name);
     }
