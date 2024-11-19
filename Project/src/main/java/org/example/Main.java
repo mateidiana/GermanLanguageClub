@@ -14,6 +14,8 @@ import org.example.model.*;
 import org.example.view.StudentView;
 import org.example.view.TeacherView;
 import org.example.view.View;
+import java.util.Map;
+import java.util.HashMap;
 
 
 public class Main {
@@ -23,6 +25,7 @@ public class Main {
         StudentRepository studentRepo = createInMemoryStudentRepository();
         TeacherRepository teacherRepo = createInMemoryTeacherRepository();
         GrammarRepository grammarRepo= createInMemoryGrammarRepository();
+        VocabRepository vocabRepo= createInMemoryVocabRepository();
         ExamRepository examRepo = createInMemoryExamRepository();
 
         GrammarService grammarService= new GrammarService(grammarRepo, studentRepo);
@@ -40,7 +43,8 @@ public class Main {
         ExamService examService = new ExamService(examRepo,studentRepo);
         ExamController examController = new ExamController(examService);
 
-
+        VocabService vocabService= new VocabService(vocabRepo, studentRepo);
+        VocabController vocabController = new VocabController(vocabService);
 
         readingController.changeTeacherAccess(1,1);
         readingController.changeTeacherAccess(2,1);
@@ -51,7 +55,8 @@ public class Main {
         readingController.enrollStudent(1,6);
 
         grammarController.enrollStudent(1,10);
-        StudentView studentView = new StudentView(studentController,readingController,examController, grammarController);
+        vocabController.enrollStudent(1, 20);
+        StudentView studentView = new StudentView(studentController,readingController,examController, grammarController, vocabController);
         TeacherView teacherView = new TeacherView(teacherController,readingController);
 
         View view = new View(studentView,teacherView);
@@ -80,24 +85,6 @@ public class Main {
         readingRepo.save(new Reading(5, "Reading5", new Teacher("Teacher51", 51), 25));
 
         Reading r1=new Reading(6,"Reading6",new Teacher("Teacher6",61),20);
-
-
-//        String[][] exercises = {
-//                {"Du brauchst Hilfe.", "Du _ Hilfe.", "a. brauchst", "b. braucht", "c. brauche", "You need help.", "a. brauchst"},
-//                {"Eine rote Jacke.", "Eine _ Jacke.", "a. rote", "b. roten", "c. roter", "A red jacket.", "a. rote"},
-//                {"Ich muss nach Berlin fahren.", "Ich muss _ Berlin fahren.", "a. in", "b. nach", "c. auf", "I have to go to Berlin.", "b. nach"},
-//                {"Wir haben eine große Küche.", "Wir _ eine große Küche.", "a. haben", "b. habe", "c. hassen", "We have a big kitchen.", "a. haben"},
-//                {"Ich brauche einen neuen Rucksack.", "Ich brauche einen _ Rucksack.", "a. nehmen", "b. neuen", "c. nachbaren", "I need a new backpack.", "b. neuen"},
-//                {"Ich bin aus Frankfurt.", "Ich _ aus Frankfurt.", "a. bin", "b. bist", "c. bim", "I am from Frankfurt.", "a. bin"},
-//                {"Hallo, ich bin Luca.", "Hallo, _ bin Luca.", "a. ich", "b. du", "c. er", "Hello, I am Luca.", "a. ich"},
-//                {"Laura wohnt in Italien.", "Laura _ in Italien.", "a. wir", "b. wahnt", "c. wohnt", "Laura lives in Italy.", "c. wohnt"},
-//                {"Sie sind von hier.", "Sie _ von hier.", "a. seien", "b. sind", "c. sinnen", "They are from here.", "b. sind"},
-//                {"Du sprichst Italienisch.", "Du _ Italienisch", "a. sprichst", "b. sprechst", "c. sprich", "You speak Italian.", "a. sprichst"},
-//                {"Magst du Englisch studieren?", "Magst du Englisch _ ?", "a. studieren", "b. studierst", "c. studierest", "Do you like to study English?", "a. studieren"},
-//                {"Er arbeitet am Donnerstag.", "Er _ am Donnerstag.", "a. arbeitest", "b. arbeite", "c. arbeitet", "He works on Thursday.", "c. arbeitet"},
-//                {"Du hast einen Hund, nicht?", "Du hast _ Hund, nicht?", "a. ein", "b. einen", "c. einer", "You have a dog, right?", "b. einen"},
-//                {"Ich mag diese Wohnung.", "Ich mag _ Wohnung.", "a. dieses", "b. dieser", "c. diese", "I like this living space.", "c. diese"}
-//        };
 
         String[][] readingExercises = {
                 {"Der Aufbruch\n" + "Franz Kafka","","",""},
@@ -211,12 +198,84 @@ public class Main {
 
         return grammarRepo;
     }
+    private static VocabRepository createInMemoryVocabRepository(){
+        Vocabulary v1 = new Vocabulary(20, "Vocabulary1", new Teacher("Teacher1", 31), 25);
+        Vocabulary v2 = new Vocabulary(21, "Vocabulary2", new Teacher("Teacher2", 32), 30);
+        Vocabulary v3 = new Vocabulary(22, "Vocabulary3", new Teacher("Teacher3", 33), 35);
+        Vocabulary v4 = new Vocabulary(23, "Vocabulary4", new Teacher("Teacher4", 34), 40);
+        Vocabulary v5 = new Vocabulary(24, "Vocabulary5", new Teacher("Teacher5", 35), 45);
+
+        VocabRepository vocabularyRepo = new VocabRepository();
+        Map<String, String> vocabularyExercises = new HashMap<>();
+
+        vocabularyExercises.put("Hund", "dog");
+        vocabularyExercises.put("Katze", "cat");
+        vocabularyExercises.put("Apfel", "apple");
+        vocabularyExercises.put("Buch", "book");
+        vocabularyExercises.put("Haus", "house");
+        vocabularyExercises.put("Auto", "car");
+        vocabularyExercises.put("Baum", "tree");
+        vocabularyExercises.put("Blume", "flower");
+        vocabularyExercises.put("Fisch", "fish");
+        vocabularyExercises.put("Brot", "bread");
+        vocabularyExercises.put("Schule", "school");
+        vocabularyExercises.put("Stuhl", "chair");
+        vocabularyExercises.put("Tisch", "table");
+        vocabularyExercises.put("Fenster", "window");
+        vocabularyExercises.put("Tür", "door");
+        vocabularyExercises.put("Sonne", "sun");
+        vocabularyExercises.put("Mond", "moon");
+        vocabularyExercises.put("Wasser", "water");
+        vocabularyExercises.put("Feuer", "fire");
+        vocabularyExercises.put("Freund", "friend");
+        vocabularyExercises.put("schnell", "fast");
+        vocabularyExercises.put("langsam", "slow");
+        vocabularyExercises.put("klein", "small");
+        vocabularyExercises.put("groß", "big");
+        vocabularyExercises.put("alt", "old");
+        vocabularyExercises.put("jung", "young");
+        vocabularyExercises.put("kalt", "cold");
+        vocabularyExercises.put("heiß", "hot");
+        vocabularyExercises.put("glücklich", "happy");
+        vocabularyExercises.put("traurig", "sad");
+        vocabularyExercises.put("laufen", "to run");
+        vocabularyExercises.put("springen", "to jump");
+        vocabularyExercises.put("essen", "to eat");
+        vocabularyExercises.put("trinken", "to drink");
+        vocabularyExercises.put("schlafen", "to sleep");
+        vocabularyExercises.put("sprechen", "to speak");
+        vocabularyExercises.put("lesen", "to read");
+        vocabularyExercises.put("schreiben", "to write");
+        vocabularyExercises.put("lernen", "to learn");
+        vocabularyExercises.put("arbeiten", "to work");
+
+
+        v1.setWorter(vocabularyExercises);
+        vocabularyRepo.save(v1);
+
+        v2.setWorter(vocabularyExercises);
+        vocabularyRepo.save(v2);
+
+        v3.setWorter(vocabularyExercises);
+        vocabularyRepo.save(v3);
+
+        v4.setWorter(vocabularyExercises);
+        vocabularyRepo.save(v4);
+
+        v5.setWorter(vocabularyExercises);
+        vocabularyRepo.save(v5);
+
+        return vocabularyRepo;
+
+    }
 
     private static ExamRepository createInMemoryExamRepository(){
         ExamRepository examRepo=new ExamRepository();
         Exam exam1=new Exam(1,"ReadingExam1",new Teacher("Teacher1",1));
         Exam exam2=new Exam(2,"GrammarExam1",new Teacher("Teacher1",1));
+        Exam exam3=new Exam(3,"vocabularyExam1",new Teacher("Teacher1",1));
         String[][] exercises = {
+
                 {"Du brauchst Hilfe.", "Du _ Hilfe.", "a. brauchst", "b. braucht", "c. brauche", "You need help.", "a. brauchst"},
                 {"Eine rote Jacke.", "Eine _ Jacke.", "a. rote", "b. roten", "c. roter", "A red jacket.", "a. rote"},
                 {"Ich muss nach Berlin fahren.", "Ich muss _ Berlin fahren.", "a. in", "b. nach", "c. auf", "I have to go to Berlin.", "b. nach"},
@@ -254,10 +313,55 @@ public class Main {
                 {"\n\nDie Parabel kann eine Metapher für das Unbekannte des Lebens darstellen.\n\n", "a. wahr", "b. falsch", "a. wahr"},
         };
 
+        Map<String, String> vocabularyExercises = new HashMap<>();
+
+        vocabularyExercises.put("Hund", "dog");
+        vocabularyExercises.put("Katze", "cat");
+        vocabularyExercises.put("Apfel", "apple");
+        vocabularyExercises.put("Buch", "book");
+        vocabularyExercises.put("Haus", "house");
+        vocabularyExercises.put("Auto", "car");
+        vocabularyExercises.put("Baum", "tree");
+        vocabularyExercises.put("Blume", "flower");
+        vocabularyExercises.put("Fisch", "fish");
+        vocabularyExercises.put("Brot", "bread");
+        vocabularyExercises.put("Schule", "school");
+        vocabularyExercises.put("Stuhl", "chair");
+        vocabularyExercises.put("Tisch", "table");
+        vocabularyExercises.put("Fenster", "window");
+        vocabularyExercises.put("Tür", "door");
+        vocabularyExercises.put("Sonne", "sun");
+        vocabularyExercises.put("Mond", "moon");
+        vocabularyExercises.put("Wasser", "water");
+        vocabularyExercises.put("Feuer", "fire");
+        vocabularyExercises.put("Freund", "friend");
+        vocabularyExercises.put("schnell", "fast");
+        vocabularyExercises.put("langsam", "slow");
+        vocabularyExercises.put("klein", "small");
+        vocabularyExercises.put("groß", "big");
+        vocabularyExercises.put("alt", "old");
+        vocabularyExercises.put("jung", "young");
+        vocabularyExercises.put("kalt", "cold");
+        vocabularyExercises.put("heiß", "hot");
+        vocabularyExercises.put("glücklich", "happy");
+        vocabularyExercises.put("traurig", "sad");
+        vocabularyExercises.put("laufen", "to run");
+        vocabularyExercises.put("springen", "to jump");
+        vocabularyExercises.put("essen", "to eat");
+        vocabularyExercises.put("trinken", "to drink");
+        vocabularyExercises.put("schlafen", "to sleep");
+        vocabularyExercises.put("sprechen", "to speak");
+        vocabularyExercises.put("lesen", "to read");
+        vocabularyExercises.put("schreiben", "to write");
+        vocabularyExercises.put("lernen", "to learn");
+        vocabularyExercises.put("arbeiten", "to work");
+
         exam1.setExercises(readingExercises);
         examRepo.save(exam1);
         exam2.setExercises(grammarExercises);
         examRepo.save(exam2);
+        exam3.setWorter(vocabularyExercises);
+        examRepo.save(exam3);
         return examRepo;
     }
 }

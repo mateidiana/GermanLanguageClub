@@ -20,12 +20,12 @@ public class StudentView {
     private GrammarController grammarController;
     private VocabController vocabController;
     private WritingController writingController;
-    public StudentView(StudentController studentController, ReadingController readingController, ExamController examController, GrammarController grammarController){ //,VocabController vocabController
+    public StudentView(StudentController studentController, ReadingController readingController, ExamController examController, GrammarController grammarController, VocabController vocabController){
         this.studentController=studentController;
         this.readingController=readingController;
         this.examController=examController;
         this.grammarController=grammarController;
-        //this.vocabController=vocabController;
+        this.vocabController=vocabController;
     }
 
     public void start(){

@@ -177,12 +177,13 @@ public class ExamService {
                 Random random = new Random();
                 int randomIndex = random.nextInt(values.size());
                 String ubung = values.get(randomIndex);
+                System.out.println(ubung+": ");
                 String answer = scanner.nextLine();
                 boolean found = false;
                 for (Map.Entry<String, String> entry : exam.getWorter().entrySet()) {
                     String key = entry.getKey();
                     String value = entry.getValue();
-                    if (value == ubung && key == answer) {
+                    if (value.equals(ubung) && key.equals(answer)) {
                         System.out.println("Correct!");
                         found = true;
                     } else {

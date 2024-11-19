@@ -44,8 +44,9 @@ public class VocabService {
             {
                 foundCourse=1;
                 break;}
-            else if (foundCourse==0){
-                System.out.println("\n\n\nYou are not enrolled in this course!");}}
+            }
+        if (foundCourse==0){
+            System.out.println("\n\n\nYou are not enrolled in this course!");}
         if(foundCourse==1){
             System.out.println("PLease write the correct translation for evey word (capital letter if needed):");
             String placeholderKey=new String();
@@ -55,12 +56,13 @@ public class VocabService {
                 Random random = new Random();
                 int randomIndex = random.nextInt(values.size());
                 String ubung = values.get(randomIndex);
+                System.out.println(ubung+": ");
                 String answer=scanner.nextLine();
                 boolean found=false;
                 for (Map.Entry<String, String> entry : course.getWorter().entrySet()) {
                     String key=entry.getKey();
                     String value=entry.getValue();
-                    if(value==ubung && key==answer){
+                    if(value.equals(ubung) && key.equals(answer)){
                         System.out.println("Correct!");
                         found=true;
                     }
@@ -93,9 +95,10 @@ public class VocabService {
             if (findCourse.getId() == course.getId()) {
                 foundCourse = 1;
                 break;
-            } else if (foundCourse == 0) {
-                System.out.println("\n\n\nYou are not enrolled in this course!");
             }
+        }
+        if (foundCourse == 0) {
+            System.out.println("\n\n\nYou are not enrolled in this course!");
         }
         if (foundCourse == 1) {
             System.out.println("PLease fill in the gaps with the correct word(use capital letter when noun):");
@@ -104,6 +107,7 @@ public class VocabService {
             for (Map.Entry<String, String> entry : course.getWorter().entrySet()) {
                 String key = entry.getKey();
                 String value = entry.getValue();
+                System.out.println(value+": ");
                 String answer = scanner.nextLine();
                 if (answer == key) {
                     System.out.println("Correct!");
