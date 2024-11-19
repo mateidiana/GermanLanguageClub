@@ -4,6 +4,13 @@ import java.util.Scanner;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import org.example.model.Reading;
+import org.example.model.Course;
+import org.example.model.Student;
+import org.example.model.Teacher;
+import org.example.repo.StudentRepository;
+import org.example.repo.TeacherRepository;
+import org.example.service.*;
 import java.util.Random;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +27,7 @@ public class WritingService {
     private WritingRepository writingRepo;
 
     private StudentRepository studentRepo;
-
+    private TeacherRepository teacherRepo;
     public WritingService(WritingRepository writingRepo, StudentRepository studentRepo) {
         this.writingRepo = writingRepo;
         this.studentRepo = studentRepo;
@@ -94,6 +101,49 @@ public class WritingService {
             if (course.getCourseName().contains("Writing"))
                 System.out.println(course);
     }
+
+    public void viewCourseTaughtByTeacher(Integer teacherId){
+        Teacher teacher=teacherRepo.getById(teacherId);
+        for(Writing course:writingRepo.getObjects())
+            if (course.getTeacher().getId()==teacherId)
+                System.out.println(course.getCourseName());
+    }
+    public void createOrUpdateWritingCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
+        int found = 0;
+        for (Writing course : writingRepo.getObjects()) {
+            if (course.getId() == courseId) {
+                found = 1;
+                updateWritingCourse(courseId, teacherId, courseName, maxStudents);
+                return;
+            }
+        }
+        if (found == 0) {
+            createWritingCourse(courseId, teacherId, courseName, maxStudents);
+        }
+    }
+
+    public void createWritingCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
+        Teacher teacher = teacherRepo.getById(teacherId);
+        Writing w1 = new Writing(courseId, courseName, teacher, maxStudents);
+        writingRepo.save(w1);
+    }
+
+    public void updateWritingCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
+        Writing course = writingRepo.getById(courseId);
+        Teacher teacher = teacherRepo.getById(teacherId);
+        Writing w1 = new Writing(courseId, courseName, teacher, maxStudents);
+        writingRepo.update(course, w1);
+    }
+
+    public void removeCourse(Integer courseId, Integer teacherId) {
+        Writing course = writingRepo.getById(courseId);
+        if (course.getTeacher().getId() == teacherId) {
+            writingRepo.delete(course);
+        } else {
+            System.out.println("You don't have access to this course!");
+        }
+    }
+
 
     public void showFeedback(Integer studentId){
         Student student=studentRepo.getById(studentId);

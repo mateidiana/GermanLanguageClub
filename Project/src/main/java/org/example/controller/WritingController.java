@@ -42,6 +42,17 @@ public class WritingController {
         System.out.println("Removed course " + courseId);
     }
 
+    public void viewCourseTaughtByTeacher(Integer teacherId){
+        writingService.viewCourseTaughtByTeacher(teacherId);
+    }
+    public void createOrUpdateWritingCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
+        writingService.createOrUpdateWritingCourse(courseId, teacherId, courseName, maxStudents);
+    }
+
+    public void deleteCourse(Integer courseId, Integer teacherId) {
+        writingService.removeCourse(courseId, teacherId);
+    }
+
     public void getFeedback(Integer studentId){
         writingService.showFeedback(studentId);
     }

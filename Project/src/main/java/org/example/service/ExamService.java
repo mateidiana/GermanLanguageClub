@@ -270,7 +270,7 @@ public class ExamService {
         }
     }
 
-    void gradeWritings(Integer teacherId, Integer examId){
+    public void gradeWritings(Integer teacherId, Integer examId){
         Teacher teacher= teacherRepo.getById(teacherId);
         Scanner scanner=new Scanner(System.in);
         Map<Student, String> toGrade=teacher.getGradeWriting();
@@ -290,7 +290,7 @@ public class ExamService {
     }
 
 
-    void gradeFeedback(Integer teacherId, Integer courseId){
+    public void gradeFeedback(Integer teacherId, Integer courseId){
         Teacher teacher= teacherRepo.getById(teacherId);
         Scanner scanner=new Scanner(System.in);
         Map<Student, String> toGrade=teacher.getFeedbackWriting();
@@ -372,5 +372,59 @@ public class ExamService {
         Exam e1=new Exam(examId,examName,teacher);
         examRepo.update(exam,e1);
     }
+
+    public void createOrUpdateWritingExam(Integer examId, Integer teacherId, String examName) {
+        int found = 0;
+        for (Exam exam : examRepo.getObjects()) {
+            if (exam.getId() == examId) {
+                found = 1;
+                updateWritingExam(examId, teacherId, examName);
+                return;
+            }
+        }
+        if (found == 0) {
+            createWritingExam(examId, teacherId, examName);
+        }
+    }
+
+    public void createWritingExam(Integer examId, Integer teacherId, String examName) {
+        Teacher teacher = teacherRepo.getById(teacherId);
+        Exam e1 = new Exam(examId, examName, teacher);
+        examRepo.save(e1);
+    }
+
+    public void updateWritingExam(Integer examId, Integer teacherId, String examName) {
+        Exam exam = examRepo.getById(examId);
+        Teacher teacher = teacherRepo.getById(teacherId);
+        Exam e1 = new Exam(examId, examName, teacher);
+        examRepo.update(exam, e1);
+    }
+
+    public void removeWritingExam(Integer teacherId, Integer examId) {
+        Exam exam = examRepo.getById(examId);
+        if (exam.getTeacher().getId() == teacherId) {
+            examRepo.delete(exam);
+        } else {
+            System.out.println("You don't have access to this exam!");
+        }
+    }
+    public void showResultsOfAllStudentsOnWritingExam(Integer teacherId) {
+        for (Exam exam : examRepo.getObjects()) {
+            if (exam.getExamName().contains("Writing")) {
+                if (exam.getTeacher().getId() == teacherId) {
+                    for (Student student : studentRepo.getObjects()) {
+                        for (Integer key : student.getWritingExamResults().keySet()) {
+                            if (key == exam.getId()) {
+                                System.out.println(
+                                        student + " " + exam.getExamName() + ": " + student.getWritingExamResults().get(key)
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
 }

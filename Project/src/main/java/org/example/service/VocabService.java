@@ -5,6 +5,7 @@ import java.util.*;
 
 import org.example.model.*;
 import org.example.model.Vocabulary;
+import org.example.repo.TeacherRepository;
 import org.example.repo.VocabRepository;
 import org.example.repo.VocabRepository;
 import org.example.repo.StudentRepository;
@@ -12,7 +13,7 @@ public class VocabService {
     private VocabRepository vocabRepo;
 
     private StudentRepository studentRepo;
-
+    private TeacherRepository teacherRepo;
     public VocabService(VocabRepository vocabRepo, StudentRepository studentRepo) {
         this.vocabRepo = vocabRepo;
         this.studentRepo = studentRepo;

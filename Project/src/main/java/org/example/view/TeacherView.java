@@ -101,7 +101,7 @@ public class TeacherView {
         boolean continueLoop = true;
 
         while (continueLoop) {
-            System.out.print("Select an option:\n\n1. View your courses\n2. View students enrolled in writing courses\n3. Create/modify a writing course\n4. Delete a writing course\n5. Create/modify a writing exam\n6. Delete a writing exam\n7. View the results on exams\n0. Exit\n");
+            System.out.print("Select an option:\n\n1. View your courses\n2. View students enrolled in writing courses\n3. Create/modify a writing course\n4. Delete a writing course\n5. Create/modify a writing exam\n6. Delete a writing exam\n7. View the results on exams\n8. Grade writing exams\n9. Grade reading practices\n0. Exit\n");
 
             String option = scanner.nextLine();
 
@@ -110,25 +110,31 @@ public class TeacherView {
                     continueLoop = false;
                     break;
                 case "1":
-                    System.out.println("To be implemented5");
+                    writingController.viewCourseTaughtByTeacher(readTeacherId(scanner));
                     break;
                 case "2":
-                    System.out.println("To be implemented6");
+                    writingController.viewStudents();
                     break;
                 case "3":
-                    System.out.println("To be implemented");
+                    writingController.createOrUpdateWritingCourse(readCourseId(scanner),readTeacherId(scanner),readCourseName(scanner),readMaxStudents(scanner));
                     break;
                 case "4":
-                    System.out.println("To be implemented1");
+                    writingController.deleteCourse(readCourseId(scanner),readTeacherId(scanner));
                     break;
                 case "5":
-                    System.out.println("To be implemented2");
+                    examController.createOrUpdateWritingExam(readCourseId(scanner),readTeacherId(scanner),readExamName(scanner));
                     break;
                 case "6":
-                    System.out.println("To be implemented3");
+                    examController.deleteWritingExam(readExamId(scanner),readTeacherId(scanner));
                     break;
                 case "7":
-                    System.out.println("To be implemented4");
+                    examController.showResultsOfAllStudentsOnWritingExam(readTeacherId(scanner));
+                    break;
+                case "8":
+                    examController.gradeExams(readTeacherId(scanner), readExamId(scanner));
+                    break;
+                case "9":
+                    examController.gradePractice(readTeacherId(scanner), readExamId(scanner));
                     break;
                 default:
             }
@@ -152,7 +158,7 @@ public class TeacherView {
                     System.out.println("To be implemented");
                     break;
                 case "2":
-                    System.out.println("To be implemented8");
+                    grammarController.viewStudents();
                     break;
                 case "3":
                     System.out.println("To be implemented9");
@@ -191,7 +197,7 @@ public class TeacherView {
                     System.out.println("To be implemented7");
                     break;
                 case "2":
-                    System.out.println("To be implemented8");
+                    vocabController.viewStudents();
                     break;
                 case "3":
                     System.out.println("To be implemented");

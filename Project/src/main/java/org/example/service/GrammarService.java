@@ -8,12 +8,13 @@ import org.example.model.*;
 import org.example.repo.GrammarRepository;
 import org.example.repo.StudentRepository;
 import org.example.model.Student;
+import org.example.repo.TeacherRepository;
 
 public class GrammarService {
     private GrammarRepository grammarRepo;
 
     private StudentRepository studentRepo;
-
+    private TeacherRepository teacherRepo;
     public GrammarService(GrammarRepository grammarRepo, StudentRepository studentRepo) {
         this.grammarRepo = grammarRepo;
         this.studentRepo = studentRepo;
