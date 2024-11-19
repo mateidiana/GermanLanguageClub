@@ -49,11 +49,10 @@ public class Main {
 
         readingController.changeTeacherAccess(1,1);
         readingController.changeTeacherAccess(2,1);
-//        readingController.changeTeacherAccess(2,2);
-//        readingController.changeTeacherAccess(3,3);
-//        readingController.changeTeacherAccess(4,4);
-//        readingController.changeTeacherAccess(5,5);
-//        readingController.changeTeacherAccess(6,6);
+        readingController.changeTeacherAccess(3,1);
+        readingController.changeTeacherAccess(4,1);
+        readingController.changeTeacherAccess(5,1);
+        readingController.changeTeacherAccess(6,1);
         readingController.enrollStudent(1,6);
 
         StudentView studentView = new StudentView(studentController,readingController,examController);
