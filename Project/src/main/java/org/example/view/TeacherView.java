@@ -2,10 +2,14 @@ package org.example.view;
 import java.util.Scanner;
 import java.util.stream.IntStream;
 import org.example.controller.ReadingController;
+import org.example.controller.TeacherController;
 
 public class TeacherView {
+    private TeacherController teacherController;
     private ReadingController readingController;
-    public TeacherView(ReadingController readingController){
+
+    public TeacherView(TeacherController teacherController,ReadingController readingController){
+        this.teacherController=teacherController;
         this.readingController=readingController;
     }
 
@@ -23,7 +27,7 @@ public class TeacherView {
                     continueLoop = false;
                     break;
                 case "1":
-                    System.out.println("To be implemented");
+                    teacherController.createTeacher(readTeacherId(scanner),readTeacherName(scanner));
                     break;
                 case "2":
                     createCourseMenu();
@@ -225,9 +229,14 @@ public class TeacherView {
         }
     }
 
-    private static int readStudentId(Scanner scanner) {
-        System.out.println("Enter student ID: ");
+    private static int readTeacherId(Scanner scanner) {
+        System.out.println("Enter teacher ID: ");
         return Integer.parseInt(scanner.nextLine());
+    }
+
+    private static String readTeacherName(Scanner scanner) {
+        System.out.println("Enter teacher name: ");
+        return scanner.nextLine();
     }
 
     private static int readCourseId(Scanner scanner) {

@@ -6,7 +6,7 @@ import java.util.List;
 public class TeacherRepository implements IRepository<Teacher>{
     private List<Teacher> teachers;
     private static TeacherRepository instance;
-    private TeacherRepository() {
+    public TeacherRepository() {
         this.teachers=new ArrayList<>();
     }
 

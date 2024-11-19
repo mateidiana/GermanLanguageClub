@@ -5,17 +5,14 @@ import java.util.stream.IntStream;
 
 import org.example.controller.ExamController;
 import org.example.controller.ReadingController;
-import org.example.repo.ExamRepository;
-import org.example.repo.WritingRepository;
-import org.example.service.ExamService;
-import org.example.service.ReadingService;
+import org.example.controller.StudentController;
+import org.example.controller.TeacherController;
+import org.example.repo.*;
+import org.example.service.*;
 import org.example.model.Reading;
 import org.example.model.Student;
 import org.example.model.Teacher;
 import org.example.model.Exam;
-import org.example.repo.StudentRepository;
-import org.example.repo.ReadingRepository;
-import org.example.service.WritingService;
 import org.example.view.StudentView;
 import org.example.view.TeacherView;
 import org.example.view.View;
@@ -25,6 +22,7 @@ public class Main {
 
         ReadingRepository readingRepo = createInMemoryCourseRepository();
         StudentRepository studentRepo = createInMemoryStudentRepository();
+        TeacherRepository teacherRepo = createInMemoryTeacherRepository();
         ExamRepository examRepo = createInMemoryExamRepository();
 
         ////////
@@ -35,6 +33,12 @@ public class Main {
         //String testare2=wrs.extractContentFromResponse(testare);
         //System.out.println(testare2);
 
+        StudentService studentService = new StudentService(studentRepo);
+        StudentController studentController = new StudentController(studentService);
+
+        TeacherService teacherService = new TeacherService(teacherRepo);
+        TeacherController teacherController = new TeacherController(teacherService);
+
         ReadingService readingService = new ReadingService(readingRepo, studentRepo);
         ReadingController readingController = new ReadingController(readingService);
 
@@ -42,8 +46,8 @@ public class Main {
         ExamController examController = new ExamController(examService);
 
         readingController.enrollStudent(1,6);
-        StudentView studentView = new StudentView(readingController,examController);
-        TeacherView teacherView = new TeacherView(readingController);
+        StudentView studentView = new StudentView(studentController,readingController,examController);
+        TeacherView teacherView = new TeacherView(teacherController,readingController);
 
         View view = new View(studentView,teacherView);
         view.start();
@@ -54,6 +58,12 @@ public class Main {
         StudentRepository studentRepo = new StudentRepository();
         IntStream.range(1, 6).forEach(i -> studentRepo.save(new Student("Student" + i, i)));
         return studentRepo;
+    }
+
+    private static TeacherRepository createInMemoryTeacherRepository() {
+        TeacherRepository teacherRepo = new TeacherRepository();
+        IntStream.range(7, 10).forEach(i -> teacherRepo.save(new Teacher("Teacher" + i, i)));
+        return teacherRepo;
     }
 
     private static ReadingRepository createInMemoryCourseRepository() {

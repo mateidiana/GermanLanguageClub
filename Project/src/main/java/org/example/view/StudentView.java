@@ -14,11 +14,13 @@ import org.example.repo.StudentRepository;
 import org.example.repo.ReadingRepository;
 
 public class StudentView {
+    private StudentController studentController;
     private ReadingController readingController;
     private ExamController examController;
     private GrammarController grammarController;
     private VocabController vocabController;
-    public StudentView(ReadingController readingController, ExamController examController){
+    public StudentView(StudentController studentController, ReadingController readingController, ExamController examController){
+        this.studentController=studentController;
         this.readingController=readingController;
         this.examController=examController;
     }
@@ -37,7 +39,7 @@ public class StudentView {
                     continueLoop = false;
                     break;
                 case "1":
-                    System.out.println("To be implemented");
+                    studentController.createStudent(readStudentId(scanner),readStudentName(scanner));
                     break;
                 case "2":
                     enrollMenu();
@@ -219,6 +221,11 @@ public class StudentView {
     private static int readStudentId(Scanner scanner) {
         System.out.println("Enter student ID: ");
         return Integer.parseInt(scanner.nextLine());
+    }
+
+    private static String readStudentName(Scanner scanner) {
+        System.out.println("Enter student name: ");
+        return scanner.nextLine();
     }
 
     private static int readCourseId(Scanner scanner) {
