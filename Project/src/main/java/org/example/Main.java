@@ -83,13 +83,14 @@ public class Main {
 
     private static ReadingRepository createInMemoryReadingRepository() {
         ReadingRepository readingRepo = new ReadingRepository();
-        readingRepo.save(new Reading(1, "Reading1", new Teacher("Teacher11", 11), 25));
-        readingRepo.save(new Reading(2, "Reading2", new Teacher("Teacher21", 21), 25));
-        readingRepo.save(new Reading(3, "Reading3", new Teacher("Teacher31", 31), 25));
-        readingRepo.save(new Reading(4, "Reading4", new Teacher("Teacher41", 41), 25));
-        readingRepo.save(new Reading(5, "Reading5", new Teacher("Teacher51", 51), 25));
 
-        Reading r1=new Reading(6,"Reading6",new Teacher("Teacher6",61),20);
+        Reading r2=new Reading(1, "Reading1", new Teacher("Teacher11", 11), 25);
+        Reading r3=new Reading(2, "Reading2", new Teacher("Teacher21", 21), 25);
+        Reading r4=new Reading(3, "Reading3", new Teacher("Teacher31", 31), 25);
+        Reading r5=new Reading(4, "Reading4", new Teacher("Teacher41", 41), 25);
+        Reading r6=new Reading(5, "Reading5", new Teacher("Teacher51", 51), 25);
+        Reading r1=new Reading(6, "Reading6", new Teacher("Teacher6",  61),  20);
+
 
         String[][] readingExercises = {
                 {"Der Aufbruch\n" + "Franz Kafka","","",""},
@@ -161,8 +162,18 @@ public class Main {
         List<String> books=new ArrayList<>();
         books.add("Die Verwandlung");
         r1.setExercises(readingExercises);
+        r2.setExercises(readingExercises1);
+        r3.setExercises(readingExercises2);
+        r4.setExercises(readingExercises3);
+        r5.setExercises(readingExercises4);
+        r6.setExercises(readingExercises);
         r1.setMandatoryBooks(books);
         readingRepo.save(r1);
+        readingRepo.save(r2);
+        readingRepo.save(r3);
+        readingRepo.save(r4);
+        readingRepo.save(r5);
+        readingRepo.save(r6);
         return readingRepo;
     }
 
