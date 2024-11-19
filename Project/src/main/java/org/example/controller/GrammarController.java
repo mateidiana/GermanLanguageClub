@@ -34,12 +34,19 @@ public class GrammarController {
         System.out.println(output);
     }
 
-    public void deleteCourse(Integer courseId) {
-        grammarService.removeCourse(courseId);
+    public void deleteCourse(Integer courseId, Integer teacherId) {
+        grammarService.removeCourse(courseId, teacherId);
         System.out.println("Removed course " + courseId);
     }
 
     public void reviewPastMistakes(Integer studentId, Integer courseId){
         grammarService.reviewPastMistakes(studentId, courseId);
     }
+    public void viewCourseTaughtByTeacher(Integer teacherId){
+        grammarService.viewCourseTaughtByTeacher(teacherId);
+    }
+    public void createOrUpdateGrammarCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
+        grammarService.createOrUpdateGrammarCourse(courseId, teacherId, courseName, maxStudents);
+    }
+
 }

@@ -65,5 +65,26 @@ public class ExamController {
         examService.gradeFeedback(teacherId, examId);
     }
 
+    public void createOrUpdateGrammarExam(Integer examId, Integer teacherId, String courseName) {
+        examService.createOrUpdateGrammarExam(examId, teacherId, courseName);
+    }
 
+    public void deleteGrammarExam(Integer examId, Integer teacherId) {
+        examService.removeGrammarExam(examId, teacherId);
+    }
+
+    public void createOrUpdateVocabularyExam(Integer examId, Integer teacherId, String courseName) {
+        examService.createOrUpdateVocabularyExam(examId, teacherId, courseName);
+    }
+
+    public void deleteVocabularyExam(Integer examId, Integer teacherId) {
+        examService.removeVocabularyExam(examId, teacherId);
+    }
+
+    public void showResultsOfAllStudentsOnVocabularyExam(Integer teacherId) {
+        examService.showResultsOfAllStudentsOnVocabularyExam(teacherId);
+    }
+    public void showResultsOfAllStudentsOnGrammarExam(Integer teacherId) {
+        examService.showResultsOfAllStudentsOnGrammarExam(teacherId);
+    }
 }

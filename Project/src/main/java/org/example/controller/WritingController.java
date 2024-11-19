@@ -45,6 +45,7 @@ public class WritingController {
     public void viewCourseTaughtByTeacher(Integer teacherId){
         writingService.viewCourseTaughtByTeacher(teacherId);
     }
+
     public void createOrUpdateWritingCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
         writingService.createOrUpdateWritingCourse(courseId, teacherId, courseName, maxStudents);
     }

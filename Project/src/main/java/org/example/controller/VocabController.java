@@ -43,4 +43,14 @@ public class VocabController {
         vocabService.removeCourse(courseId);
         System.out.println("Removed course " + courseId);
     }
+    public void viewCourseTaughtByTeacher(Integer teacherId) {
+        vocabService.viewCourseTaughtByTeacher(teacherId);
+    }
+    public void createOrUpdateVocabularyCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
+        vocabService.createOrUpdateVocabularyCourse(courseId, teacherId, courseName, maxStudents);
+    }
+    public void deleteVocabularyCourse(Integer courseId, Integer teacherId) {
+        vocabService.removeVocabularyCourse(courseId, teacherId);
+    }
+
 }

@@ -155,25 +155,25 @@ public class TeacherView {
                     continueLoop = false;
                     break;
                 case "1":
-                    System.out.println("To be implemented");
+                    grammarController.viewCourseTaughtByTeacher(readTeacherId(scanner));
                     break;
                 case "2":
                     grammarController.viewStudents();
                     break;
                 case "3":
-                    System.out.println("To be implemented9");
+                    grammarController.createOrUpdateGrammarCourse(readCourseId(scanner),readTeacherId(scanner),readCourseName(scanner),readMaxStudents(scanner));
                     break;
                 case "4":
-                    System.out.println("To be implemented1");
+                    grammarController.deleteCourse(readCourseId(scanner),readTeacherId(scanner));
                     break;
                 case "5":
-                    System.out.println("To be implemented2");
+                    examController.createOrUpdateGrammarExam(readCourseId(scanner),readTeacherId(scanner),readExamName(scanner));
                     break;
                 case "6":
-                    System.out.println("To be implemented3");
+                    examController.deleteGrammarExam(readExamId(scanner),readTeacherId(scanner));
                     break;
                 case "7":
-                    System.out.println("To be implemented4");
+                    examController.showResultsOfAllStudentsOnGrammarExam(readTeacherId(scanner));
                     break;
                 default:
             }
@@ -194,25 +194,25 @@ public class TeacherView {
                     continueLoop = false;
                     break;
                 case "1":
-                    System.out.println("To be implemented7");
+                    vocabController.viewCourseTaughtByTeacher(readTeacherId(scanner));
                     break;
                 case "2":
                     vocabController.viewStudents();
                     break;
                 case "3":
-                    System.out.println("To be implemented");
+                    vocabController.createOrUpdateVocabularyCourse(readCourseId(scanner),readTeacherId(scanner),readCourseName(scanner),readMaxStudents(scanner));
                     break;
                 case "4":
-                    System.out.println("To be implemented1");
+                    vocabController.deleteVocabularyCourse(readCourseId(scanner),readTeacherId(scanner));
                     break;
                 case "5":
-                    System.out.println("To be implemented2");
+                    examController.createOrUpdateVocabularyExam(readCourseId(scanner),readTeacherId(scanner),readExamName(scanner));
                     break;
                 case "6":
-                    System.out.println("To be implemented3");
+                    examController.deleteVocabularyExam(readExamId(scanner),readTeacherId(scanner));
                     break;
                 case "7":
-                    System.out.println("To be implemented4");
+                    examController.showResultsOfAllStudentsOnVocabularyExam(readTeacherId(scanner));
                     break;
                 default:
             }

@@ -137,7 +137,47 @@ public class GrammarService {
         return course.getEnrolledStudents();
     }
 
-    public void removeCourse(Integer courseId) {
-        //this doesnt do jackshit yet
+    public void removeCourse(Integer courseId, Integer teacherId) {
+        Grammar course = grammarRepo.getById(courseId);
+        if (course.getTeacher().getId() == teacherId) {
+            grammarRepo.delete(course);
+        } else {
+            System.out.println("You don't have access to this course!");
+        }
     }
+    public void viewCourseTaughtByTeacher(Integer teacherId) {
+        Teacher teacher = teacherRepo.getById(teacherId);
+        for (Grammar course : grammarRepo.getObjects()) {
+            if (course.getTeacher().getId() == teacherId) {
+                System.out.println(course.getCourseName());
+            }
+        }
+    }
+    public void createOrUpdateGrammarCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
+        int found = 0;
+        for (Grammar course : grammarRepo.getObjects()) {
+            if (course.getId() == courseId) {
+                found = 1;
+                updateGrammarCourse(courseId, teacherId, courseName, maxStudents);
+                return;
+            }
+        }
+        if (found == 0) {
+            createGrammarCourse(courseId, teacherId, courseName, maxStudents);
+        }
+    }
+
+    public void createGrammarCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
+        Teacher teacher = teacherRepo.getById(teacherId);
+        Grammar g1 = new Grammar(courseId, courseName, teacher, maxStudents);
+        grammarRepo.save(g1);
+    }
+
+    public void updateGrammarCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
+        Grammar course = grammarRepo.getById(courseId);
+        Teacher teacher = teacherRepo.getById(teacherId);
+        Grammar g1 = new Grammar(courseId, courseName, teacher, maxStudents);
+        grammarRepo.update(course, g1);
+    }
+
 }

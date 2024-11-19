@@ -425,6 +425,110 @@ public class ExamService {
             }
         }
     }
+    public void createOrUpdateGrammarExam(Integer examId, Integer teacherId, String examName) {
+        int found = 0;
+        for (Exam exam : examRepo.getObjects()) {
+            if (exam.getId() == examId) {
+                found = 1;
+                updateGrammarExam(examId, teacherId, examName);
+                return;
+            }
+        }
+        if (found == 0) {
+            createGrammarExam(examId, teacherId, examName);
+        }
+    }
 
+    public void createGrammarExam(Integer examId, Integer teacherId, String examName) {
+        Teacher teacher = teacherRepo.getById(teacherId);
+        Exam e1 = new Exam(examId, examName, teacher);
+        examRepo.save(e1);
+    }
 
+    public void updateGrammarExam(Integer examId, Integer teacherId, String examName) {
+        Exam exam = examRepo.getById(examId);
+        Teacher teacher = teacherRepo.getById(teacherId);
+        Exam e1 = new Exam(examId, examName, teacher);
+        examRepo.update(exam, e1);
+    }
+
+    public void removeGrammarExam(Integer teacherId, Integer examId) {
+        Exam exam = examRepo.getById(examId);
+        if (exam.getTeacher().getId() == teacherId) {
+            examRepo.delete(exam);
+        } else {
+            System.out.println("You don't have access to this exam!");
+        }
+    }
+    public void createOrUpdateVocabularyExam(Integer examId, Integer teacherId, String examName) {
+        int found = 0;
+        for (Exam exam : examRepo.getObjects()) {
+            if (exam.getId() == examId) {
+                found = 1;
+                updateVocabularyExam(examId, teacherId, examName);
+                return;
+            }
+        }
+        if (found == 0) {
+            createVocabularyExam(examId, teacherId, examName);
+        }
+    }
+
+    public void createVocabularyExam(Integer examId, Integer teacherId, String examName) {
+        Teacher teacher = teacherRepo.getById(teacherId);
+        Exam e1 = new Exam(examId, examName, teacher);
+        examRepo.save(e1);
+    }
+
+    public void updateVocabularyExam(Integer examId, Integer teacherId, String examName) {
+        Exam exam = examRepo.getById(examId);
+        Teacher teacher = teacherRepo.getById(teacherId);
+        Exam e1 = new Exam(examId, examName, teacher);
+        examRepo.update(exam, e1);
+    }
+
+    public void removeVocabularyExam(Integer teacherId, Integer examId) {
+        Exam exam = examRepo.getById(examId);
+        if (exam.getTeacher().getId() == teacherId) {
+            examRepo.delete(exam);
+        } else {
+            System.out.println("You don't have access to this exam!");
+        }
+    }
+
+    public void showResultsOfAllStudentsOnGrammarExam(Integer teacherId) {
+        for (Exam exam : examRepo.getObjects()) {
+            if (exam.getExamName().contains("Grammar")) {
+                if (exam.getTeacher().getId() == teacherId) {
+                    for (Student student : studentRepo.getObjects()) {
+                        for (Integer key : student.getGrammarResults().keySet()) {
+                            if (key == exam.getId()) {
+                                System.out.println(
+                                        student + " " + exam.getExamName() + ": " + student.getGrammarResults().get(key)
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public void showResultsOfAllStudentsOnVocabularyExam(Integer teacherId) {
+        for (Exam exam : examRepo.getObjects()) {
+            if (exam.getExamName().contains("Vocabulary")) {
+                if (exam.getTeacher().getId() == teacherId) {
+                    for (Student student : studentRepo.getObjects()) {
+                        for (Integer key : student.getVocabResults().keySet()) {
+                            if (key == exam.getId()) {
+                                System.out.println(
+                                        student + " " + exam.getExamName() + ": " + student.getVocabResults().get(key)
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

@@ -136,4 +136,49 @@ public class VocabService {
     public List<Student> getAllStudents() {
         return studentRepo.getObjects();
     }
+
+    public void viewCourseTaughtByTeacher(Integer teacherId) {
+        Teacher teacher = teacherRepo.getById(teacherId);
+        for (Vocabulary course : vocabRepo.getObjects()) {
+            if (course.getTeacher().getId() == teacherId) {
+                System.out.println(course.getCourseName());
+            }
+        }
+    }
+    public void createOrUpdateVocabularyCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
+        int found = 0;
+        for (Vocabulary course : vocabRepo.getObjects()) {
+            if (course.getId() == courseId) {
+                found = 1;
+                updateVocabularyCourse(courseId, teacherId, courseName, maxStudents);
+                return;
+            }
+        }
+        if (found == 0) {
+            createVocabularyCourse(courseId, teacherId, courseName, maxStudents);
+        }
+    }
+
+    public void createVocabularyCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
+        Teacher teacher = teacherRepo.getById(teacherId);
+        Vocabulary v1 = new Vocabulary(courseId, courseName, teacher, maxStudents);
+        vocabRepo.save(v1);
+    }
+
+    public void updateVocabularyCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
+        Vocabulary course = vocabRepo.getById(courseId);
+        Teacher teacher = teacherRepo.getById(teacherId);
+        Vocabulary v1 = new Vocabulary(courseId, courseName, teacher, maxStudents);
+        vocabRepo.update(course, v1);
+    }
+
+    public void removeVocabularyCourse(Integer courseId, Integer teacherId) {
+        Vocabulary course = vocabRepo.getById(courseId);
+        if (course.getTeacher().getId() == teacherId) {
+            vocabRepo.delete(course);
+        } else {
+            System.out.println("You don't have access to this course!");
+        }
+    }
+
 }
