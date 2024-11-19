@@ -42,17 +42,25 @@ public class ReadingController {
         System.out.println(output);
     }
 
-    public void deleteCourse(Integer courseId) {
-        readingService.removeCourse(courseId);
-        System.out.println("Removed course " + courseId);
+    public void deleteCourse(Integer courseId, Integer teacherId) {
+        readingService.removeCourse(courseId,teacherId);
+        //System.out.println("Removed course " + courseId);
     }
 
     public void changeTeacherAccess(Integer courseId, Integer teacherId){
         readingService.changeTeacherAccessToCourse(courseId,teacherId);
     }
 
+    public void createOrUpdateReadingCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents){
+        readingService.createOrUpdateReadingCourse(courseId,teacherId,courseName,maxStudents);
+    }
+
     public void viewCourseTaughtByTeacher(Integer teacherId){
         readingService.viewCourseTaughtByTeacher(teacherId);
+    }
+
+    public void addMandatoryBook(Integer teacherId, Integer courseId,String book){
+        readingService.addMandatoryBook(teacherId,courseId,book);
     }
 
     public void viewMandatoryBooks(Integer studentId, Integer courseId){readingService.viewMandatoryBooks(studentId,courseId);}

@@ -277,12 +277,42 @@ public class ReadingService {
                 System.out.println(course);
     }
 
-    public void removeCourse(Integer courseId) {
-//        courseRepo.get(courseId).getEnrolledStudents().forEach(student -> {
-//            student.getCourses().removeIf(course -> course.getId().equals(courseId));
-//            studentRepo.update(student);
-//        });
-//        courseRepo.delete(courseId);
+    public void removeCourse(Integer courseId, Integer teacherId) {
+        Reading course=readingRepo.getById(courseId);
+        if (course.getTeacher().getId()==teacherId){
+            readingRepo.delete(course);
+        }
+        else{
+            System.out.println("You don't have access to this course!");
+        }
+    }
+
+    public void createOrUpdateReadingCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents){
+        int found=0;
+        for (Reading course: readingRepo.getObjects()){
+            if (course.getId()==courseId)
+            {
+                found=1;
+                updateReadingCourse(courseId,teacherId,courseName,maxStudents);
+                return;
+            }
+        }
+        if (found==0){
+            createReadingCourse(courseId,teacherId,courseName,maxStudents);
+        }
+    }
+
+    public void createReadingCourse(Integer courseId, Integer teacherId,String courseName, Integer maxStudents){
+        Teacher teacher=teacherRepo.getById(teacherId);
+        Reading r1=new Reading(courseId,courseName,teacher,maxStudents);
+        readingRepo.save(r1);
+    }
+
+    public void updateReadingCourse(Integer courseId, Integer teacherId,String courseName, Integer maxStudents){
+        Reading course=readingRepo.getById(courseId);
+        Teacher teacher=teacherRepo.getById(teacherId);
+        Reading r1=new Reading(courseId,courseName,teacher,maxStudents);
+        readingRepo.update(course,r1);
     }
 
     public void changeTeacherAccessToCourse(Integer courseId, Integer teacherId){
@@ -307,5 +337,14 @@ public class ReadingService {
 
     public List<Student> getAllStudents() {
         return studentRepo.getObjects();
+    }
+
+    public void addMandatoryBook(Integer teacherId, Integer courseId,String book){
+        Reading course=readingRepo.getById(courseId);
+        if(course.getTeacher().getId()==teacherId)
+        {
+            course.getMandatoryBooks().add(book);
+        }
+        else System.out.println("You don t have access to this course");
     }
 }

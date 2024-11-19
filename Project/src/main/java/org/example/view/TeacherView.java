@@ -1,16 +1,24 @@
 package org.example.view;
 import java.util.Scanner;
 import java.util.stream.IntStream;
-import org.example.controller.ReadingController;
-import org.example.controller.TeacherController;
+
+import org.example.controller.*;
 
 public class TeacherView {
     private TeacherController teacherController;
     private ReadingController readingController;
+    private WritingController writingController;
+    private VocabController vocabController;
+    private GrammarController grammarController;
+    private ExamController examController;
 
-    public TeacherView(TeacherController teacherController,ReadingController readingController){
+    public TeacherView(TeacherController teacherController,ReadingController readingController, WritingController writingController, VocabController vocabController, GrammarController grammarController, ExamController examController){
         this.teacherController=teacherController;
         this.readingController=readingController;
+        this.writingController=writingController;
+        this.vocabController=vocabController;
+        this.grammarController=grammarController;
+        this.examController=examController;
     }
 
     public void start(){
@@ -18,7 +26,7 @@ public class TeacherView {
         boolean continueLoop = true;
 
         while (continueLoop) {
-            System.out.print("Select an option:\n\n1. Register as new teacher\n2. Create a course\n3. View reading courses\n4. View writing courses\n5. View grammar courses\n6. View vocabulary courses\n0. Exit\n");
+            System.out.print("Select an option:\n\n1. Register as new teacher\n2. Non available\n3. View reading courses\n4. View writing courses\n5. View grammar courses\n6. View vocabulary courses\n0. Exit\n");
 
             String option = scanner.nextLine();
 
@@ -28,9 +36,6 @@ public class TeacherView {
                     break;
                 case "1":
                     teacherController.createTeacher(readTeacherId(scanner),readTeacherName(scanner));
-                    break;
-                case "2":
-                    createCourseMenu();
                     break;
                 case "3":
                     readingMenu();
@@ -54,7 +59,7 @@ public class TeacherView {
         boolean continueLoop = true;
 
         while (continueLoop) {
-            System.out.print("Select an option:\n\n1. View your courses\n2. View students enrolled in reading courses\n3. Create/modify a reading course\n4. Delete a reading course\n5. Create/modify a reading exam\n6. Delete a reading exam\n7. View the results on exams\n0. Exit\n");
+            System.out.print("Select an option:\n\n1. View your courses\n2. View students enrolled in reading courses\n3. Create/modify a reading course\n4. Delete a reading course\n5. Create/modify a reading exam\n6. Delete a reading exam\n7. View the results on exams\n8. Add a mandatory book\n0. Exit\n");
 
             String option = scanner.nextLine();
 
@@ -63,26 +68,28 @@ public class TeacherView {
                     continueLoop = false;
                     break;
                 case "1":
-                    //readingController.viewCourses();
                     readingController.viewCourseTaughtByTeacher(readTeacherId(scanner));
                     break;
                 case "2":
                     readingController.viewStudents();
                     break;
                 case "3":
-                    System.out.println("To be implemented");
+                    readingController.createOrUpdateReadingCourse(readCourseId(scanner),readTeacherId(scanner),readCourseName(scanner),readMaxStudents(scanner));
                     break;
                 case "4":
-                    System.out.println("To be implemented1");
+                    readingController.deleteCourse(readCourseId(scanner),readTeacherId(scanner));
                     break;
                 case "5":
-                    System.out.println("To be implemented2");
+                    examController.createOrUpdateReadingExam(readCourseId(scanner),readTeacherId(scanner),readExamName(scanner));
                     break;
                 case "6":
-                    System.out.println("To be implemented3");
+                    examController.deleteReadingExam(readExamId(scanner),readTeacherId(scanner));
                     break;
                 case "7":
-                    System.out.println("To be implemented4");
+                    examController.showResultsOfAllStudentsOnReadingExam(readTeacherId(scanner));
+                    break;
+                case "8":
+                    readingController.addMandatoryBook(readTeacherId(scanner),readCourseId(scanner),readBookName(scanner));
                     break;
                 default:
             }
@@ -240,9 +247,34 @@ public class TeacherView {
         return scanner.nextLine();
     }
 
+    private static String readCourseName(Scanner scanner) {
+        System.out.println("Enter course name: ");
+        return scanner.nextLine();
+    }
+
+    private static String readExamName(Scanner scanner) {
+        System.out.println("Enter exam name: ");
+        return scanner.nextLine();
+    }
+
     private static int readCourseId(Scanner scanner) {
         System.out.print("Enter course ID: ");
         return Integer.parseInt(scanner.nextLine());
+    }
+
+    private static int readExamId(Scanner scanner) {
+        System.out.print("Enter exam ID: ");
+        return Integer.parseInt(scanner.nextLine());
+    }
+
+    private static int readMaxStudents(Scanner scanner) {
+        System.out.print("Enter max number of students: ");
+        return Integer.parseInt(scanner.nextLine());
+    }
+
+    private static String readBookName(Scanner scanner) {
+        System.out.println("Enter book name: ");
+        return scanner.nextLine();
     }
 
 

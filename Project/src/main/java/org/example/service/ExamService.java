@@ -320,4 +320,56 @@ public class ExamService {
                 System.out.println(exam);
     }
 
+    public void showResultsOfAllStudentsOnReadingExam(Integer teacherId){
+        for (Exam exam:examRepo.getObjects()){
+            if (exam.getExamName().contains("Reading"))
+                if(exam.getTeacher().getId()==teacherId)
+                    for (Student student:studentRepo.getObjects())
+                        for (Integer key : student.getReadingResults().keySet()) {
+                            if(key==exam.getId())
+                                System.out.println(student+exam.getExamName()+student.getReadingResults().get(key));
+                        }
+        }
+    }
+
+
+    public void removeReadingExam(Integer teacherId, Integer examId) {
+        Exam exam=examRepo.getById(examId);
+        if (exam.getTeacher().getId()==teacherId){
+            examRepo.delete(exam);
+        }
+        else{
+            System.out.println("You don't have access to this exam!");
+        }
+    }
+
+    public void createOrUpdateReadingExam(Integer examId, Integer teacherId, String examName){
+        int found=0;
+        for (Exam exam: examRepo.getObjects()){
+            if (exam.getId()==examId)
+            {
+                found=1;
+                updateReadingExam(examId,teacherId,examName);
+                return;
+            }
+        }
+        if (found==0){
+            createReadingExam(examId,teacherId,examName);
+        }
+    }
+
+
+    public void createReadingExam(Integer examId, Integer teacherId,String examName){
+        Teacher teacher=teacherRepo.getById(teacherId);
+        Exam e1=new Exam(examId,examName,teacher);
+        examRepo.save(e1);
+    }
+
+    public void updateReadingExam(Integer examId, Integer teacherId,String examName){
+        Exam exam=examRepo.getById(examId);
+        Teacher teacher=teacherRepo.getById(teacherId);
+        Exam e1=new Exam(examId,examName,teacher);
+        examRepo.update(exam,e1);
+    }
+
 }

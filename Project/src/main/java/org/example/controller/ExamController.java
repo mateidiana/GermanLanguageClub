@@ -34,4 +34,16 @@ public class ExamController {
 
     public void showWritingResults(Integer studentId){examService.showWritingResults(studentId);}
 
+    public void showResultsOfAllStudentsOnReadingExam(Integer teacherId){
+        examService.showResultsOfAllStudentsOnReadingExam(teacherId);
+    }
+
+    public void createOrUpdateReadingExam(Integer courseId, Integer teacherId, String courseName){
+        examService.createOrUpdateReadingExam(courseId,teacherId,courseName);
+    }
+
+    public void deleteReadingExam(Integer examId, Integer teacherId) {
+        examService.removeReadingExam(examId,teacherId);
+        //System.out.println("Removed course " + courseId);
+    }
 }

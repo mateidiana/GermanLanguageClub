@@ -62,7 +62,7 @@ public class Main {
         vocabController.enrollStudent(1, 20);
         writingController.enrollStudent(1, 30);
         StudentView studentView = new StudentView(studentController,readingController,examController, grammarController, vocabController, writingController);
-        TeacherView teacherView = new TeacherView(teacherController,readingController);
+        TeacherView teacherView = new TeacherView(teacherController,readingController, writingController,vocabController,grammarController,examController);
 
         View view = new View(studentView,teacherView);
         view.start();
