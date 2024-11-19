@@ -39,12 +39,13 @@ public class Main {
         TeacherService teacherService = new TeacherService(teacherRepo);
         TeacherController teacherController = new TeacherController(teacherService);
 
-        ReadingService readingService = new ReadingService(readingRepo, studentRepo);
+        ReadingService readingService = new ReadingService(readingRepo, studentRepo, teacherRepo);
         ReadingController readingController = new ReadingController(readingService);
 
         ExamService examService = new ExamService(examRepo,studentRepo);
         ExamController examController = new ExamController(examService);
 
+        readingController.changeTeacherAccess(1,1);
         readingController.enrollStudent(1,6);
         StudentView studentView = new StudentView(studentController,readingController,examController);
         TeacherView teacherView = new TeacherView(teacherController,readingController);
@@ -68,13 +69,13 @@ public class Main {
 
     private static ReadingRepository createInMemoryCourseRepository() {
         ReadingRepository readingRepo = new ReadingRepository();
-        readingRepo.save(new Reading(1, "Reading1", new Teacher("Teacher1", 1), 25));
-        readingRepo.save(new Reading(2, "Reading2", new Teacher("Teacher2", 2), 25));
-        readingRepo.save(new Reading(3, "Reading3", new Teacher("Teacher3", 3), 25));
-        readingRepo.save(new Reading(4, "Reading4", new Teacher("Teacher4", 4), 25));
-        readingRepo.save(new Reading(5, "Reading5", new Teacher("Teacher5", 5), 25));
+        readingRepo.save(new Reading(1, "Reading1", new Teacher("Teacher11", 11), 25));
+        readingRepo.save(new Reading(2, "Reading2", new Teacher("Teacher21", 21), 25));
+        readingRepo.save(new Reading(3, "Reading3", new Teacher("Teacher31", 31), 25));
+        readingRepo.save(new Reading(4, "Reading4", new Teacher("Teacher41", 41), 25));
+        readingRepo.save(new Reading(5, "Reading5", new Teacher("Teacher51", 51), 25));
 
-        Reading r1=new Reading(6,"Reading6",new Teacher("Teacher6",6),20);
+        Reading r1=new Reading(6,"Reading6",new Teacher("Teacher6",61),20);
 
 
 //        String[][] exercises = {

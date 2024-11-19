@@ -63,7 +63,8 @@ public class TeacherView {
                     continueLoop = false;
                     break;
                 case "1":
-                    readingController.viewCourses();
+                    //readingController.viewCourses();
+                    readingController.viewCourseTaughtByTeacher(readTeacherId(scanner));
                     break;
                 case "2":
                     readingController.viewStudents();

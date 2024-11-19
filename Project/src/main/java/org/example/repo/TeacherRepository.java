@@ -1,4 +1,5 @@
 package org.example.repo;
+import org.example.model.Student;
 import org.example.model.Teacher;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,14 @@ public class TeacherRepository implements IRepository<Teacher>{
         if (index != -1) {
             teachers.set(index, TeacherRepl);
         }
+    }
+
+    public Teacher getById(Integer id){
+        for (Teacher teacher : teachers) {
+            if (teacher.getId() == id)
+                return teacher;
+        }
+        return null;
     }
 
     @Override

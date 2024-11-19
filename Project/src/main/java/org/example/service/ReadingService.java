@@ -6,8 +6,10 @@ import java.util.Random;
 import org.example.model.Reading;
 import org.example.model.Course;
 import org.example.model.Student;
+import org.example.model.Teacher;
 import org.example.repo.ReadingRepository;
 import org.example.repo.StudentRepository;
+import org.example.repo.TeacherRepository;
 
 public class ReadingService {
 
@@ -15,9 +17,12 @@ public class ReadingService {
 
     private StudentRepository studentRepo;
 
-    public ReadingService(ReadingRepository readingRepo, StudentRepository studentRepo) {
+    private TeacherRepository teacherRepo;
+
+    public ReadingService(ReadingRepository readingRepo, StudentRepository studentRepo, TeacherRepository teacherRepo) {
         this.readingRepo = readingRepo;
         this.studentRepo = studentRepo;
+        this.teacherRepo = teacherRepo;
     }
 
     public void enroll(Integer studentId, Integer readingCourseId) {
@@ -278,6 +283,19 @@ public class ReadingService {
 //            studentRepo.update(student);
 //        });
 //        courseRepo.delete(courseId);
+    }
+
+    public void changeTeacherAccessToCourse(Integer courseId, Integer teacherId){
+        Reading course=readingRepo.getById(courseId);
+        Teacher teacher=teacherRepo.getById(teacherId);
+        course.setTeacher(teacher);
+    }
+
+    public void viewCourseTaughtByTeacher(Integer teacherId){
+        Teacher teacher=teacherRepo.getById(teacherId);
+        for(Course course:readingRepo.getObjects())
+            if (course.getTeacher().getId()==teacherId)
+                System.out.println(course.getCourseName());
     }
 
     public List<Student> getAllStudents() {

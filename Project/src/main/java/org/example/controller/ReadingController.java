@@ -46,4 +46,12 @@ public class ReadingController {
         readingService.removeCourse(courseId);
         System.out.println("Removed course " + courseId);
     }
+
+    public void changeTeacherAccess(Integer courseId, Integer teacherId){
+        readingService.changeTeacherAccessToCourse(courseId,teacherId);
+    }
+
+    public void viewCourseTaughtByTeacher(Integer teacherId){
+        readingService.viewCourseTaughtByTeacher(teacherId);
+    }
 }
