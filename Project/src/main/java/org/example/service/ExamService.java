@@ -5,12 +5,14 @@ import org.example.model.*;
 import org.example.repo.ExamRepository;
 import org.example.repo.GrammarRepository;
 import org.example.repo.StudentRepository;
+import org.example.repo.TeacherRepository;
 import org.example.service.*;
 
 public class ExamService {
     private ExamRepository examRepo;
 
     private StudentRepository studentRepo;
+    private TeacherRepository teacherRepo;
 
     public ExamService(ExamRepository examRepo, StudentRepository studentRepo) {
         this.examRepo = examRepo;
@@ -207,6 +209,103 @@ public class ExamService {
         for (Map.Entry<Integer, Float> entry : vocabExamResults.entrySet()) {
             System.out.println("Vocabulary exam id: " + entry.getKey() + ", Score: " + entry.getValue());
         }
+    }
+
+    public void takeWritingExam(Integer studentId, Integer examId){
+        Student student = studentRepo.getById(studentId);
+        Exam exam = examRepo.getById(examId);
+        Scanner scanner = new Scanner(System.in);
+        StringBuilder answer = new StringBuilder();
+
+        int foundCourse=0;
+
+        for (Course findCourse : student.getCourses()){
+            if (findCourse.getCourseName().contains("Vocabulary"))
+            {
+                foundCourse=1;
+                break;}
+        }
+        if (foundCourse==0){
+            System.out.println("\n\n\nYou are not enrolled in this course!");}
+        if(foundCourse==1) {
+            String exercise=exam.getRequirement();
+            System.out.println(exercise);
+            String input;
+
+
+            System.out.println("Enter text (type 0 to stop):");
+            while (true) {
+                input = scanner.nextLine();
+                if (input.equals("0")) {
+                    System.out.println("Exiting...");
+                    break;
+                }
+                answer.append(input).append("\n");
+            }
+            Map <Student, String> toBeGraded=exam.getTeacher().getGradeWriting();
+            toBeGraded.put(student, answer.toString());
+            exam.getTeacher().setGradeWriting(toBeGraded);
+            System.out.println("Writing exercise submitted!!!!! Waiting for the grade");
+        }
+    }
+
+    public void showWritingResults(Integer studentId){
+        Student student = studentRepo.getById(studentId);
+        Map<Integer, Float> writingExamResults=new HashMap<>();
+        writingExamResults=student.getWritingExamResults();
+        System.out.println("Your past scores: ");
+        for (Map.Entry<Integer, Float> entry : writingExamResults.entrySet()) {
+            System.out.println("Writing exam id: " + entry.getKey() + ", Score: " + entry.getValue());
+        }
+    }
+
+    public void showFeedbackResults(Integer studentId){
+        Student student = studentRepo.getById(studentId);
+        Map<Integer, Float> writingFeedbackResults=new HashMap<>();
+        writingFeedbackResults=student.getWritingFeedback();
+        System.out.println("Your past scores: ");
+        for (Map.Entry<Integer, Float> entry : writingFeedbackResults.entrySet()) {
+            System.out.println("Writing course id: " + entry.getKey() + ", Score: " + entry.getValue());
+        }
+    }
+
+    void gradeWritings(Integer teacherId, Integer examId){
+        Teacher teacher= teacherRepo.getById(teacherId);
+        Scanner scanner=new Scanner(System.in);
+        Map<Student, String> toGrade=teacher.getGradeWriting();
+        while (!toGrade.isEmpty()) {
+            Map.Entry<Student, String> entry = toGrade.entrySet().iterator().next();
+            Student key = entry.getKey();
+            String value = entry.getValue();
+            System.out.println(value);
+            System.out.println("Input grade: ");
+            float grade=scanner.nextFloat();
+            Map<Integer, Float> results=key.getWritingExamResults();
+            results.put(examId, grade);
+            key.setWritingExamResults(results);
+            toGrade.remove(key);
+        }
+
+    }
+
+
+    void gradeFeedback(Integer teacherId, Integer courseId){
+        Teacher teacher= teacherRepo.getById(teacherId);
+        Scanner scanner=new Scanner(System.in);
+        Map<Student, String> toGrade=teacher.getFeedbackWriting();
+        while (!toGrade.isEmpty()) {
+            Map.Entry<Student, String> entry = toGrade.entrySet().iterator().next();
+            Student key = entry.getKey();
+            String value = entry.getValue();
+            System.out.println(value);
+            System.out.println("Input grade: ");
+            float grade=scanner.nextFloat();
+            Map<Integer, Float> results=key.getWritingFeedback();
+            results.put(courseId, grade);
+            key.setWritingFeedback(results);
+            toGrade.remove(key);
+        }
+
     }
 
     public Map<Integer,Float> showReadingResults1(Integer studentId){

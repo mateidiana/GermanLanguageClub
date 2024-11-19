@@ -6,7 +6,7 @@ public class Writing extends Course {
     {
         super(id, courseName, teacher, maxStudents);
     }
-
+    static String textRequirement;
     @Override
     public String toString() {
         return "Writing course{" +
@@ -14,4 +14,6 @@ public class Writing extends Course {
                 ", name='" + this.getCourseName() + '\'' +
                 '}';
     }
+    public static String getRequirement(){ return textRequirement;}
+    public void setRequirement(String text) {this.textRequirement=text;}
 }

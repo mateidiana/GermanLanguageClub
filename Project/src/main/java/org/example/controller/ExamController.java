@@ -28,4 +28,10 @@ public class ExamController {
 
     public void showVocabResults(Integer studentId){examService.showVocabResults(studentId);}
 
+    public void takeWritingExam(Integer studentId, Integer examId){
+        examService.takeWritingExam(studentId,examId);
+    }
+
+    public void showWritingResults(Integer studentId){examService.showWritingResults(studentId);}
+
 }

@@ -20,12 +20,13 @@ public class StudentView {
     private GrammarController grammarController;
     private VocabController vocabController;
     private WritingController writingController;
-    public StudentView(StudentController studentController, ReadingController readingController, ExamController examController, GrammarController grammarController, VocabController vocabController){
+    public StudentView(StudentController studentController, ReadingController readingController, ExamController examController, GrammarController grammarController, VocabController vocabController, WritingController writingController){
         this.studentController=studentController;
         this.readingController=readingController;
         this.examController=examController;
         this.grammarController=grammarController;
         this.vocabController=vocabController;
+        this.writingController=writingController;
     }
 
     public void start(){
@@ -106,7 +107,7 @@ public class StudentView {
         boolean continueLoop = true;
 
         while (continueLoop) {
-            System.out.print("Select an option:\n\n1. View your writing courses\n2. Practice writing\n3. Review past mistakes\n4. Take writing exam\n5. View past exam scores\n0. Exit\n");
+            System.out.print("Select an option:\n\n1. View your writing courses\n2. Practice writing\n3. Take writing exam\n4. View past exam scores\n5. View past feedbacks\n0. Exit\n");
 
             String option = scanner.nextLine();
 
@@ -115,20 +116,19 @@ public class StudentView {
                     continueLoop = false;
                     break;
                 case "1":
-                    System.out.println("To be implemented");
+                    writingController.showEnrolledCourses(readStudentId(scanner));
                     break;
                 case "2":
-                    System.out.println("To be implemented1");
+                    writingController.practiceWriting(readStudentId(scanner),readCourseId(scanner));
                     break;
                 case "3":
-                    System.out.println("To be implemented2");
+                    examController.takeWritingExam(readStudentId(scanner),readExamId(scanner));
                     break;
                 case "4":
-                    System.out.println("To be implemented3");
+                    examController.showWritingResults(readStudentId(scanner));
                     break;
                 case "5":
-                    System.out.println("To be implemented4");
-                    break;
+                    writingController.getFeedback(readStudentId(scanner));
                 default:
             }
         }

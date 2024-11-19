@@ -13,10 +13,12 @@ public class WritingController {
         System.out.println("Enrolled student " + studentId + " with course " + courseId);
     }
 
-    public void practiceWritingulary(Integer studentId, Integer courseId) {
+    public void practiceWriting(Integer studentId, Integer courseId) {
         writingService.practiceWriting(studentId,courseId);
     }
-
+    public void showEnrolledCourses(Integer studentId) {
+        writingService.showEnrolledWritingCourses(studentId);
+    }
     public void viewCourses() {
         StringBuilder output = new StringBuilder("Available courses:\n");
         writingService.getAvailableCourses().forEach(course -> output.append(course.toString()).append("\n"));
@@ -38,5 +40,9 @@ public class WritingController {
     public void deleteCourse(Integer courseId) {
         writingService.removeCourse(courseId);
         System.out.println("Removed course " + courseId);
+    }
+
+    public void getFeedback(Integer studentId){
+        writingService.showFeedback(studentId);
     }
 }

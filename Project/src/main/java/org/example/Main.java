@@ -27,6 +27,7 @@ public class Main {
         GrammarRepository grammarRepo= createInMemoryGrammarRepository();
         VocabRepository vocabRepo= createInMemoryVocabRepository();
         ExamRepository examRepo = createInMemoryExamRepository();
+        WritingRepository writingRepo= createInMemoryWritingRepository();
 
         GrammarService grammarService= new GrammarService(grammarRepo, studentRepo);
         GrammarController grammarController = new GrammarController(grammarService);
@@ -46,6 +47,9 @@ public class Main {
         VocabService vocabService= new VocabService(vocabRepo, studentRepo);
         VocabController vocabController = new VocabController(vocabService);
 
+        WritingService writingService = new WritingService(writingRepo, studentRepo);
+        WritingController writingController = new WritingController(writingService);
+
         readingController.changeTeacherAccess(1,1);
         readingController.changeTeacherAccess(2,1);
         readingController.changeTeacherAccess(3,1);
@@ -56,7 +60,8 @@ public class Main {
 
         grammarController.enrollStudent(1,10);
         vocabController.enrollStudent(1, 20);
-        StudentView studentView = new StudentView(studentController,readingController,examController, grammarController, vocabController);
+        writingController.enrollStudent(1, 30);
+        StudentView studentView = new StudentView(studentController,readingController,examController, grammarController, vocabController, writingController);
         TeacherView teacherView = new TeacherView(teacherController,readingController);
 
         View view = new View(studentView,teacherView);
@@ -269,11 +274,38 @@ public class Main {
 
     }
 
+    private static WritingRepository createInMemoryWritingRepository() {
+        WritingRepository writingRepo=new WritingRepository();
+        Writing w1=new Writing(30,"Reading1",new Teacher("Cristian Matei", 2), 69);
+        Writing w2=new Writing(31,"Reading2",new Teacher("Cristian Matei", 2), 69);
+        Writing w3=new Writing(32,"Reading3",new Teacher("Cristian Matei", 2), 69);
+        Writing w4=new Writing(33,"Reading4",new Teacher("Cristian Matei", 2), 69);
+        Writing w5=new Writing(34,"Reading5",new Teacher("Cristian Matei", 2), 69);
+        String requirement = "Write a text about how amazing our leader Cristian Matei is and about how many hoes he has. :3";
+
+        w1.setRequirement(requirement);
+        writingRepo.save(w1);
+
+        w2.setRequirement(requirement);
+        writingRepo.save(w2);
+
+        w3.setRequirement(requirement);
+        writingRepo.save(w3);
+
+        w4.setRequirement(requirement);
+        writingRepo.save(w4);
+
+        w5.setRequirement(requirement);
+        writingRepo.save(w5);
+
+        return writingRepo;
+    }
     private static ExamRepository createInMemoryExamRepository(){
         ExamRepository examRepo=new ExamRepository();
         Exam exam1=new Exam(1,"ReadingExam1",new Teacher("Teacher1",1));
         Exam exam2=new Exam(2,"GrammarExam1",new Teacher("Teacher1",1));
-        Exam exam3=new Exam(3,"vocabularyExam1",new Teacher("Teacher1",1));
+        Exam exam3=new Exam(3,"VocabularyExam1",new Teacher("Teacher1",1));
+        Exam exam4=new Exam(4,"WritingExam1",new Teacher("Cristian Matei",1));
         String[][] exercises = {
 
                 {"Du brauchst Hilfe.", "Du _ Hilfe.", "a. brauchst", "b. braucht", "c. brauche", "You need help.", "a. brauchst"},
@@ -356,12 +388,16 @@ public class Main {
         vocabularyExercises.put("lernen", "to learn");
         vocabularyExercises.put("arbeiten", "to work");
 
+        String exercise="Write a text abut how amazing our leader Criatian Matei is and about how many hoes he has. :3";
+
         exam1.setExercises(readingExercises);
         examRepo.save(exam1);
         exam2.setExercises(grammarExercises);
         examRepo.save(exam2);
         exam3.setWorter(vocabularyExercises);
         examRepo.save(exam3);
+        exam4.setRequirement(exercise);
+        examRepo.save(exam4);
         return examRepo;
     }
 }

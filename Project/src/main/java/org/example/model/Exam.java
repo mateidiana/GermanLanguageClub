@@ -11,6 +11,7 @@ public class Exam {
     private String[][] exercises;
     Map <String, String> worter=new HashMap<>();
     Map<Student,Float> results = new HashMap<>();
+    static String textRequirement;
 
     public Exam(Integer id, String examName, Teacher teacher) {
         this.id = id;
@@ -80,6 +81,8 @@ public class Exam {
         this.worter.put(key, value);
     }
 
+    public static String getRequirement(){ return textRequirement;}
+    public void setRequirement(String text) {this.textRequirement=text;}
     @Override
     public String toString() {
         return "Exam{" +

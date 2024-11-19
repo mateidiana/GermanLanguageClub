@@ -14,6 +14,8 @@ public class Student extends Person {
 
     private Map<Integer, Float> grammarExamResults=new HashMap<>();
     private Map<Integer, Float> vocabExamResults=new HashMap<>();
+    private Map<Integer, Float> writingExamResults=new HashMap<>();
+    private Map<Integer, Float> writingFeedback=new HashMap<>();
     public Student(String name, Integer studentId) {
         super(studentId, name);
     }
@@ -71,6 +73,32 @@ public class Student extends Person {
             this.vocabExamResults = vocabExamResults;
         } else {
             throw new IllegalArgumentException("Vocabulary exam results cannot be null.");
+        }
+    }
+
+    // Getter and Setter for writingExamResults
+    public Map<Integer, Float> getWritingExamResults() {
+        return writingExamResults;
+    }
+
+    public void setWritingExamResults(Map<Integer, Float> writingExamResults) {
+        if (writingExamResults != null) {
+            this.writingExamResults = writingExamResults;
+        } else {
+            throw new IllegalArgumentException("writingExamResults map cannot be null.");
+        }
+    }
+
+    // Getter and Setter for writingFeedback
+    public Map<Integer, Float> getWritingFeedback() {
+        return writingFeedback;
+    }
+
+    public void setWritingFeedback(Map<Integer, Float> writingFeedback) {
+        if (writingFeedback != null) {
+            this.writingFeedback = writingFeedback;
+        } else {
+            throw new IllegalArgumentException("writingFeedback map cannot be null.");
         }
     }
 
