@@ -66,7 +66,7 @@ public class StudentView {
         boolean continueLoop = true;
 
         while (continueLoop) {
-            System.out.print("Select an option:\n\n1. View your reading courses\n2. Practice reading\n3. Review past mistakes\n4. Take reading exam\n5. View past exam scores\n0. Exit\n");
+            System.out.print("Select an option:\n\n1. View your reading courses\n2. Practice reading\n3. Review past mistakes\n4. Take reading exam\n5. View past exam scores\n6. View mandatory books\n0. Exit\n");
 
             String option = scanner.nextLine();
 
@@ -89,6 +89,9 @@ public class StudentView {
                     break;
                 case "5":
                     examController.showReadingResults(readStudentId(scanner));
+                    break;
+                case "6":
+                    readingController.viewMandatoryBooks(readStudentId(scanner),readCourseId(scanner));
                     break;
                 default:
             }

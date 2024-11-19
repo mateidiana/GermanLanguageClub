@@ -293,9 +293,16 @@ public class ReadingService {
 
     public void viewCourseTaughtByTeacher(Integer teacherId){
         Teacher teacher=teacherRepo.getById(teacherId);
-        for(Course course:readingRepo.getObjects())
+        for(Reading course:readingRepo.getObjects())
             if (course.getTeacher().getId()==teacherId)
                 System.out.println(course.getCourseName());
+    }
+
+    public void viewMandatoryBooks(Integer studentId, Integer courseId){
+        Reading course=readingRepo.getById(courseId);
+        for (String book:course.getMandatoryBooks()){
+            System.out.println(book);
+        }
     }
 
     public List<Student> getAllStudents() {

@@ -1,8 +1,9 @@
 package org.example;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.stream.IntStream;
-
+import java.util.List;
 import org.example.controller.ExamController;
 import org.example.controller.ReadingController;
 import org.example.controller.StudentController;
@@ -46,7 +47,14 @@ public class Main {
         ExamController examController = new ExamController(examService);
 
         readingController.changeTeacherAccess(1,1);
+        readingController.changeTeacherAccess(2,1);
+//        readingController.changeTeacherAccess(2,2);
+//        readingController.changeTeacherAccess(3,3);
+//        readingController.changeTeacherAccess(4,4);
+//        readingController.changeTeacherAccess(5,5);
+//        readingController.changeTeacherAccess(6,6);
         readingController.enrollStudent(1,6);
+
         StudentView studentView = new StudentView(studentController,readingController,examController);
         TeacherView teacherView = new TeacherView(teacherController,readingController);
 
@@ -162,8 +170,10 @@ public class Main {
                 {"\n\nDie Parabel kann bedeuten, dass Menschen sich willig das Leben zerstören.\n\n", "a. wahr", "b. falsch", "a. wahr"},
                 {"\n\nDie Parabel kann bedeuten, dass die Komplizierung eine Rettung darstellen kann.\n\n", "a. wahr", "b. falsch", "b. falsch"}
         };
-
+        List<String> books=new ArrayList<>();
+        books.add("Die Verwandlung");
         r1.setExercises(readingExercises);
+        r1.setMandatoryBooks(books);
         readingRepo.save(r1);
         return readingRepo;
     }
