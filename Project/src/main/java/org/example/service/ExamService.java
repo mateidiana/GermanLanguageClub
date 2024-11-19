@@ -31,32 +31,31 @@ public class ExamService {
             if (findCourse.getCourseName().contains("Reading"))
             {
                 foundCourse=1;
-                for (int i=0;i<5;i++)
+                System.out.println(exercises[0][0]);
+                System.out.println(exercises[1][0]);
+                for (int i=2;i<6;i++)
                 {
-                    Random rand = new Random();
-                    exercise=exercises[rand.nextInt(exercises.length)];
-                    String status = "\n\n"+exercise[1] + "\n" + "\n" + exercise[2] + "\n" + exercise[3] + "\n" + exercise[4] + "\n";
-                    System.out.println(status);
+                    exercise=exercises[i];
+                    System.out.println(exercise[0]+exercise[1]+"\n"+exercise[2]);
                     System.out.println("Your answer: ");
                     char answer = scanner.nextLine().charAt(0);
                     int found=0;
 
-                    if (answer=='a' || answer=='b' || answer=='c')
+                    if (answer=='a' || answer=='b')
                     {
-                        for (int j=2;j<=4;j++)
+                        for (int j=1;j<=2;j++)
                         {
                             if (exercise[j].charAt(0)==answer && exercise[j].charAt(1)=='.')
-                                if (exercise[j] == exercise[6])
+                                if (exercise[j] == exercise[3])
                                 {
-                                    System.out.println("Correct! " + exercise[0] + "  Meaning: " + exercise[5]);
+                                    System.out.println("Correct! " + exercise[3]);
                                     found=1;
                                     break;
                                 }
                         }
                         if (found==0)
                         {
-                            System.out.println("Wrong! The right answer was " + exercise[6] + "  " + exercise[0] +"  Meaning: " + exercise[5]);
-
+                            System.out.println("Wrong! The right answer was " + exercise[3]);
                         }
                     }
                     else

@@ -17,7 +17,7 @@ public class ReadingController {
     }
 
     public void reviewPastMistakes(Integer studentId) {
-        readingService.reviewPastMistakes(studentId);
+        readingService.reviewPastReadingMistakes(studentId);
     }
 
     public void viewCourses() {

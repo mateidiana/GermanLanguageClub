@@ -30,7 +30,7 @@ public class Student extends Person {
         return pastGrammarMistakes;
     }
 
-    public void setPastGrammarMistakes(String[][] pastMistakes){
+    public void setPastGrammarMistakes(String[][] pastGrammarMistakes){
         this.pastGrammarMistakes=pastGrammarMistakes;
     }
 
