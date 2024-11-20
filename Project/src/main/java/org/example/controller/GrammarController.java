@@ -117,4 +117,10 @@ public class GrammarController {
      */
     public void showStudentsEnrolledInGrammarCourses(){grammarService.showStudentsEnrolledInGrammarCourses();}
 
+    /**
+     * Displays all grammar courses a student is enrolled in
+     * @param studentId identifies a student
+     */
+    public void showEnrolledGrammarCourses(Integer studentId){grammarService.showEnrolledGrammarCourses(studentId);}
+
 }

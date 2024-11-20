@@ -17,7 +17,10 @@ import org.example.view.View;
 import java.util.Map;
 import java.util.HashMap;
 
-
+/**
+ * Application entry point
+ * Initializes all repositories, services and controllers
+ */
 public class Main {
     public static void main(String[] args) {
 
@@ -75,23 +78,33 @@ public class Main {
 
     }
 
+    /**
+     *
+     * @return a student repository in memory
+     */
     private static StudentRepository createInMemoryStudentRepository() {
         StudentRepository studentRepo = new StudentRepository();
         IntStream.range(1, 6).forEach(i -> studentRepo.save(new Student("Student" + i, i)));
         return studentRepo;
     }
 
+    /**
+     *
+     * @return a teacher repository in memory
+     */
     private static TeacherRepository createInMemoryTeacherRepository() {
         TeacherRepository teacherRepo = new TeacherRepository();
         IntStream.range(1, 6).forEach(i -> teacherRepo.save(new Teacher("Teacher" + i, i)));
-        Teacher teacher=teacherRepo.getById(1);
-        //System.out.println(teacher.getId());
 
         Teacher teacher1=new Teacher("teacher111",111);
         teacherRepo.save(teacher1);
         return teacherRepo;
     }
 
+    /**
+     *
+     * @return a reading courses repository in memory
+     */
     private static ReadingRepository createInMemoryReadingRepository() {
         ReadingRepository readingRepo = new ReadingRepository();
 
@@ -188,6 +201,10 @@ public class Main {
         return readingRepo;
     }
 
+    /**
+     *
+     * @return a repository for grammar courses in memory
+     */
     private static GrammarRepository createInMemoryGrammarRepository() {
         Grammar g1 = new Grammar(10, "Grammar1", new Teacher("Teacher1", 31), 25);
         Grammar g2 = new Grammar(11, "Grammar2", new Teacher("Teacher2", 32), 30);
@@ -226,6 +243,10 @@ public class Main {
         return grammarRepo;
     }
 
+    /**
+     *
+     * @return a repository for vocabulary courses in memory
+     */
     private static VocabRepository createInMemoryVocabRepository(){
         Vocabulary v1 = new Vocabulary(20, "Vocabulary1", new Teacher("Teacher1", 31), 25);
         Vocabulary v2 = new Vocabulary(21, "Vocabulary2", new Teacher("Teacher2", 32), 30);
@@ -297,13 +318,17 @@ public class Main {
 
     }
 
+    /**
+     *
+     * @return a repository for writing courses in memory
+     */
     private static WritingRepository createInMemoryWritingRepository() {
         WritingRepository writingRepo=new WritingRepository();
-        Writing w1=new Writing(30,"Writing1",new Teacher("Cristian Matei", 111), 69);
-        Writing w2=new Writing(31,"Writing2",new Teacher("Cristian Matei", 2), 69);
-        Writing w3=new Writing(32,"Writing3",new Teacher("Cristian Matei", 2), 69);
-        Writing w4=new Writing(33,"Writing4",new Teacher("Cristian Matei", 2), 69);
-        Writing w5=new Writing(34,"Writing5",new Teacher("Cristian Matei", 2), 69);
+        Writing w1=new Writing(30,"Writing1",new Teacher("Teacher11", 111), 69);
+        Writing w2=new Writing(31,"Writing2",new Teacher("Teacher12", 2), 69);
+        Writing w3=new Writing(32,"Writing3",new Teacher("Teacher13", 2), 69);
+        Writing w4=new Writing(33,"Writing4",new Teacher("Teacher14", 2), 69);
+        Writing w5=new Writing(34,"Writing5",new Teacher("Teacher15", 2), 69);
         String requirement = "Schreibe einen Text über den Frühling. :3";
 
         w1.setRequirement(requirement);
@@ -323,12 +348,17 @@ public class Main {
 
         return writingRepo;
     }
+
+    /**
+     *
+     * @return a repository for exams in memory
+     */
     private static ExamRepository createInMemoryExamRepository(){
         ExamRepository examRepo=new ExamRepository();
-        Exam exam1=new Exam(1,"ReadingExam1",new Teacher("Sacsrea",2));
-        Exam exam2=new Exam(2,"GrammarExam1",new Teacher("Birigite",2));
-        Exam exam3=new Exam(3,"VocabularyExam1",new Teacher("Monica",2));
-        Exam exam4=new Exam(4,"WritingExam1",new Teacher("Cristian Matei",2));
+        Exam exam1=new Exam(1,"ReadingExam1",new Teacher("ExamTeacher1",2));
+        Exam exam2=new Exam(2,"GrammarExam1",new Teacher("ExamTeacher2",2));
+        Exam exam3=new Exam(3,"VocabularyExam1",new Teacher("ExamTeacher3",2));
+        Exam exam4=new Exam(4,"WritingExam1",new Teacher("ExamTeacher4",2));
 
         String [][] grammarExercises={
                 { "Du (brauchen) _ Hilfe.", "brauchst" },

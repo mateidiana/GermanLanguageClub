@@ -283,4 +283,15 @@ public class VocabService {
                 }
     }
 
+    /**
+     * Displays all vocabulary courses a student is enrolled in
+     * @param studentId identifies a student
+     */
+    public void showEnrolledVocabCourses(Integer studentId){
+        Student student = studentRepo.getById(studentId);
+        for (Course course:student.getCourses())
+            if (course.getCourseName().contains("Vocab"))
+                System.out.println(course);
+    }
+
 }

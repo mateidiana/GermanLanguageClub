@@ -293,6 +293,15 @@ public class GrammarService {
                 }
     }
 
-
+    /**
+     * Displays all grammar courses a student is enrolled in
+     * @param studentId identifies a student
+     */
+    public void showEnrolledGrammarCourses(Integer studentId){
+        Student student = studentRepo.getById(studentId);
+        for (Course course:student.getCourses())
+            if (course.getCourseName().contains("Grammar"))
+                System.out.println(course);
+    }
 
 }

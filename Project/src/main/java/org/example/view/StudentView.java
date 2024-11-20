@@ -1,18 +1,13 @@
 package org.example.view;
 import java.util.Scanner;
 import java.util.stream.IntStream;
-
 import org.example.controller.GrammarController;
 import org.example.controller.ReadingController;
 import org.example.controller.*;
 
-import org.example.service.ReadingService;
-import org.example.model.Reading;
-import org.example.model.Student;
-import org.example.model.Teacher;
-import org.example.repo.StudentRepository;
-import org.example.repo.ReadingRepository;
-
+/**
+ * Displays student functionalities
+ */
 public class StudentView {
     private StudentController studentController;
     private ReadingController readingController;
@@ -29,6 +24,10 @@ public class StudentView {
         this.writingController=writingController;
     }
 
+    /**
+     * Based on options, a student can access functionalities for enrolling and practicing all courses,
+     * taking exams and receiving results
+     */
     public void start(){
         Scanner scanner = new Scanner(System.in);
         boolean continueLoop = true;
@@ -65,6 +64,9 @@ public class StudentView {
         }
     }
 
+    /**
+     * Menu for manipulating reading courses
+     */
     public void readingMenu(){
         Scanner scanner = new Scanner(System.in);
         boolean continueLoop = true;
@@ -102,6 +104,9 @@ public class StudentView {
         }
     }
 
+    /**
+     * Menu for manipulating writing courses
+     */
     public void writingMenu(){
         Scanner scanner = new Scanner(System.in);
         boolean continueLoop = true;
@@ -134,6 +139,9 @@ public class StudentView {
         }
     }
 
+    /**
+     * Menu for manipulating grammar courses
+     */
     public void grammarMenu(){
         Scanner scanner = new Scanner(System.in);
         boolean continueLoop = true;
@@ -148,7 +156,7 @@ public class StudentView {
                     continueLoop = false;
                     break;
                 case "1":
-                    grammarController.viewCourses();
+                    grammarController.showEnrolledGrammarCourses(readStudentId(scanner));
                     break;
                 case "2":
                     grammarController.practiceGrammar(readStudentId(scanner),readCourseId(scanner));
@@ -156,7 +164,8 @@ public class StudentView {
                 case "3":
                     grammarController.reviewPastMistakes(readStudentId(scanner),readCourseId(scanner));
                     break;
-                case "4": examController.takeGrammarExam(readStudentId(scanner),readExamId(scanner));
+                case "4":
+                    examController.takeGrammarExam(readStudentId(scanner),readExamId(scanner));
                     break;
                 case "5":
                     examController.showGrammarResults(readStudentId(scanner));
@@ -166,6 +175,9 @@ public class StudentView {
         }
     }
 
+    /**
+     * Menu for manipulating vocabulary courses
+     */
     public void vocabularyMenu(){
         Scanner scanner = new Scanner(System.in);
         boolean continueLoop = true;
@@ -180,7 +192,7 @@ public class StudentView {
                     continueLoop = false;
                     break;
                 case "1":
-                    vocabController.viewCourses();
+                    vocabController.showEnrolledVocabCourses(readStudentId(scanner));
                     break;
                 case "2":
                     vocabController.practiceVocabulary(readStudentId(scanner),readCourseId(scanner));
@@ -199,6 +211,9 @@ public class StudentView {
         }
     }
 
+    /**
+     * Menu for enrolling into a course
+     */
     public void enrollMenu(){
         Scanner scanner = new Scanner(System.in);
         System.out.print("Select an option:\n\n1. Enroll in a reading course\n2. Enroll in a writing course\n3. Enroll in a grammar course\n4. Enroll in a vocabulary course\n0. Exit\n");
@@ -227,6 +242,11 @@ public class StudentView {
         }
     }
 
+    /**
+     * Read inputs
+     * @param scanner reads inputs
+     * @return int or strings
+     */
     private static int readStudentId(Scanner scanner) {
         System.out.println("Enter student ID: ");
         return Integer.parseInt(scanner.nextLine());

@@ -1,6 +1,9 @@
 package org.example.view;
 import java.util.Scanner;
 
+/**
+ * Displays a combined view where the user can choose either the student or the teacher view
+ */
 public class View {
     private StudentView studentView;
     private TeacherView teacherView;

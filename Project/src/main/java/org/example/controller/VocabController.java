@@ -127,4 +127,10 @@ public class VocabController {
      */
     public void showStudentsEnrolledInVocabCourses(){vocabService.showStudentsEnrolledInVocabCourses();}
 
+    /**
+     * Displays all vocabulary courses a student is enrolled in
+     * @param studentId identifies a student
+     */
+    public void showEnrolledVocabCourses(Integer studentId){vocabService.showEnrolledVocabCourses(studentId);}
+
 }
