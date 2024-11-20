@@ -4,36 +4,38 @@ import java.util.Scanner;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
-import org.example.model.Reading;
+
 import org.example.model.Course;
 import org.example.model.Student;
 import org.example.model.Teacher;
 import org.example.repo.StudentRepository;
 import org.example.repo.TeacherRepository;
-import org.example.service.*;
-import java.util.Random;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 import org.example.model.*;
+import org.example.repo.VocabRepository;
 import org.example.repo.WritingRepository;
-import org.example.repo.WritingRepository;
-import org.example.repo.StudentRepository;
+
+/**
+ * Service class that provides business logic related to {@link Writing} objects.
+ * It interacts with the {@link WritingRepository}, {@link StudentRepository}, {@link TeacherRepository} to perform operations
+ * like manipulating reading courses.
+ */
 public class WritingService {
     private WritingRepository writingRepo;
-
     private StudentRepository studentRepo;
     private TeacherRepository teacherRepo;
+
     public WritingService(WritingRepository writingRepo, StudentRepository studentRepo, TeacherRepository teacherRepo) {
         this.writingRepo = writingRepo;
         this.studentRepo = studentRepo;
         this.teacherRepo=teacherRepo;
     }
 
+    /**
+     * Enrolls a student in a specific writing course
+     * @param studentId refers to the student to be enrolled
+     * @param writingCourseId refers to the id of the course the student is being enrolled in
+     */
     public void enroll(Integer studentId, Integer writingCourseId) {
         Student student = studentRepo.getById(studentId);
         Writing course = writingRepo.getById(writingCourseId);
@@ -46,6 +48,12 @@ public class WritingService {
             studentRepo.save(student);
         }
     }
+
+    /**
+     * A student can practice writing by writing a text on a given topic. The answer is reviewed by a teacher
+     * @param studentId Refers to a student who practices writing
+     * @param courseId Refers to the course the student practices in
+     */
     public void practiceWriting(Integer studentId, Integer courseId) {
         Student student = studentRepo.getById(studentId);
         Writing course = writingRepo.getById(courseId);
@@ -86,17 +94,36 @@ public class WritingService {
         }
 
     }
+
+    /**
+     *
+     * @return all students
+     */
     public List<Student> getAllStudents() {
         return studentRepo.getObjects();
     }
+
+    /**
+     *
+     * @return all writing courses
+     */
     public List<Writing> getAvailableCourses() {
         return writingRepo.getObjects();
     }
 
+    /**
+     *
+     * @param courseId Refers to a specific writing course
+     * @return all students enrolled in a vocabulary course
+     */
     public List<Student> getEnrolledStudents(Integer courseId) {
         Writing course = writingRepo.getById(courseId);
         return course.getEnrolledStudents();
     }
+
+    /**
+     * Shows all students enrolled in at least one writing course
+     */
     public void showEnrolledWritingCourses(Integer studentId){
         Student student=studentRepo.getById(studentId);
         for (Course course:student.getCourses())
@@ -104,12 +131,24 @@ public class WritingService {
                 System.out.println(course);
     }
 
+    /**
+     * Show all writing courses of a teacher
+     * @param teacherId refers to a teacher
+     */
     public void viewCourseTaughtByTeacher(Integer teacherId){
         Teacher teacher=teacherRepo.getById(teacherId);
         for(Writing course:writingRepo.getObjects())
             if (course.getTeacher().getId()==teacherId)
                 System.out.println(course.getCourseName());
     }
+
+    /**
+     * A teacher can either create or update a writing course if the course already exists
+     * @param courseId refers to the course id that is to be updated or created
+     * @param teacherId refers to the teacher that updates the course
+     * @param courseName refers to the updated course name
+     * @param maxStudents refers to the maximum number of students that can enroll
+     */
     public void createOrUpdateWritingCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
         int found = 0;
         for (Writing course : writingRepo.getObjects()) {
@@ -123,6 +162,7 @@ public class WritingService {
             createWritingCourse(courseId, teacherId, courseName, maxStudents);
         }
     }
+
 
     public void createWritingCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
         Teacher teacher = teacherRepo.getById(teacherId);
@@ -141,6 +181,11 @@ public class WritingService {
         writingRepo.update(course, w1);
     }
 
+    /**
+     * A teacher can remove a writing course
+     * @param courseId Refers to a specific course
+     * @param teacherId Refers to the teacher who removes the course
+     */
     public void removeCourse(Integer courseId, Integer teacherId) {
         Writing course = writingRepo.getById(courseId);
         if (course.getTeacher().getId() == teacherId) {
@@ -150,7 +195,10 @@ public class WritingService {
         }
     }
 
-
+    /**
+     * Shows the teacher's feedback on a student's writing practice
+     * @param studentId identifies a student
+     */
     public void showFeedback(Integer studentId){
         Student student=studentRepo.getById(studentId);
         Map<Integer, Float> writingFeedback=new HashMap<>();
@@ -160,6 +208,12 @@ public class WritingService {
             System.out.println("Writing exam id: " + entry.getKey() + ", Score: " + entry.getValue());
         }
     }
+
+    /**
+     * A teacher can give a feedback for every student who practiced their writing course
+     * @param teacherId identifies a teacher
+     * @param courseId identifies a course
+     */
     public void gradeFeedback(Integer teacherId, Integer courseId){
         Teacher teacher= teacherRepo.getById(teacherId);
         Writing course= writingRepo.getById(courseId);
@@ -182,6 +236,11 @@ public class WritingService {
         System.out.println();
 }
 
+    /**
+     * Replaces the teacher of a writing course with another
+     * @param teacherId New teacher responsible for writing course
+     * @param courseId Exam whose teacher is being replaced
+     */
     public void changeTeacherAccessToWritingCourse(Integer courseId, Integer teacherId){
         Writing course=writingRepo.getById(courseId);
         Teacher teacher=teacherRepo.getById(teacherId);
@@ -193,6 +252,9 @@ public class WritingService {
         System.out.println(teacher);
     }
 
+    /**
+     * Shows all students enrolled in at least one writing course
+     */
     public void showStudentsEnrolledInWritingCourses(){
         for(Student student:studentRepo.getObjects())
             for(Course course:student.getCourses())

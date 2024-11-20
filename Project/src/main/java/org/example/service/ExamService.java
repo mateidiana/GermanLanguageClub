@@ -107,6 +107,10 @@ public class ExamService {
             System.out.println("\n\n\nYou are not enrolled in any reading course!");
     }
 
+    /**
+     *
+     * @param studentId Shows for a student all scores of all taken reading exams
+     */
     public void showReadingResults(Integer studentId){
         Student student = studentRepo.getById(studentId);
         Map<Integer, Float> readingExamResults=new HashMap<>();
@@ -117,6 +121,12 @@ public class ExamService {
         }
     }
 
+    /**
+     * A student must fill in the gaps of some sentences with the correct form, the right/ wrong answers affect the score
+     * The student is added to the examined students of this exam.
+     * @param studentId Identifies the student that takes a grammar exam
+     * @param examId Identifies the grammar exam that is being taken
+     */
     public void takeGrammarExam(Integer studentId, Integer examId){
         Student student = studentRepo.getById(studentId);
         Exam exam = examRepo.getById(examId);
@@ -133,10 +143,10 @@ public class ExamService {
                 break;}
         }
         if (foundCourse==0){
-            System.out.println("\n\n\nYou are not enrolled in this course!");}
+            System.out.println("\n\n\nYou are not enrolled in any grammar course!");}
         if(foundCourse==1){
             System.out.println("PLease fill in the gaps with the correct word:");
-            for(int i=1; i<10; i++){
+            for(int i=0; i<10; i++){
                 exercise=exercises[i];
                 System.out.println("Question "+i+": "+exercise[0]);
                 System.out.print("Answer: ");
@@ -145,7 +155,7 @@ public class ExamService {
                     correctAnswers++;
             }
             if(correctAnswers>5) System.out.println("You have passed this exam with the grade "+correctAnswers+"!");
-            else System.out.println("You have failed this exam with the grade "+correctAnswers+". Do better, loser");
+            else System.out.println("You have failed this exam with the grade "+correctAnswers);
             float grade=(float) correctAnswers;
             Map<Integer, Float> grammarExamResults=new HashMap<>();
             grammarExamResults=student.getGrammarResults();
@@ -164,6 +174,10 @@ public class ExamService {
         }
     }
 
+    /**
+     *
+     * @param studentId Shows for a student all scores of all taken grammar exams
+     */
     public void showGrammarResults(Integer studentId){
         Student student = studentRepo.getById(studentId);
         Map<Integer, Float> grammarExamResults=new HashMap<>();
@@ -174,6 +188,12 @@ public class ExamService {
         }
     }
 
+    /**
+     * A student must write the German translation for a few words in English, the right/ wrong answers affect the score
+     * The student is added to the examined students of this exam.
+     * @param studentId Identifies the student that takes a vocabulary exam
+     * @param examId Identifies the vocabulary exam that is being taken
+     */
     public void takeVocabExam(Integer studentId, Integer examId){
         Student student = studentRepo.getById(studentId);
         Exam exam = examRepo.getById(examId);
@@ -217,13 +237,28 @@ public class ExamService {
                     correctAnswers++;
             }
             if(correctAnswers>5) System.out.println("You have passed this practice test with the grade "+correctAnswers+"!");
-            else System.out.println("You have failed this practice test with the grade "+correctAnswers+". Do better, loser");
+            else System.out.println("You have failed this practice test with the grade "+correctAnswers);
             tempother=student.getVocabResults();
             tempother.put(exam.getId(),(float)correctAnswers);
             student.setVocabResults(tempother);
+
+            List<Student> examined;
+            examined=exam.getExaminedStudents();
+            examined.add(student);
+            exam.setExaminedStudents(examined);
+
+            Map<Student,Float> results;
+            results=exam.getResults();
+            results.put(student,(float)correctAnswers);
+            exam.setResults(results);
         }
 
     }
+
+    /**
+     *
+     * @param studentId Shows for a student all scores of all taken vocabulary exams
+     */
     public void showVocabResults(Integer studentId){
         Student student = studentRepo.getById(studentId);
         Map<Integer, Float> vocabExamResults=new HashMap<>();
@@ -234,6 +269,13 @@ public class ExamService {
         }
     }
 
+    /**
+     * A student must write a text on a specific topic. The text is then stored in a variable of the teacher class
+     * until the course's teacher grades it
+     * The student is added to the examined students of this exam.
+     * @param studentId Identifies the student that takes a writing exam
+     * @param examId Identifies the writing exam that is being taken
+     */
     public void takeWritingExam(Integer studentId, Integer examId){
         Student student = studentRepo.getById(studentId);
         Exam exam = examRepo.getById(examId);
@@ -269,9 +311,17 @@ public class ExamService {
             toBeGraded.put(student, answer.toString());
             exam.getTeacher().setGradeWriting(toBeGraded);
             System.out.println("Writing exercise submitted!!!!! Waiting for the grade");
+            List<Student> examined;
+            examined=exam.getExaminedStudents();
+            examined.add(student);
+            exam.setExaminedStudents(examined);
         }
     }
 
+    /**
+     *
+     * @param studentId Shows for a student all scores of all taken writing exams
+     */
     public void showWritingResults(Integer studentId){
         Student student = studentRepo.getById(studentId);
         Map<Integer, Float> writingExamResults=new HashMap<>();
@@ -282,7 +332,11 @@ public class ExamService {
         }
     }
 
-
+    /**
+     * Prompts the teacher to grade all students' writing exams for a specific writing exam
+     * @param teacherId Refers to the teacher that grades a writing exam
+     * @param examId Refers to the writing exam that was taken
+     */
     public void gradeWritings(Integer teacherId, Integer examId){
         Teacher teacher= teacherRepo.getById(teacherId);
         Exam exam= examRepo.getById(examId);
@@ -303,7 +357,9 @@ public class ExamService {
 
     }
 
-
+    /**
+     * Shows all reading exams available
+     */
     public void showAllReadingExams(){
         List<Exam> exams=examRepo.getObjects();
         for (Exam exam:exams)
@@ -311,6 +367,11 @@ public class ExamService {
                 System.out.println(exam);
     }
 
+    /**
+     *
+     * @param teacherId Refers to the teacher that can view all scores of the students who attended the teacher's
+     *                  reading exam
+     */
     public void showResultsOfAllStudentsOnReadingExam(Integer teacherId){
         for (Exam exam:examRepo.getObjects()){
             if (exam.getExamName().contains("Reading"))
@@ -323,7 +384,11 @@ public class ExamService {
         }
     }
 
-
+    /**
+     * Removes a reading exam
+     * @param teacherId Refers to the teacher that owns and can remove the exam
+     * @param examId Refers to a specific reading exam
+     */
     public void removeReadingExam(Integer teacherId, Integer examId) {
         Exam exam=examRepo.getById(examId);
         if (exam.getTeacher().getId()==teacherId){
@@ -334,6 +399,12 @@ public class ExamService {
         }
     }
 
+    /**
+     * Creates a reading exam if it does not already exist. If such an exam exists, it is updated
+     * @param examId Identifies if the exam already exists or needs to be created
+     * @param teacherId Identifies if the teacher has access to this exam
+     * @param examName Identifies the updated exam name
+     */
     public void createOrUpdateReadingExam(Integer examId, Integer teacherId, String examName){
         int found=0;
         for (Exam exam: examRepo.getObjects()){
@@ -349,7 +420,12 @@ public class ExamService {
         }
     }
 
-
+    /**
+     * Creates a new reading exam and stores it in the exam repository
+     * @param examId Refers to the id of the exam created
+     * @param teacherId Refers to the teacher who creates the exam
+     * @param examName Refers to the name given to an exam
+     */
     public void createReadingExam(Integer examId, Integer teacherId,String examName){
         Teacher teacher=teacherRepo.getById(teacherId);
         Exam e1=new Exam(examId,examName,teacher);
@@ -365,6 +441,12 @@ public class ExamService {
         examRepo.save(e1);
     }
 
+    /**
+     * Updates an old reading exam
+     * @param examId Refers to the updated id of the exam
+     * @param teacherId Refers to the updated teacher
+     * @param examName Refers to the updated exam name
+     */
     public void updateReadingExam(Integer examId, Integer teacherId,String examName){
         Exam exam=examRepo.getById(examId);
         Teacher teacher=teacherRepo.getById(teacherId);
@@ -381,6 +463,12 @@ public class ExamService {
         examRepo.update(exam,e1);
     }
 
+    /**
+     * Creates a writing exam if it does not already exist. If such an exam exists, it is updated
+     * @param examId Identifies if the exam already exists or needs to be created
+     * @param teacherId Identifies if the teacher has access to this exam
+     * @param examName Identifies the updated exam name
+     */
     public void createOrUpdateWritingExam(Integer examId, Integer teacherId, String examName) {
         int found = 0;
         for (Exam exam : examRepo.getObjects()) {
@@ -395,6 +483,12 @@ public class ExamService {
         }
     }
 
+    /**
+     * Creates a new writing exam and stores it in the exam repository
+     * @param examId Refers to the id of the exam created
+     * @param teacherId Refers to the teacher who creates the exam
+     * @param examName Refers to the name given to an exam
+     */
     public void createWritingExam(Integer examId, Integer teacherId, String examName) {
         Teacher teacher = teacherRepo.getById(teacherId);
         Exam e1 = new Exam(examId, examName, teacher);
@@ -403,6 +497,12 @@ public class ExamService {
         examRepo.save(e1);
     }
 
+    /**
+     * Updates an old writing exam
+     * @param examId Refers to the updated id of the exam
+     * @param teacherId Refers to the updated teacher
+     * @param examName Refers to the updated exam name
+     */
     public void updateWritingExam(Integer examId, Integer teacherId, String examName) {
         Exam exam = examRepo.getById(examId);
         Teacher teacher = teacherRepo.getById(teacherId);
@@ -412,6 +512,11 @@ public class ExamService {
         examRepo.update(exam, e1);
     }
 
+    /**
+     * Removes a writing exam
+     * @param teacherId Refers to the teacher that owns and can remove the exam
+     * @param examId Refers to a specific writing exam
+     */
     public void removeWritingExam(Integer teacherId, Integer examId) {
         Exam exam = examRepo.getById(examId);
         if (exam.getTeacher().getId() == teacherId) {
@@ -420,6 +525,12 @@ public class ExamService {
             System.out.println("You don't have access to this exam!");
         }
     }
+
+    /**
+     *
+     * @param teacherId Refers to the teacher that can view all scores of the students who attended the teacher's
+     *                  writing exam
+     */
     public void showResultsOfAllStudentsOnWritingExam(Integer teacherId) {
         for (Exam exam : examRepo.getObjects()) {
             if (exam.getExamName().contains("Writing")) {
@@ -438,7 +549,12 @@ public class ExamService {
         }
     }
 
-
+    /**
+     * Creates a grammar exam if it does not already exist. If such an exam exists, it is updated
+     * @param examId Identifies if the exam already exists or needs to be created
+     * @param teacherId Identifies if the teacher has access to this exam
+     * @param examName Identifies the updated exam name
+     */
     public void createOrUpdateGrammarExam(Integer examId, Integer teacherId, String examName) {
         int found = 0;
         for (Exam exam : examRepo.getObjects()) {
@@ -453,6 +569,12 @@ public class ExamService {
         }
     }
 
+    /**
+     * Creates a new grammar exam and stores it in the exam repository
+     * @param examId Refers to the id of the exam created
+     * @param teacherId Refers to the teacher who creates the exam
+     * @param examName Refers to the name given to an exam
+     */
     public void createGrammarExam(Integer examId, Integer teacherId, String examName) {
         Teacher teacher = teacherRepo.getById(teacherId);
         Exam e1 = new Exam(examId, examName, teacher);
@@ -472,6 +594,12 @@ public class ExamService {
         examRepo.save(e1);
     }
 
+    /**
+     * Updates an old vocabulary grammar exam
+     * @param examId Refers to the updated id of the exam
+     * @param teacherId Refers to the updated teacher
+     * @param examName Refers to the updated exam name
+     */
     public void updateGrammarExam(Integer examId, Integer teacherId, String examName) {
         Exam exam = examRepo.getById(examId);
         Teacher teacher = teacherRepo.getById(teacherId);
@@ -492,6 +620,11 @@ public class ExamService {
         examRepo.update(exam, e1);
     }
 
+    /**
+     * Removes a grammar exam
+     * @param teacherId Refers to the teacher that owns and can remove the exam
+     * @param examId Refers to a specific grammar exam
+     */
     public void removeGrammarExam(Integer teacherId, Integer examId) {
         Exam exam = examRepo.getById(examId);
         if (exam.getTeacher().getId() == teacherId) {
@@ -500,6 +633,13 @@ public class ExamService {
             System.out.println("You don't have access to this exam!");
         }
     }
+
+    /**
+     * Creates a vocabulary exam if it does not already exist. If such an exam exists, it is updated
+     * @param examId Identifies if the exam already exists or needs to be created
+     * @param teacherId Identifies if the teacher has access to this exam
+     * @param examName Identifies the updated exam name
+     */
     public void createOrUpdateVocabularyExam(Integer examId, Integer teacherId, String examName) {
         int found = 0;
         for (Exam exam : examRepo.getObjects()) {
@@ -514,6 +654,12 @@ public class ExamService {
         }
     }
 
+    /**
+     * Creates a new vocabulary exam and stores it in the exam repository
+     * @param examId Refers to the id of the exam created
+     * @param teacherId Refers to the teacher who creates the exam
+     * @param examName Refers to the name given to an exam
+     */
     public void createVocabularyExam(Integer examId, Integer teacherId, String examName) {
         Teacher teacher = teacherRepo.getById(teacherId);
         Exam e1 = new Exam(examId, examName, teacher);
@@ -533,6 +679,12 @@ public class ExamService {
         examRepo.save(e1);
     }
 
+    /**
+     * Updates an old vocabulary exam
+     * @param examId Refers to the updated id of the exam
+     * @param teacherId Refers to the updated teacher
+     * @param examName Refers to the updated exam name
+     */
     public void updateVocabularyExam(Integer examId, Integer teacherId, String examName) {
         Exam exam = examRepo.getById(examId);
         Teacher teacher = teacherRepo.getById(teacherId);
@@ -553,6 +705,11 @@ public class ExamService {
         examRepo.update(exam, e1);
     }
 
+    /**
+     * Removes a vocabulary exam
+     * @param teacherId Refers to the teacher that owns and can remove the exam
+     * @param examId Refers to a specific vocabulary exam
+     */
     public void removeVocabularyExam(Integer teacherId, Integer examId) {
         Exam exam = examRepo.getById(examId);
         if (exam.getTeacher().getId() == teacherId) {
@@ -562,6 +719,11 @@ public class ExamService {
         }
     }
 
+    /**
+     *
+     * @param teacherId Refers to the teacher that can view all scores of the students who attended the teacher's
+     *                  grammar exam
+     */
     public void showResultsOfAllStudentsOnGrammarExam(Integer teacherId) {
         for (Exam exam : examRepo.getObjects()) {
             if (exam.getExamName().contains("Grammar")) {
@@ -580,6 +742,11 @@ public class ExamService {
         }
     }
 
+    /**
+     *
+     * @param teacherId Refers to the teacher that can view all scores of the students who attended the teacher's
+     *                  vocabulary exam
+     */
     public void showResultsOfAllStudentsOnVocabularyExam(Integer teacherId) {
         for (Exam exam : examRepo.getObjects()) {
             if (exam.getExamName().contains("Vocabulary")) {
@@ -598,6 +765,11 @@ public class ExamService {
         }
     }
 
+    /**
+     * Replaces the teacher of an exam with another
+     * @param teacherId New teacher responsible for exam
+     * @param examId Exam whose teacher is being replaced
+     */
     public void changeTeacherAccessToExam(Integer teacherId, Integer examId) {
         Exam exam = examRepo.getById(examId);
         Teacher teacher = teacherRepo.getById(teacherId);

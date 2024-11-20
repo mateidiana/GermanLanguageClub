@@ -2,7 +2,6 @@ package org.example.service;
 
 import java.util.Scanner;
 import java.util.List;
-import java.util.Random;
 
 import org.example.model.*;
 import org.example.repo.GrammarRepository;
@@ -10,16 +9,28 @@ import org.example.repo.StudentRepository;
 import org.example.model.Student;
 import org.example.repo.TeacherRepository;
 
+/**
+ * Service class that provides business logic related to {@link Grammar} objects.
+ * It interacts with the {@link GrammarRepository}, {@link StudentRepository}, {@link TeacherRepository} to perform operations
+ * like manipulating grammar courses.
+ */
 public class GrammarService {
     private GrammarRepository grammarRepo;
-
     private StudentRepository studentRepo;
     private TeacherRepository teacherRepo;
+
     public GrammarService(GrammarRepository grammarRepo, StudentRepository studentRepo, TeacherRepository teacherRepo) {
         this.grammarRepo = grammarRepo;
         this.studentRepo = studentRepo;
         this.teacherRepo=teacherRepo;
     }
+
+    /**
+     * Updates a student's past mistakes in form of a matrix
+     * @param originalMatrix Refers to a student's past mistakes
+     * @param newRow Refers to the latest exercise added
+     * @return updated past mistakes
+     */
     public static String[][] appendRow(String[][] originalMatrix, String[] newRow) {
         if (originalMatrix==null||originalMatrix.length==0)
         {
@@ -45,6 +56,12 @@ public class GrammarService {
 
         return newMatrix;
     }
+
+    /**
+     * Enrolls a student in a specific grammar course
+     * @param studentId refers to the student to be enrolled
+     * @param grammarCourseId refers to the id of the course the student is being enrolled in
+     */
     public void enroll(Integer studentId, Integer grammarCourseId) {
         Student student = studentRepo.getById(studentId);
         Grammar course = grammarRepo.getById(grammarCourseId);
@@ -57,6 +74,12 @@ public class GrammarService {
             studentRepo.save(student);
         }
     }
+
+    /**
+     * A student can practice past mistakes
+     * @param studentId Refers to a specific student
+     * @param courseId Refers to the course a student made mistakes in
+     */
     public void reviewPastMistakes(Integer studentId, Integer courseId) {
         Student student = studentRepo.getById(studentId);
         Grammar course = grammarRepo.getById(courseId);
@@ -86,6 +109,13 @@ public class GrammarService {
             student.setPastGrammarMistakes(newMistakes);
         }
     }
+
+    /**
+     * A student can practice German grammar by completing sentences with the correct form. Wrong answers
+     * can be reviewed later
+     * @param studentId Refers to a student who practices grammar
+     * @param courseId Refers to the course the student practices in
+     */
     public void practiceGrammar(Integer studentId, Integer courseId) {
         Student student = studentRepo.getById(studentId);
         Grammar course = grammarRepo.getById(courseId);
@@ -126,18 +156,37 @@ public class GrammarService {
 
     }
 
+    /**
+     *
+     * @return all students
+     */
     public List<Student> getAllStudents() {
         return studentRepo.getObjects();
     }
+
+    /**
+     *
+     * @return all grammar courses
+     */
     public List<Grammar> getAvailableCourses() {
         return grammarRepo.getObjects();
     }
 
+    /**
+     *
+     * @param courseId Refers to a specific grammar course
+     * @return all students enrolled in a grammar course
+     */
     public List<Student> getEnrolledStudents(Integer courseId) {
         Grammar course = grammarRepo.getById(courseId);
         return course.getEnrolledStudents();
     }
 
+    /**
+     * A teacher can remove a grammar course
+     * @param courseId Refers to a specific course
+     * @param teacherId Refers to the teacher who removes the course
+     */
     public void removeCourse(Integer courseId, Integer teacherId) {
         Grammar course = grammarRepo.getById(courseId);
         if (course.getTeacher().getId() == teacherId) {
@@ -146,6 +195,11 @@ public class GrammarService {
             System.out.println("You don't have access to this course!");
         }
     }
+
+    /**
+     * A teacher can view the courses taught by them
+     * @param teacherId refers to a specific teacher
+     */
     public void viewCourseTaughtByTeacher(Integer teacherId) {
         Teacher teacher = teacherRepo.getById(teacherId);
         for (Grammar course : grammarRepo.getObjects()) {
@@ -154,6 +208,14 @@ public class GrammarService {
             }
         }
     }
+
+    /**
+     * A teacher can either create or update a grammar course if the course already exists
+     * @param courseId refers to the course id that is to be updated or created
+     * @param teacherId refers to the teacher that updates the course
+     * @param courseName refers to the updated course name
+     * @param maxStudents refers to the maximum number of students that can enroll
+     */
     public void createOrUpdateGrammarCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
         int found = 0;
         for (Grammar course : grammarRepo.getObjects()) {
@@ -207,12 +269,20 @@ public class GrammarService {
         grammarRepo.update(course, g1);
     }
 
+    /**
+     * Replaces the teacher of a grammar course with another
+     * @param teacherId New teacher responsible for grammar course
+     * @param courseId Exam whose teacher is being replaced
+     */
     public void changeTeacherAccessToGrammarCourse(Integer courseId, Integer teacherId){
         Grammar course=grammarRepo.getById(courseId);
         Teacher teacher=teacherRepo.getById(teacherId);
         course.setTeacher(teacher);
     }
 
+    /**
+     * Shows all students enrolled in grammar courses
+     */
     public void showStudentsEnrolledInGrammarCourses(){
         for(Student student:studentRepo.getObjects())
             for(Course course:student.getCourses())
@@ -222,5 +292,7 @@ public class GrammarService {
                     break;
                 }
     }
+
+
 
 }

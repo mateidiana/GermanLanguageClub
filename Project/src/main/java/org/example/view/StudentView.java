@@ -212,13 +212,16 @@ public class StudentView {
                 readingController.enrollStudent(readStudentId(scanner),readCourseId(scanner));
                 break;
             case "2":
-                System.out.println("To be implemented2");
+                writingController.viewCourses();
+                writingController.enrollStudent(readStudentId(scanner),readCourseId(scanner));
                 break;
             case "3":
-                System.out.println("To be implemented3");
+                grammarController.viewCourses();
+                grammarController.enrollStudent(readStudentId(scanner),readCourseId(scanner));
                 break;
             case "4":
-                System.out.println("To be implemented4");
+                vocabController.viewCourses();
+                vocabController.enrollStudent(readStudentId(scanner),readCourseId(scanner));
                 break;
             default:
         }

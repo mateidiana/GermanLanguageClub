@@ -3,14 +3,17 @@ import java.util.Scanner;
 import java.util.List;
 import java.util.Random;
 
-import org.example.model.Reading;
-import org.example.model.Course;
-import org.example.model.Student;
-import org.example.model.Teacher;
+import org.example.model.*;
+import org.example.repo.GrammarRepository;
 import org.example.repo.ReadingRepository;
 import org.example.repo.StudentRepository;
 import org.example.repo.TeacherRepository;
 
+/**
+ * Service class that provides business logic related to {@link Reading} objects.
+ * It interacts with the {@link ReadingRepository}, {@link StudentRepository}, {@link TeacherRepository} to perform operations
+ * like manipulating reading courses.
+ */
 public class ReadingService {
 
     private ReadingRepository readingRepo;
@@ -25,6 +28,11 @@ public class ReadingService {
         this.teacherRepo = teacherRepo;
     }
 
+    /**
+     * Enrolls a student in a specific reading course
+     * @param studentId refers to the student to be enrolled
+     * @param readingCourseId refers to the id of the course the student is being enrolled in
+     */
     public void enroll(Integer studentId, Integer readingCourseId) {
         int alreadyEnrolled=0;
         Student student = studentRepo.getById(studentId);
@@ -46,6 +54,12 @@ public class ReadingService {
 
     }
 
+    /**
+     * Updates a student's past mistakes in form of a matrix
+     * @param originalMatrix Refers to a student's past mistakes
+     * @param newRow Refers to the latest exercise added
+     * @return updated past mistakes
+     */
     public static String[][] appendRow(String[][] originalMatrix, String[] newRow) {
         if (originalMatrix==null||originalMatrix.length==0)
         {
@@ -72,6 +86,12 @@ public class ReadingService {
         return newMatrix;
     }
 
+    /**
+     * A student can practice German reading by answering text related questions. Wrong answers
+     * can be reviewed later
+     * @param studentId Refers to a student who practices reading
+     * @param courseId Refers to the course the student practices in
+     */
     public void practiceReading(Integer studentId, Integer courseId){
         System.out.println("\n\nLese den folgenden Text durch und beantworte die Fragen\n\n");
         Student student = studentRepo.getById(studentId);
@@ -130,7 +150,10 @@ public class ReadingService {
 
     }
 
-
+    /**
+     * A student can practice past reading mistakes
+     * @param studentId Refers to a specific student
+     */
     public void reviewPastReadingMistakes(Integer studentId){
         Scanner scanner = new Scanner(System.in);
         Student student = studentRepo.getById(studentId);
@@ -171,15 +194,28 @@ public class ReadingService {
         System.out.println("\n\n\nReview complete!\n\n\n");
     }
 
+    /**
+     *
+     * @return all reading courses
+     */
     public List<Reading> getAvailableCourses() {
         return readingRepo.getObjects();
     }
 
+    /**
+     *
+     * @param courseId Refers to a specific reading course
+     * @return all students enrolled in a reading course
+     */
     public List<Student> getEnrolledStudents(Integer courseId) {
         Reading course = readingRepo.getById(courseId);
         return course.getEnrolledStudents();
     }
 
+    /**
+     * Shows all reading courses a student is enrolled in
+     * @param studentId identifies a student
+     */
     public void showEnrolledReadingCourses(Integer studentId){
         Student student = studentRepo.getById(studentId);
         for (Course course:student.getCourses())
@@ -187,6 +223,9 @@ public class ReadingService {
                 System.out.println(course);
     }
 
+    /**
+     * Shows all students enrolled in at least one reading course
+     */
     public void showStudentsEnrolledInReadingCourses(){
         for(Student student:studentRepo.getObjects())
             for(Course course:student.getCourses())
@@ -197,6 +236,11 @@ public class ReadingService {
                 }
     }
 
+    /**
+     * A teacher can remove a reading course
+     * @param courseId Refers to a specific course
+     * @param teacherId Refers to the teacher who removes the course
+     */
     public void removeCourse(Integer courseId, Integer teacherId) {
         Reading course=readingRepo.getById(courseId);
         if (course.getTeacher().getId()==teacherId){
@@ -207,6 +251,14 @@ public class ReadingService {
         }
     }
 
+    /**
+     * A teacher can either create or update a reading course if the course already exists
+     * @param courseId refers to the course id that is to be updated or created
+     * @param teacherId refers to the teacher that updates the course
+     * @param courseName refers to the updated course name
+     * @param maxStudents refers to the maximum number of students that can enroll
+     * @param exerciseSet refers to the set of exercises the new course obtains
+     */
     public void createOrUpdateReadingCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents, Integer exerciseSet){
         int found=0;
         for (Reading course: readingRepo.getObjects()){
@@ -403,12 +455,21 @@ public class ReadingService {
         readingRepo.update(course,r1);
     }
 
+    /**
+     * Replaces the teacher of a reading course with another
+     * @param teacherId New teacher responsible for reading course
+     * @param courseId Exam whose teacher is being replaced
+     */
     public void changeTeacherAccessToCourse(Integer courseId, Integer teacherId){
         Reading course=readingRepo.getById(courseId);
         Teacher teacher=teacherRepo.getById(teacherId);
         course.setTeacher(teacher);
     }
 
+    /**
+     * Show all reading courses of a teacher
+     * @param teacherId refers to a teacher
+     */
     public void viewCourseTaughtByTeacher(Integer teacherId){
         Teacher teacher=teacherRepo.getById(teacherId);
         for(Reading course:readingRepo.getObjects())
@@ -416,6 +477,11 @@ public class ReadingService {
                 System.out.println(course.getCourseName());
     }
 
+    /**
+     * Shows all mandatory books for a reading course
+     * @param studentId identifies a student
+     * @param courseId identifies a reading course
+     */
     public void viewMandatoryBooks(Integer studentId, Integer courseId){
         Reading course=readingRepo.getById(courseId);
         for (String book:course.getMandatoryBooks()){
@@ -423,10 +489,20 @@ public class ReadingService {
         }
     }
 
+    /**
+     *
+     * @return all students
+     */
     public List<Student> getAllStudents() {
         return studentRepo.getObjects();
     }
 
+    /**
+     * Adds a new mandatory books for a reading course
+     * @param teacherId identifies a teacher
+     * @param courseId identifies a course
+     * @param book refers to a book title
+     */
     public void addMandatoryBook(Integer teacherId, Integer courseId,String book){
         Reading course=readingRepo.getById(courseId);
         if(course.getTeacher().getId()==teacherId)

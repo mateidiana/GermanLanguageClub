@@ -6,7 +6,6 @@ import org.example.repo.TeacherRepository;
 /**
  * Service class that provides business logic related to {@link Teacher} objects.
  * It interacts with the {@link TeacherRepository} to perform operations like creating a new teacher.
- *
  * This class handles the logic for ensuring that a teacher ID is unique before creating and saving the teacher.
  */
 public class TeacherService {

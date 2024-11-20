@@ -5,13 +5,18 @@ import java.util.*;
 
 import org.example.model.*;
 import org.example.model.Vocabulary;
+import org.example.repo.ReadingRepository;
 import org.example.repo.TeacherRepository;
 import org.example.repo.VocabRepository;
-import org.example.repo.VocabRepository;
 import org.example.repo.StudentRepository;
+
+/**
+ * Service class that provides business logic related to {@link Vocabulary} objects.
+ * It interacts with the {@link VocabRepository}, {@link StudentRepository}, {@link TeacherRepository} to perform operations
+ * like manipulating reading courses.
+ */
 public class VocabService {
     private VocabRepository vocabRepo;
-
     private StudentRepository studentRepo;
     private TeacherRepository teacherRepo;
     public VocabService(VocabRepository vocabRepo, StudentRepository studentRepo, TeacherRepository teacherRepo ) {
@@ -20,6 +25,11 @@ public class VocabService {
         this.teacherRepo= teacherRepo;
     }
 
+    /**
+     * Enrolls a student in a specific vocabulary course
+     * @param studentId refers to the student to be enrolled
+     * @param vocabCourseId refers to the id of the course the student is being enrolled in
+     */
     public void enroll(Integer studentId, Integer vocabCourseId) {
         Student student = studentRepo.getById(studentId);
         Vocabulary course = vocabRepo.getById(vocabCourseId);
@@ -33,6 +43,12 @@ public class VocabService {
         }
     }
 
+    /**
+     * A student can practice German vocabulary by writing the meaning of words in English. Wrong answers
+     * can be reviewed later
+     * @param studentId Refers to a student who practices vocabulary
+     * @param courseId Refers to the course the student practices in
+     */
     public void practiceVocabulary(Integer studentId, Integer courseId) {
         Student student = studentRepo.getById(studentId);
         Vocabulary course = vocabRepo.getById(courseId);
@@ -87,6 +103,11 @@ public class VocabService {
 
 
     }
+
+    /**
+     * A student can practice past vocabulary mistakes
+     * @param studentId Refers to a specific student
+     */
     public void reviewPastMistakes(Integer studentId, Integer courseId) {
         Student student = studentRepo.getById(studentId);
         Vocabulary course = vocabRepo.getById(courseId);
@@ -121,23 +142,40 @@ public class VocabService {
         }
     }
 
+    /**
+     *
+     * @return all vocabulary courses
+     */
     public List<Vocabulary> getAvailableCourses() {
         return vocabRepo.getObjects();
     }
 
+    /**
+     *
+     * @param courseId Refers to a specific vocabulary course
+     * @return all students enrolled in a vocabulary course
+     */
     public List<Student> getEnrolledStudents(Integer courseId) {
         Vocabulary course = vocabRepo.getById(courseId);
         return course.getEnrolledStudents();
     }
 
     public void removeCourse(Integer courseId) {
-        //this doesnt do jackshit yet
+        //this doesn't do anything yet
     }
 
+    /**
+     *
+     * @return all students
+     */
     public List<Student> getAllStudents() {
         return studentRepo.getObjects();
     }
 
+    /**
+     * Show all vocabulary courses of a teacher
+     * @param teacherId refers to a teacher
+     */
     public void viewCourseTaughtByTeacher(Integer teacherId) {
         Teacher teacher = teacherRepo.getById(teacherId);
         for (Vocabulary course : vocabRepo.getObjects()) {
@@ -146,6 +184,14 @@ public class VocabService {
             }
         }
     }
+
+    /**
+     * A teacher can either create or update a vocabulary course if the course already exists
+     * @param courseId refers to the course id that is to be updated or created
+     * @param teacherId refers to the teacher that updates the course
+     * @param courseName refers to the updated course name
+     * @param maxStudents refers to the maximum number of students that can enroll
+     */
     public void createOrUpdateVocabularyCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
         int found = 0;
         for (Vocabulary course : vocabRepo.getObjects()) {
@@ -199,6 +245,11 @@ public class VocabService {
         vocabRepo.update(course, v1);
     }
 
+    /**
+     * A teacher can remove a vocabulary course
+     * @param courseId Refers to a specific course
+     * @param teacherId Refers to the teacher who removes the course
+     */
     public void removeVocabularyCourse(Integer courseId, Integer teacherId) {
         Vocabulary course = vocabRepo.getById(courseId);
         if (course.getTeacher().getId() == teacherId) {
@@ -208,12 +259,20 @@ public class VocabService {
         }
     }
 
+    /**
+     * Replaces the teacher of a vocabulary course with another
+     * @param teacherId New teacher responsible for vocabulary course
+     * @param courseId Exam whose teacher is being replaced
+     */
     public void changeTeacherAccessToVocabCourse(Integer courseId, Integer teacherId){
         Vocabulary course=vocabRepo.getById(courseId);
         Teacher teacher=teacherRepo.getById(teacherId);
         course.setTeacher(teacher);
     }
 
+    /**
+     * Shows all students enrolled in at least one vocabulary course
+     */
     public void showStudentsEnrolledInVocabCourses(){
         for(Student student:studentRepo.getObjects())
             for(Course course:student.getCourses())
