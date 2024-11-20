@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="57db70ce-aec2-46e7-aaeb-4dce767efef3" name="Changes" comment="modified uml" />
+    <list default="true" id="57db70ce-aec2-46e7-aaeb-4dce767efef3" name="Changes" comment="modified readme" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -31,14 +31,14 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master",
-    "last_opened_file_path": "D:/Diana/Anul II/Semestrul I/MAP/GermanLanguageClub"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Diana/Anul II/Semestrul I/MAP/GermanLanguageClub&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration default="true" type="JetRunConfigurationType">
       <module name="GermanLanguageClub" />
@@ -119,14 +119,31 @@
       <option name="project" value="LOCAL" />
       <updated>1731170337456</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="modified uml, added teacher view">
+      <option name="closed" value="true" />
+      <created>1732094895043</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1732094895043</updated>
+    </task>
+    <task id="LOCAL-00009" summary="modified readme">
+      <option name="closed" value="true" />
+      <created>1732095009574</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1732095009574</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="first commit" />
-    <MESSAGE value="modified readme" />
     <MESSAGE value="added uml" />
     <MESSAGE value="modified uml" />
-    <option name="LAST_COMMIT_MESSAGE" value="modified uml" />
+    <MESSAGE value="modified uml, added teacher view" />
+    <MESSAGE value="modified readme" />
+    <option name="LAST_COMMIT_MESSAGE" value="modified readme" />
   </component>
 </project>
