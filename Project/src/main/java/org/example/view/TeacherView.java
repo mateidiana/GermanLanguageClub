@@ -134,7 +134,7 @@ public class TeacherView {
                     examController.gradeExams(readTeacherId(scanner), readExamId(scanner));
                     break;
                 case "9":
-                    examController.gradePractice(readTeacherId(scanner), readExamId(scanner));
+                    writingController.gradePractice(readTeacherId(scanner), readCourseId(scanner));
                     break;
                 default:
             }

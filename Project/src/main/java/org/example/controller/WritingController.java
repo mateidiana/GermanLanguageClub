@@ -37,13 +37,12 @@ public class WritingController {
         System.out.println(output);
     }
 
-    public void deleteCourse(Integer courseId) {
-        writingService.removeCourse(courseId);
-        System.out.println("Removed course " + courseId);
-    }
 
     public void viewCourseTaughtByTeacher(Integer teacherId){
         writingService.viewCourseTaughtByTeacher(teacherId);
+    }
+    public void gradePractice(Integer teacherId, Integer courseId){
+        writingService.gradeFeedback(teacherId, courseId);
     }
 
     public void createOrUpdateWritingCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
@@ -57,4 +56,8 @@ public class WritingController {
     public void getFeedback(Integer studentId){
         writingService.showFeedback(studentId);
     }
+
+    public void changeTeacherAccessToWritingCourse(Integer courseId, Integer teacherId){writingService.changeTeacherAccessToWritingCourse(courseId,teacherId);}
+
+    public void getTeacherById(Integer teacherId){writingService.getTeacherById(teacherId);}
 }

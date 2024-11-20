@@ -14,9 +14,10 @@ public class VocabService {
 
     private StudentRepository studentRepo;
     private TeacherRepository teacherRepo;
-    public VocabService(VocabRepository vocabRepo, StudentRepository studentRepo) {
+    public VocabService(VocabRepository vocabRepo, StudentRepository studentRepo, TeacherRepository teacherRepo ) {
         this.vocabRepo = vocabRepo;
         this.studentRepo = studentRepo;
+        this.teacherRepo= teacherRepo;
     }
 
     public void enroll(Integer studentId, Integer vocabCourseId) {

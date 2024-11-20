@@ -61,9 +61,6 @@ public class ExamController {
     public void gradeExams(Integer teacherId, Integer examId){
         examService.gradeWritings(teacherId, examId);
     }
-    public void gradePractice(Integer teacherId, Integer examId){
-        examService.gradeFeedback(teacherId, examId);
-    }
 
     public void createOrUpdateGrammarExam(Integer examId, Integer teacherId, String courseName) {
         examService.createOrUpdateGrammarExam(examId, teacherId, courseName);

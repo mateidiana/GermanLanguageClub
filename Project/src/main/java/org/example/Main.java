@@ -29,7 +29,7 @@ public class Main {
         ExamRepository examRepo = createInMemoryExamRepository();
         WritingRepository writingRepo= createInMemoryWritingRepository();
 
-        GrammarService grammarService= new GrammarService(grammarRepo, studentRepo);
+        GrammarService grammarService= new GrammarService(grammarRepo, studentRepo, teacherRepo);
         GrammarController grammarController = new GrammarController(grammarService);
 
         StudentService studentService = new StudentService(studentRepo);
@@ -41,13 +41,13 @@ public class Main {
         ReadingService readingService = new ReadingService(readingRepo, studentRepo, teacherRepo);
         ReadingController readingController = new ReadingController(readingService);
 
-        ExamService examService = new ExamService(examRepo,studentRepo);
+        ExamService examService = new ExamService(examRepo,studentRepo, teacherRepo);
         ExamController examController = new ExamController(examService);
 
-        VocabService vocabService= new VocabService(vocabRepo, studentRepo);
+        VocabService vocabService= new VocabService(vocabRepo, studentRepo, teacherRepo);
         VocabController vocabController = new VocabController(vocabService);
 
-        WritingService writingService = new WritingService(writingRepo, studentRepo);
+        WritingService writingService = new WritingService(writingRepo, studentRepo,teacherRepo);
         WritingController writingController = new WritingController(writingService);
 
         readingController.changeTeacherAccess(1,1);
@@ -57,6 +57,9 @@ public class Main {
         readingController.changeTeacherAccess(5,1);
         readingController.changeTeacherAccess(6,1);
         readingController.enrollStudent(1,6);
+
+        writingController.changeTeacherAccessToWritingCourse(30,1);
+        writingController.getTeacherById(1);
 
         grammarController.enrollStudent(1,10);
         vocabController.enrollStudent(1, 20);
@@ -78,6 +81,11 @@ public class Main {
     private static TeacherRepository createInMemoryTeacherRepository() {
         TeacherRepository teacherRepo = new TeacherRepository();
         IntStream.range(1, 6).forEach(i -> teacherRepo.save(new Teacher("Teacher" + i, i)));
+        Teacher teacher=teacherRepo.getById(1);
+        System.out.println(teacher.getId());
+
+        Teacher teacher1=new Teacher("teacher111",111);
+        teacherRepo.save(teacher1);
         return teacherRepo;
     }
 
@@ -287,12 +295,12 @@ public class Main {
 
     private static WritingRepository createInMemoryWritingRepository() {
         WritingRepository writingRepo=new WritingRepository();
-        Writing w1=new Writing(30,"Reading1",new Teacher("Cristian Matei", 2), 69);
+        Writing w1=new Writing(30,"Writing1",new Teacher("Cristian Matei", 111), 69);
         Writing w2=new Writing(31,"Reading2",new Teacher("Cristian Matei", 2), 69);
         Writing w3=new Writing(32,"Reading3",new Teacher("Cristian Matei", 2), 69);
         Writing w4=new Writing(33,"Reading4",new Teacher("Cristian Matei", 2), 69);
         Writing w5=new Writing(34,"Reading5",new Teacher("Cristian Matei", 2), 69);
-        String requirement = "Write a text about how amazing our leader Cristian Matei is and about how many hoes he has. :3";
+        String requirement = "Schreibe einen Text über den Frühling. :3";
 
         w1.setRequirement(requirement);
         writingRepo.save(w1);

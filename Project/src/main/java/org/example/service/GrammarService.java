@@ -15,9 +15,10 @@ public class GrammarService {
 
     private StudentRepository studentRepo;
     private TeacherRepository teacherRepo;
-    public GrammarService(GrammarRepository grammarRepo, StudentRepository studentRepo) {
+    public GrammarService(GrammarRepository grammarRepo, StudentRepository studentRepo, TeacherRepository teacherRepo) {
         this.grammarRepo = grammarRepo;
         this.studentRepo = studentRepo;
+        this.teacherRepo=teacherRepo;
     }
     public static String[][] appendRow(String[][] originalMatrix, String[] newRow) {
         if (originalMatrix==null||originalMatrix.length==0)

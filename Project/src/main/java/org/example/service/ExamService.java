@@ -14,9 +14,10 @@ public class ExamService {
     private StudentRepository studentRepo;
     private TeacherRepository teacherRepo;
 
-    public ExamService(ExamRepository examRepo, StudentRepository studentRepo) {
+    public ExamService(ExamRepository examRepo, StudentRepository studentRepo, TeacherRepository teacherRepo) {
         this.examRepo = examRepo;
         this.studentRepo = studentRepo;
+        this.teacherRepo=teacherRepo;
     }
 
     public void takeReadingExam(Integer studentId, Integer examId){
@@ -289,25 +290,6 @@ public class ExamService {
 
     }
 
-
-    public void gradeFeedback(Integer teacherId, Integer courseId){
-        Teacher teacher= teacherRepo.getById(teacherId);
-        Scanner scanner=new Scanner(System.in);
-        Map<Student, String> toGrade=teacher.getFeedbackWriting();
-        while (!toGrade.isEmpty()) {
-            Map.Entry<Student, String> entry = toGrade.entrySet().iterator().next();
-            Student key = entry.getKey();
-            String value = entry.getValue();
-            System.out.println(value);
-            System.out.println("Input grade: ");
-            float grade=scanner.nextFloat();
-            Map<Integer, Float> results=key.getWritingFeedback();
-            results.put(courseId, grade);
-            key.setWritingFeedback(results);
-            toGrade.remove(key);
-        }
-
-    }
 
     public Map<Integer,Float> showReadingResults1(Integer studentId){
         Student student = studentRepo.getById(studentId);

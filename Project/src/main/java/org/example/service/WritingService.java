@@ -28,9 +28,10 @@ public class WritingService {
 
     private StudentRepository studentRepo;
     private TeacherRepository teacherRepo;
-    public WritingService(WritingRepository writingRepo, StudentRepository studentRepo) {
+    public WritingService(WritingRepository writingRepo, StudentRepository studentRepo, TeacherRepository teacherRepo) {
         this.writingRepo = writingRepo;
         this.studentRepo = studentRepo;
+        this.teacherRepo=teacherRepo;
     }
 
     public void enroll(Integer studentId, Integer writingCourseId) {
@@ -80,6 +81,7 @@ public class WritingService {
             Map <Student, String> toBeGraded=course.getTeacher().getGradeWriting();
             toBeGraded.put(student, answer.toString());
             course.getTeacher().setGradeWriting(toBeGraded);
+            System.out.println(toBeGraded);
             System.out.println("Writing exercise submitted!!!!!");
         }
 
@@ -154,7 +156,37 @@ public class WritingService {
             System.out.println("Writing exam id: " + entry.getKey() + ", Score: " + entry.getValue());
         }
     }
-    public void removeCourse(Integer courseId) {
-        //this doesnt do jackshit yet
-    }
+    public void gradeFeedback(Integer teacherId, Integer courseId){
+        Teacher teacher= teacherRepo.getById(teacherId);
+        Writing course= writingRepo.getById(courseId);
+        Scanner scanner=new Scanner(System.in);
+        Map<Student, String> toGrade=teacher.getFeedbackWriting();
+        System.out.println(toGrade);
+        while (!toGrade.isEmpty()) {
+            Map.Entry<Student, String> entry = toGrade.entrySet().iterator().next();
+            Student key = entry.getKey();
+            String value = entry.getValue();
+            System.out.println(value);
+            System.out.println("Input grade: ");
+            float grade=scanner.nextFloat();
+            Map<Integer, Float> results=key.getWritingFeedback();
+            results.put(courseId, grade);
+            key.setWritingFeedback(results);
+            toGrade.remove(key);
+        }
 }
+
+    public void changeTeacherAccessToWritingCourse(Integer courseId, Integer teacherId){
+        Writing course=writingRepo.getById(courseId);
+        Teacher teacher=teacherRepo.getById(teacherId);
+        course.setTeacher(teacher);
+    }
+
+    public void getTeacherById(Integer teacherId){
+        Teacher teacher=teacherRepo.getById(teacherId);
+        System.out.println(teacher);
+    }
+
+}
+
+
