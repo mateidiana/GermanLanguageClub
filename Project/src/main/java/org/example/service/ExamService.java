@@ -273,8 +273,9 @@ public class ExamService {
 
     public void gradeWritings(Integer teacherId, Integer examId){
         Teacher teacher= teacherRepo.getById(teacherId);
+        Exam exam= examRepo.getById(examId);
         Scanner scanner=new Scanner(System.in);
-        Map<Student, String> toGrade=teacher.getGradeWriting();
+        Map<Student, String> toGrade=exam.getTeacher().getGradeWriting();
         while (!toGrade.isEmpty()) {
             Map.Entry<Student, String> entry = toGrade.entrySet().iterator().next();
             Student key = entry.getKey();
@@ -513,4 +514,14 @@ public class ExamService {
             }
         }
     }
+
+    public void changeTeacherAccessToExam(Integer teacherId, Integer examId) {
+        Exam exam = examRepo.getById(examId);
+        System.out.println(exam.getTeacher());
+        Teacher teacher = teacherRepo.getById(teacherId);
+        System.out.println(teacher);
+        exam.setTeacher(teacher);
+        System.out.println(exam.getTeacher());
+    }
+
 }

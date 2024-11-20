@@ -59,7 +59,8 @@ public class Main {
         readingController.enrollStudent(1,6);
 
         writingController.changeTeacherAccessToWritingCourse(30,1);
-        writingController.getTeacherById(1);
+        //writingController.getTeacherById(1);
+        examController.changeTeacherAccessToExam(1, 4);
 
         grammarController.enrollStudent(1,10);
         vocabController.enrollStudent(1, 20);
@@ -82,7 +83,7 @@ public class Main {
         TeacherRepository teacherRepo = new TeacherRepository();
         IntStream.range(1, 6).forEach(i -> teacherRepo.save(new Teacher("Teacher" + i, i)));
         Teacher teacher=teacherRepo.getById(1);
-        System.out.println(teacher.getId());
+        //System.out.println(teacher.getId());
 
         Teacher teacher1=new Teacher("teacher111",111);
         teacherRepo.save(teacher1);
@@ -321,10 +322,10 @@ public class Main {
     }
     private static ExamRepository createInMemoryExamRepository(){
         ExamRepository examRepo=new ExamRepository();
-        Exam exam1=new Exam(1,"ReadingExam1",new Teacher("Teacher1",1));
-        Exam exam2=new Exam(2,"GrammarExam1",new Teacher("Teacher1",1));
-        Exam exam3=new Exam(3,"VocabularyExam1",new Teacher("Teacher1",1));
-        Exam exam4=new Exam(4,"WritingExam1",new Teacher("Cristian Matei",1));
+        Exam exam1=new Exam(1,"ReadingExam1",new Teacher("Sacsrea",2));
+        Exam exam2=new Exam(2,"GrammarExam1",new Teacher("Birigite",2));
+        Exam exam3=new Exam(3,"VocabularyExam1",new Teacher("Monica",2));
+        Exam exam4=new Exam(4,"WritingExam1",new Teacher("Cristian Matei",2));
         String[][] exercises = {
 
                 {"Du brauchst Hilfe.", "Du _ Hilfe.", "a. brauchst", "b. braucht", "c. brauche", "You need help.", "a. brauchst"},

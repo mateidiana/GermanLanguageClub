@@ -84,4 +84,7 @@ public class ExamController {
     public void showResultsOfAllStudentsOnGrammarExam(Integer teacherId) {
         examService.showResultsOfAllStudentsOnGrammarExam(teacherId);
     }
+    public void changeTeacherAccessToExam(Integer teacherId, Integer examId){
+        examService.changeTeacherAccessToExam(teacherId, examId);
+    }
 }

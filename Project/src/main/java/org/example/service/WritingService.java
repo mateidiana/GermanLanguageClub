@@ -78,10 +78,10 @@ public class WritingService {
                 }
                 answer.append(input).append("\n");
             }
-            Map <Student, String> toBeGraded=course.getTeacher().getGradeWriting();
+            Map <Student, String> toBeGraded=course.getTeacher().getFeedbackWriting();
             toBeGraded.put(student, answer.toString());
-            course.getTeacher().setGradeWriting(toBeGraded);
-            System.out.println(toBeGraded);
+            course.getTeacher().setFeedbackWriting(toBeGraded);
+            System.out.println(course.getTeacher().getFeedbackWriting());
             System.out.println("Writing exercise submitted!!!!!");
         }
 
@@ -149,10 +149,10 @@ public class WritingService {
 
     public void showFeedback(Integer studentId){
         Student student=studentRepo.getById(studentId);
-        Map<Integer, Float> writingExamResults=new HashMap<>();
-        writingExamResults=student.getWritingExamResults();
+        Map<Integer, Float> writingFeedback=new HashMap<>();
+        writingFeedback=student.getWritingFeedback();
         System.out.println("Your past scores: ");
-        for (Map.Entry<Integer, Float> entry : writingExamResults.entrySet()) {
+        for (Map.Entry<Integer, Float> entry : writingFeedback.entrySet()) {
             System.out.println("Writing exam id: " + entry.getKey() + ", Score: " + entry.getValue());
         }
     }
@@ -162,6 +162,7 @@ public class WritingService {
         Scanner scanner=new Scanner(System.in);
         Map<Student, String> toGrade=teacher.getFeedbackWriting();
         System.out.println(toGrade);
+        System.out.println(course.getTeacher().getFeedbackWriting());
         while (!toGrade.isEmpty()) {
             Map.Entry<Student, String> entry = toGrade.entrySet().iterator().next();
             Student key = entry.getKey();
@@ -174,6 +175,7 @@ public class WritingService {
             key.setWritingFeedback(results);
             toGrade.remove(key);
         }
+        System.out.println();
 }
 
     public void changeTeacherAccessToWritingCourse(Integer courseId, Integer teacherId){
