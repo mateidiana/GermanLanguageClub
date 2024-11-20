@@ -3,23 +3,42 @@ import java.util.*;
 
 import org.example.model.*;
 import org.example.repo.ExamRepository;
-import org.example.repo.GrammarRepository;
 import org.example.repo.StudentRepository;
 import org.example.repo.TeacherRepository;
-import org.example.service.*;
 
+/**
+ * Service class that provides business logic related to {@link Exam} objects.
+ * It interacts with the {@link ExamRepository}, {@link StudentRepository}, {@link TeacherRepository} to perform operations
+ * like creating, grading and taking exams.
+ */
 public class ExamService {
     private ExamRepository examRepo;
-
     private StudentRepository studentRepo;
     private TeacherRepository teacherRepo;
 
+    /**
+     * Constructs an instance of the {@link ExamService} class with the specified repositories.
+     * This constructor initializes the service by injecting the necessary repositories for exams, students,
+     * and teachers, which are used to interact with the underlying data storage.
+     *
+     * @param examRepo A repository for managing {@link Exam} entities, providing methods to retrieve,
+     *                 store, and update exam data.
+     * @param studentRepo A repository for managing {@link Student} entities, providing methods to retrieve,
+     *                    store, and update student data.
+     * @param teacherRepo A repository for managing {@link Teacher} entities, providing methods to retrieve,
+     *                    store, and update teacher data.
+     */
     public ExamService(ExamRepository examRepo, StudentRepository studentRepo, TeacherRepository teacherRepo) {
         this.examRepo = examRepo;
         this.studentRepo = studentRepo;
         this.teacherRepo=teacherRepo;
     }
 
+    /**
+     * A student must answer to some true/false questions about a literary text, the right/ wrong answers affect the score
+     * @param studentId Identifies the student that takes a reading exam
+     * @param examId Identifies the reading exam that is being taken
+     */
     public void takeReadingExam(Integer studentId, Integer examId){
         Student student = studentRepo.getById(studentId);
         Exam exam = examRepo.getById(examId);
@@ -105,7 +124,6 @@ public class ExamService {
         String[][] exercises=exam.getExercises();
         Scanner scanner = new Scanner(System.in);
         int correctAnswers=0;
-        //aici e cu string matching merge matricea vietii si fac vf la atribute
 
         int foundCourse=0;
         for (Course findCourse : student.getCourses()){
@@ -264,15 +282,6 @@ public class ExamService {
         }
     }
 
-    public void showFeedbackResults(Integer studentId){
-        Student student = studentRepo.getById(studentId);
-        Map<Integer, Float> writingFeedbackResults=new HashMap<>();
-        writingFeedbackResults=student.getWritingFeedback();
-        System.out.println("Your past scores: ");
-        for (Map.Entry<Integer, Float> entry : writingFeedbackResults.entrySet()) {
-            System.out.println("Writing course id: " + entry.getKey() + ", Score: " + entry.getValue());
-        }
-    }
 
     public void gradeWritings(Integer teacherId, Integer examId){
         Teacher teacher= teacherRepo.getById(teacherId);
@@ -294,11 +303,6 @@ public class ExamService {
 
     }
 
-
-    public Map<Integer,Float> showReadingResults1(Integer studentId){
-        Student student = studentRepo.getById(studentId);
-        return student.getReadingResults();
-    }
 
     public void showAllReadingExams(){
         List<Exam> exams=examRepo.getObjects();
@@ -433,6 +437,8 @@ public class ExamService {
             }
         }
     }
+
+
     public void createOrUpdateGrammarExam(Integer examId, Integer teacherId, String examName) {
         int found = 0;
         for (Exam exam : examRepo.getObjects()) {
