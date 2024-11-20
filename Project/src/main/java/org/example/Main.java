@@ -56,15 +56,17 @@ public class Main {
         readingController.changeTeacherAccess(4,1);
         readingController.changeTeacherAccess(5,1);
         readingController.changeTeacherAccess(6,1);
-        readingController.enrollStudent(1,6);
-
         writingController.changeTeacherAccessToWritingCourse(30,1);
-        //writingController.getTeacherById(1);
+        vocabController.changeTeacherAccessToVocabCourse(20,1);
+        grammarController.changeTeacherAccessToGrammarCourse(10,1);
         examController.changeTeacherAccessToExam(1, 4);
 
+        readingController.enrollStudent(1,6);
         grammarController.enrollStudent(1,10);
         vocabController.enrollStudent(1, 20);
         writingController.enrollStudent(1, 30);
+
+
         StudentView studentView = new StudentView(studentController,readingController,examController, grammarController, vocabController, writingController);
         TeacherView teacherView = new TeacherView(teacherController,readingController, writingController,vocabController,grammarController,examController);
 
@@ -223,6 +225,7 @@ public class Main {
 
         return grammarRepo;
     }
+
     private static VocabRepository createInMemoryVocabRepository(){
         Vocabulary v1 = new Vocabulary(20, "Vocabulary1", new Teacher("Teacher1", 31), 25);
         Vocabulary v2 = new Vocabulary(21, "Vocabulary2", new Teacher("Teacher2", 32), 30);
@@ -297,10 +300,10 @@ public class Main {
     private static WritingRepository createInMemoryWritingRepository() {
         WritingRepository writingRepo=new WritingRepository();
         Writing w1=new Writing(30,"Writing1",new Teacher("Cristian Matei", 111), 69);
-        Writing w2=new Writing(31,"Reading2",new Teacher("Cristian Matei", 2), 69);
-        Writing w3=new Writing(32,"Reading3",new Teacher("Cristian Matei", 2), 69);
-        Writing w4=new Writing(33,"Reading4",new Teacher("Cristian Matei", 2), 69);
-        Writing w5=new Writing(34,"Reading5",new Teacher("Cristian Matei", 2), 69);
+        Writing w2=new Writing(31,"Writing2",new Teacher("Cristian Matei", 2), 69);
+        Writing w3=new Writing(32,"Writing3",new Teacher("Cristian Matei", 2), 69);
+        Writing w4=new Writing(33,"Writing4",new Teacher("Cristian Matei", 2), 69);
+        Writing w5=new Writing(34,"Writing5",new Teacher("Cristian Matei", 2), 69);
         String requirement = "Schreibe einen Text über den Frühling. :3";
 
         w1.setRequirement(requirement);
@@ -408,7 +411,7 @@ public class Main {
         vocabularyExercises.put("lernen", "to learn");
         vocabularyExercises.put("arbeiten", "to work");
 
-        String exercise="Write a text abut how amazing our leader Criatian Matei is and about how many hoes he has. :3";
+        String exercise="Schreibe einen Text über den Frühling. :3";
 
         exam1.setExercises(readingExercises);
         examRepo.save(exam1);

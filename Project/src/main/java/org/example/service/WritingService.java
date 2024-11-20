@@ -127,6 +127,8 @@ public class WritingService {
     public void createWritingCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
         Teacher teacher = teacherRepo.getById(teacherId);
         Writing w1 = new Writing(courseId, courseName, teacher, maxStudents);
+        String exercise="Schreibe einen Text über den Frühling. :3";
+        w1.setRequirement(exercise);
         writingRepo.save(w1);
     }
 
@@ -134,6 +136,8 @@ public class WritingService {
         Writing course = writingRepo.getById(courseId);
         Teacher teacher = teacherRepo.getById(teacherId);
         Writing w1 = new Writing(courseId, courseName, teacher, maxStudents);
+        String exercise="Schreibe einen Text über den Frühling. :3";
+        w1.setRequirement(exercise);
         writingRepo.update(course, w1);
     }
 
@@ -187,6 +191,16 @@ public class WritingService {
     public void getTeacherById(Integer teacherId){
         Teacher teacher=teacherRepo.getById(teacherId);
         System.out.println(teacher);
+    }
+
+    public void showStudentsEnrolledInWritingCourses(){
+        for(Student student:studentRepo.getObjects())
+            for(Course course:student.getCourses())
+                if(course.getCourseName().contains("Writing"))
+                {
+                    System.out.println(student);
+                    break;
+                }
     }
 
 }

@@ -64,4 +64,6 @@ public class ReadingController {
     }
 
     public void viewMandatoryBooks(Integer studentId, Integer courseId){readingService.viewMandatoryBooks(studentId,courseId);}
+
+    public void showStudentsEnrolledInReadingCourses(){readingService.showStudentsEnrolledInReadingCourses();}
 }

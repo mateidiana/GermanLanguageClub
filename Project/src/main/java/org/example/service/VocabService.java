@@ -53,7 +53,7 @@ public class VocabService {
             System.out.println("PLease write the correct translation for evey word (capital letter if needed):");
             String placeholderKey=new String();
             String placeholderValue=new String();
-            for(int i=1; i<10; i++){
+            for(int i=0; i<10; i++){
                 List<String> values = new ArrayList<>(course.getWorter().values());
                 Random random = new Random();
                 int randomIndex = random.nextInt(values.size());
@@ -163,6 +163,19 @@ public class VocabService {
     public void createVocabularyCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
         Teacher teacher = teacherRepo.getById(teacherId);
         Vocabulary v1 = new Vocabulary(courseId, courseName, teacher, maxStudents);
+        Map<String, String> vocabularyExercises = new HashMap<>();
+        vocabularyExercises.put("Hund", "dog");
+        vocabularyExercises.put("Katze", "cat");
+        vocabularyExercises.put("Apfel", "apple");
+        vocabularyExercises.put("Buch", "book");
+        vocabularyExercises.put("Haus", "house");
+        vocabularyExercises.put("Auto", "car");
+        vocabularyExercises.put("Baum", "tree");
+        vocabularyExercises.put("Blume", "flower");
+        vocabularyExercises.put("Fisch", "fish");
+        vocabularyExercises.put("Brot", "bread");
+        vocabularyExercises.put("Schule", "school");
+        v1.setWorter(vocabularyExercises);
         vocabRepo.save(v1);
     }
 
@@ -170,6 +183,19 @@ public class VocabService {
         Vocabulary course = vocabRepo.getById(courseId);
         Teacher teacher = teacherRepo.getById(teacherId);
         Vocabulary v1 = new Vocabulary(courseId, courseName, teacher, maxStudents);
+        Map<String, String> vocabularyExercises = new HashMap<>();
+        vocabularyExercises.put("Hund", "dog");
+        vocabularyExercises.put("Katze", "cat");
+        vocabularyExercises.put("Apfel", "apple");
+        vocabularyExercises.put("Buch", "book");
+        vocabularyExercises.put("Haus", "house");
+        vocabularyExercises.put("Auto", "car");
+        vocabularyExercises.put("Baum", "tree");
+        vocabularyExercises.put("Blume", "flower");
+        vocabularyExercises.put("Fisch", "fish");
+        vocabularyExercises.put("Brot", "bread");
+        vocabularyExercises.put("Schule", "school");
+        v1.setWorter(vocabularyExercises);
         vocabRepo.update(course, v1);
     }
 
@@ -180,6 +206,22 @@ public class VocabService {
         } else {
             System.out.println("You don't have access to this course!");
         }
+    }
+
+    public void changeTeacherAccessToVocabCourse(Integer courseId, Integer teacherId){
+        Vocabulary course=vocabRepo.getById(courseId);
+        Teacher teacher=teacherRepo.getById(teacherId);
+        course.setTeacher(teacher);
+    }
+
+    public void showStudentsEnrolledInVocabCourses(){
+        for(Student student:studentRepo.getObjects())
+            for(Course course:student.getCourses())
+                if(course.getCourseName().contains("Vocab"))
+                {
+                    System.out.println(student);
+                    break;
+                }
     }
 
 }

@@ -43,7 +43,7 @@ public class ExamController {
     }
 
     public void deleteReadingExam(Integer examId, Integer teacherId) {
-        examService.removeReadingExam(examId,teacherId);
+        examService.removeReadingExam(teacherId,examId);
         //System.out.println("Removed course " + courseId);
     }
     public void createOrUpdateWritingExam(Integer examId, Integer teacherId, String courseName) {
@@ -51,7 +51,7 @@ public class ExamController {
     }
 
     public void deleteWritingExam(Integer examId, Integer teacherId) {
-        examService.removeWritingExam(examId, teacherId);
+        examService.removeWritingExam(teacherId, examId);
         // System.out.println("Removed exam " + examId);
     }
     public void showResultsOfAllStudentsOnWritingExam(Integer teacherId) {
@@ -67,7 +67,7 @@ public class ExamController {
     }
 
     public void deleteGrammarExam(Integer examId, Integer teacherId) {
-        examService.removeGrammarExam(examId, teacherId);
+        examService.removeGrammarExam(teacherId, examId);
     }
 
     public void createOrUpdateVocabularyExam(Integer examId, Integer teacherId, String courseName) {
@@ -75,7 +75,7 @@ public class ExamController {
     }
 
     public void deleteVocabularyExam(Integer examId, Integer teacherId) {
-        examService.removeVocabularyExam(examId, teacherId);
+        examService.removeVocabularyExam(teacherId, examId);
     }
 
     public void showResultsOfAllStudentsOnVocabularyExam(Integer teacherId) {

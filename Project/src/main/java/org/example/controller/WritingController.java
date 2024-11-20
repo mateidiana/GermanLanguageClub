@@ -60,4 +60,6 @@ public class WritingController {
     public void changeTeacherAccessToWritingCourse(Integer courseId, Integer teacherId){writingService.changeTeacherAccessToWritingCourse(courseId,teacherId);}
 
     public void getTeacherById(Integer teacherId){writingService.getTeacherById(teacherId);}
+
+    public void showStudentsEnrolledInWritingCourses(){writingService.showStudentsEnrolledInWritingCourses();}
 }

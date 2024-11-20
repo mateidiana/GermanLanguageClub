@@ -187,6 +187,16 @@ public class ReadingService {
                 System.out.println(course);
     }
 
+    public void showStudentsEnrolledInReadingCourses(){
+        for(Student student:studentRepo.getObjects())
+            for(Course course:student.getCourses())
+                if(course.getCourseName().contains("Reading"))
+                {
+                    System.out.println(student);
+                    break;
+                }
+    }
+
     public void removeCourse(Integer courseId, Integer teacherId) {
         Reading course=readingRepo.getById(courseId);
         if (course.getTeacher().getId()==teacherId){

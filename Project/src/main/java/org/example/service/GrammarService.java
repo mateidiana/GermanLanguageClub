@@ -106,7 +106,7 @@ public class GrammarService {
             System.out.println("\n\n\nYou are not enrolled in this course!");}
         if(foundCourse==1){
             System.out.println("PLease fill in the gaps with the correct word:");
-            for(int i=1; i<10; i++){
+            for(int i=0; i<10; i++){
                 exercise=exercises[i];
                 System.out.println("Question "+i+": "+exercise[0]);
                 System.out.print("Answer: ");
@@ -171,6 +171,19 @@ public class GrammarService {
     public void createGrammarCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
         Teacher teacher = teacherRepo.getById(teacherId);
         Grammar g1 = new Grammar(courseId, courseName, teacher, maxStudents);
+        String [][] grammarExercises={
+                { "Du (brauchen) _ Hilfe.", "brauchst" },
+                { "Ich bin _ Hause.", "zu" },
+                { "Er trägt _.", "bei" },
+                { "Diana (setzen)_ sich auf das Sofa.", "setzt" },
+                { "Stefi klettert auf _ Baum.", "den" },
+                { "Ich (besuchen) _ diese Kirche.", "besuche" },
+                { "Wir spielen DOTA in _ Klasse.", "der" },
+                { "Mama kocht immer (lecker)_ Essen", "leckeres" },
+                { "Der Ball ist unter _ Tisch gerollt.", "den" },
+                { "Mein Mann kommt immer betrunken _ Hause.", "nach" }
+        };
+        g1.setExercises(grammarExercises);
         grammarRepo.save(g1);
     }
 
@@ -178,7 +191,36 @@ public class GrammarService {
         Grammar course = grammarRepo.getById(courseId);
         Teacher teacher = teacherRepo.getById(teacherId);
         Grammar g1 = new Grammar(courseId, courseName, teacher, maxStudents);
+        String [][] grammarExercises={
+                { "Du (brauchen) _ Hilfe.", "brauchst" },
+                { "Ich bin _ Hause.", "zu" },
+                { "Er trägt _.", "bei" },
+                { "Diana (setzen)_ sich auf das Sofa.", "setzt" },
+                { "Stefi klettert auf _ Baum.", "den" },
+                { "Ich (besuchen) _ diese Kirche.", "besuche" },
+                { "Wir spielen DOTA in _ Klasse.", "der" },
+                { "Mama kocht immer (lecker)_ Essen", "leckeres" },
+                { "Der Ball ist unter _ Tisch gerollt.", "den" },
+                { "Mein Mann kommt immer betrunken _ Hause.", "nach" }
+        };
+        g1.setExercises(grammarExercises);
         grammarRepo.update(course, g1);
+    }
+
+    public void changeTeacherAccessToGrammarCourse(Integer courseId, Integer teacherId){
+        Grammar course=grammarRepo.getById(courseId);
+        Teacher teacher=teacherRepo.getById(teacherId);
+        course.setTeacher(teacher);
+    }
+
+    public void showStudentsEnrolledInGrammarCourses(){
+        for(Student student:studentRepo.getObjects())
+            for(Course course:student.getCourses())
+                if(course.getCourseName().contains("Grammar"))
+                {
+                    System.out.println(student);
+                    break;
+                }
     }
 
 }

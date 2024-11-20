@@ -49,4 +49,8 @@ public class GrammarController {
         grammarService.createOrUpdateGrammarCourse(courseId, teacherId, courseName, maxStudents);
     }
 
+    public void changeTeacherAccessToGrammarCourse(Integer courseId, Integer teacherId){grammarService.changeTeacherAccessToGrammarCourse(courseId,teacherId);}
+
+    public void showStudentsEnrolledInGrammarCourses(){grammarService.showStudentsEnrolledInGrammarCourses();}
+
 }

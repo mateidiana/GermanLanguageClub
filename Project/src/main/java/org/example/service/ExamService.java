@@ -163,7 +163,7 @@ public class ExamService {
         Scanner scanner = new Scanner(System.in);
         int correctAnswers=0;
         int foundCourse=0;
-        Map <String, String> tempother=new HashMap<>();
+        Map <Integer, Float> tempother=new HashMap<>();
         for (Course findCourse : student.getCourses()){
             if (findCourse.getCourseName().contains("Vocabulary"))
             {
@@ -176,7 +176,7 @@ public class ExamService {
             System.out.println("PLease write the correct translation for evey word (capital letter if needed):");
             String placeholderKey=new String();
             String placeholderValue=new String();
-            for(int i=1; i<10; i++) {
+            for(int i=0; i<10; i++) {
                 List<String> values = new ArrayList<>(exam.getWorter().values());
                 Random random = new Random();
                 int randomIndex = random.nextInt(values.size());
@@ -200,13 +200,16 @@ public class ExamService {
             }
             if(correctAnswers>5) System.out.println("You have passed this practice test with the grade "+correctAnswers+"!");
             else System.out.println("You have failed this practice test with the grade "+correctAnswers+". Do better, loser");
+            tempother=student.getVocabResults();
+            tempother.put(exam.getId(),(float)correctAnswers);
+            student.setVocabResults(tempother);
         }
 
     }
     public void showVocabResults(Integer studentId){
         Student student = studentRepo.getById(studentId);
         Map<Integer, Float> vocabExamResults=new HashMap<>();
-        vocabExamResults=student.getGrammarResults();
+        vocabExamResults=student.getVocabResults();
         System.out.println("Your past scores: ");
         for (Map.Entry<Integer, Float> entry : vocabExamResults.entrySet()) {
             System.out.println("Vocabulary exam id: " + entry.getKey() + ", Score: " + entry.getValue());
@@ -346,6 +349,15 @@ public class ExamService {
     public void createReadingExam(Integer examId, Integer teacherId,String examName){
         Teacher teacher=teacherRepo.getById(teacherId);
         Exam e1=new Exam(examId,examName,teacher);
+        String[][] readingExercises = {
+                {"Der Aufbruch\n" + "Franz Kafka","","",""},
+                {"Ich befahl mein Pferd aus dem Stall zu holen. Der Diener verstand mich nicht.\nIch ging selbst in den Stall, sattelte mein Pferd und bestieg es. In der Ferne hörte ich eine Trompete blasen,\nich fragte ihn, was das bedeute. Er wusste nichts und hatte nichts gehört. Beim Tore hielt er mich auf und fragte:\n\"Wohin reitest du, Herr?\" \"Ich weiß es nicht,\" sagte ich, \"nur weg von hier. Immerfort weg von hier, nur so kann ich\nmein Ziel erreichen.\" \"Du kennst also dein Ziel?\" fragte er. \"Ja,\" antwortete ich, \"ich sagte es doch: »Weg-von-hier«,\ndas ist mein Ziel.\" \"Du hast keinen Essvorrat mit,\" sagte er. \"Ich brauche keinen,\" sagte ich, \"die Reise ist so lang,\ndass ich verhungern muss, wenn ich auf dem Weg nichts bekomme. Kein Essvorrat kann mich retten. Es ist ja zum Glück eine\nwahrhaft ungeheure Reise.\"", "", "", ""},
+                {"\n\nDer Diener kann auf alle Fragen des Ich-Erzählers antworten.\n\n", "a. wahr", "b. falsch", "b. falsch"},
+                {"\n\nDer Ich-Erzähler nimmt einen Essvorrat.\n\n", "a. wahr", "b. falsch", "b. falsch"},
+                {"\n\nDer Ich-Erzähler unternimmt eine Reise, deren Dauer undefiniert ist.\n\n", "a. wahr", "b. falsch", "a. wahr"},
+                {"\n\nDie Parabel kann eine Metapher für das Unbekannte des Lebens darstellen.\n\n", "a. wahr", "b. falsch", "a. wahr"},
+        };
+        e1.setExercises(readingExercises);
         examRepo.save(e1);
     }
 
@@ -353,6 +365,15 @@ public class ExamService {
         Exam exam=examRepo.getById(examId);
         Teacher teacher=teacherRepo.getById(teacherId);
         Exam e1=new Exam(examId,examName,teacher);
+        String[][] readingExercises = {
+                {"Der Aufbruch\n" + "Franz Kafka","","",""},
+                {"Ich befahl mein Pferd aus dem Stall zu holen. Der Diener verstand mich nicht.\nIch ging selbst in den Stall, sattelte mein Pferd und bestieg es. In der Ferne hörte ich eine Trompete blasen,\nich fragte ihn, was das bedeute. Er wusste nichts und hatte nichts gehört. Beim Tore hielt er mich auf und fragte:\n\"Wohin reitest du, Herr?\" \"Ich weiß es nicht,\" sagte ich, \"nur weg von hier. Immerfort weg von hier, nur so kann ich\nmein Ziel erreichen.\" \"Du kennst also dein Ziel?\" fragte er. \"Ja,\" antwortete ich, \"ich sagte es doch: »Weg-von-hier«,\ndas ist mein Ziel.\" \"Du hast keinen Essvorrat mit,\" sagte er. \"Ich brauche keinen,\" sagte ich, \"die Reise ist so lang,\ndass ich verhungern muss, wenn ich auf dem Weg nichts bekomme. Kein Essvorrat kann mich retten. Es ist ja zum Glück eine\nwahrhaft ungeheure Reise.\"", "", "", ""},
+                {"\n\nDer Diener kann auf alle Fragen des Ich-Erzählers antworten.\n\n", "a. wahr", "b. falsch", "b. falsch"},
+                {"\n\nDer Ich-Erzähler nimmt einen Essvorrat.\n\n", "a. wahr", "b. falsch", "b. falsch"},
+                {"\n\nDer Ich-Erzähler unternimmt eine Reise, deren Dauer undefiniert ist.\n\n", "a. wahr", "b. falsch", "a. wahr"},
+                {"\n\nDie Parabel kann eine Metapher für das Unbekannte des Lebens darstellen.\n\n", "a. wahr", "b. falsch", "a. wahr"},
+        };
+        e1.setExercises(readingExercises);
         examRepo.update(exam,e1);
     }
 
@@ -373,6 +394,8 @@ public class ExamService {
     public void createWritingExam(Integer examId, Integer teacherId, String examName) {
         Teacher teacher = teacherRepo.getById(teacherId);
         Exam e1 = new Exam(examId, examName, teacher);
+        String exercise="Schreibe einen Text über den Frühling. :3";
+        e1.setRequirement(exercise);
         examRepo.save(e1);
     }
 
@@ -380,6 +403,8 @@ public class ExamService {
         Exam exam = examRepo.getById(examId);
         Teacher teacher = teacherRepo.getById(teacherId);
         Exam e1 = new Exam(examId, examName, teacher);
+        String exercise="Schreibe einen Text über den Frühling. :3";
+        e1.setRequirement(exercise);
         examRepo.update(exam, e1);
     }
 
@@ -425,6 +450,19 @@ public class ExamService {
     public void createGrammarExam(Integer examId, Integer teacherId, String examName) {
         Teacher teacher = teacherRepo.getById(teacherId);
         Exam e1 = new Exam(examId, examName, teacher);
+        String [][] grammarExercises={
+                { "Du (brauchen) _ Hilfe.", "brauchst" },
+                { "Ich bin _ Hause.", "zu" },
+                { "Er trägt _.", "bei" },
+                { "Diana (setzen)_ sich auf das Sofa.", "setzt" },
+                { "Stefi klettert auf _ Baum.", "den" },
+                { "Ich (besuchen) _ diese Kirche.", "besuche" },
+                { "Wir spielen DOTA in _ Klasse.", "der" },
+                { "Mama kocht immer (lecker)_ Essen", "leckeres" },
+                { "Der Ball ist unter _ Tisch gerollt.", "den" },
+                { "Mein Mann kommt immer betrunken _ Hause.", "nach" }
+        };
+        e1.setExercises(grammarExercises);
         examRepo.save(e1);
     }
 
@@ -432,6 +470,19 @@ public class ExamService {
         Exam exam = examRepo.getById(examId);
         Teacher teacher = teacherRepo.getById(teacherId);
         Exam e1 = new Exam(examId, examName, teacher);
+        String [][] grammarExercises={
+                { "Du (brauchen) _ Hilfe.", "brauchst" },
+                { "Ich bin _ Hause.", "zu" },
+                { "Er trägt _.", "bei" },
+                { "Diana (setzen)_ sich auf das Sofa.", "setzt" },
+                { "Stefi klettert auf _ Baum.", "den" },
+                { "Ich (besuchen) _ diese Kirche.", "besuche" },
+                { "Wir spielen DOTA in _ Klasse.", "der" },
+                { "Mama kocht immer (lecker)_ Essen", "leckeres" },
+                { "Der Ball ist unter _ Tisch gerollt.", "den" },
+                { "Mein Mann kommt immer betrunken _ Hause.", "nach" }
+        };
+        e1.setExercises(grammarExercises);
         examRepo.update(exam, e1);
     }
 
@@ -460,6 +511,19 @@ public class ExamService {
     public void createVocabularyExam(Integer examId, Integer teacherId, String examName) {
         Teacher teacher = teacherRepo.getById(teacherId);
         Exam e1 = new Exam(examId, examName, teacher);
+        Map<String, String> vocabularyExercises = new HashMap<>();
+        vocabularyExercises.put("Hund", "dog");
+        vocabularyExercises.put("Katze", "cat");
+        vocabularyExercises.put("Apfel", "apple");
+        vocabularyExercises.put("Buch", "book");
+        vocabularyExercises.put("Haus", "house");
+        vocabularyExercises.put("Auto", "car");
+        vocabularyExercises.put("Baum", "tree");
+        vocabularyExercises.put("Blume", "flower");
+        vocabularyExercises.put("Fisch", "fish");
+        vocabularyExercises.put("Brot", "bread");
+        vocabularyExercises.put("Schule", "school");
+        e1.setWorter(vocabularyExercises);
         examRepo.save(e1);
     }
 
@@ -467,6 +531,19 @@ public class ExamService {
         Exam exam = examRepo.getById(examId);
         Teacher teacher = teacherRepo.getById(teacherId);
         Exam e1 = new Exam(examId, examName, teacher);
+        Map<String, String> vocabularyExercises = new HashMap<>();
+        vocabularyExercises.put("Hund", "dog");
+        vocabularyExercises.put("Katze", "cat");
+        vocabularyExercises.put("Apfel", "apple");
+        vocabularyExercises.put("Buch", "book");
+        vocabularyExercises.put("Haus", "house");
+        vocabularyExercises.put("Auto", "car");
+        vocabularyExercises.put("Baum", "tree");
+        vocabularyExercises.put("Blume", "flower");
+        vocabularyExercises.put("Fisch", "fish");
+        vocabularyExercises.put("Brot", "bread");
+        vocabularyExercises.put("Schule", "school");
+        e1.setWorter(vocabularyExercises);
         examRepo.update(exam, e1);
     }
 
@@ -517,11 +594,9 @@ public class ExamService {
 
     public void changeTeacherAccessToExam(Integer teacherId, Integer examId) {
         Exam exam = examRepo.getById(examId);
-        System.out.println(exam.getTeacher());
         Teacher teacher = teacherRepo.getById(teacherId);
-        System.out.println(teacher);
         exam.setTeacher(teacher);
-        System.out.println(exam.getTeacher());
+
     }
 
 }

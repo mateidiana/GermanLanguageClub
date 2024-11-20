@@ -53,4 +53,8 @@ public class VocabController {
         vocabService.removeVocabularyCourse(courseId, teacherId);
     }
 
+    public void changeTeacherAccessToVocabCourse(Integer courseId, Integer teacherId){vocabService.changeTeacherAccessToVocabCourse(courseId,teacherId);}
+
+    public void showStudentsEnrolledInVocabCourses(){vocabService.showStudentsEnrolledInVocabCourses();}
+
 }

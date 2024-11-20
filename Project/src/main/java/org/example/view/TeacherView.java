@@ -26,7 +26,7 @@ public class TeacherView {
         boolean continueLoop = true;
 
         while (continueLoop) {
-            System.out.print("Select an option:\n\n1. Register as new teacher\n2. Non available\n3. View reading courses\n4. View writing courses\n5. View grammar courses\n6. View vocabulary courses\n0. Exit\n");
+            System.out.print("Select an option:\n\n1. Register as new teacher\n2. View reading courses\n3. View writing courses\n4. View grammar courses\n5. View vocabulary courses\n0. Exit\n");
 
             String option = scanner.nextLine();
 
@@ -37,16 +37,16 @@ public class TeacherView {
                 case "1":
                     teacherController.createTeacher(readTeacherId(scanner),readTeacherName(scanner));
                     break;
-                case "3":
+                case "2":
                     readingMenu();
                     break;
-                case "4":
+                case "3":
                     writingMenu();
                     break;
-                case "5":
+                case "4":
                     grammarMenu();
                     break;
-                case "6":
+                case "5":
                     vocabularyMenu();
                     break;
                 default:
@@ -71,7 +71,7 @@ public class TeacherView {
                     readingController.viewCourseTaughtByTeacher(readTeacherId(scanner));
                     break;
                 case "2":
-                    readingController.viewStudents();
+                    readingController.showStudentsEnrolledInReadingCourses();
                     break;
                 case "3":
                     readingController.createOrUpdateReadingCourse(readCourseId(scanner),readTeacherId(scanner),readCourseName(scanner),readMaxStudents(scanner),readExerciseSetId(scanner));
@@ -80,7 +80,7 @@ public class TeacherView {
                     readingController.deleteCourse(readCourseId(scanner),readTeacherId(scanner));
                     break;
                 case "5":
-                    examController.createOrUpdateReadingExam(readCourseId(scanner),readTeacherId(scanner),readExamName(scanner));
+                    examController.createOrUpdateReadingExam(readExamId(scanner),readTeacherId(scanner),readExamName(scanner));
                     break;
                 case "6":
                     examController.deleteReadingExam(readExamId(scanner),readTeacherId(scanner));
@@ -113,7 +113,7 @@ public class TeacherView {
                     writingController.viewCourseTaughtByTeacher(readTeacherId(scanner));
                     break;
                 case "2":
-                    writingController.viewStudents();
+                    writingController.showStudentsEnrolledInWritingCourses();
                     break;
                 case "3":
                     writingController.createOrUpdateWritingCourse(readCourseId(scanner),readTeacherId(scanner),readCourseName(scanner),readMaxStudents(scanner));
@@ -122,7 +122,7 @@ public class TeacherView {
                     writingController.deleteCourse(readCourseId(scanner),readTeacherId(scanner));
                     break;
                 case "5":
-                    examController.createOrUpdateWritingExam(readCourseId(scanner),readTeacherId(scanner),readExamName(scanner));
+                    examController.createOrUpdateWritingExam(readExamId(scanner),readTeacherId(scanner),readExamName(scanner));
                     break;
                 case "6":
                     examController.deleteWritingExam(readExamId(scanner),readTeacherId(scanner));
@@ -158,7 +158,7 @@ public class TeacherView {
                     grammarController.viewCourseTaughtByTeacher(readTeacherId(scanner));
                     break;
                 case "2":
-                    grammarController.viewStudents();
+                    grammarController.showStudentsEnrolledInGrammarCourses();
                     break;
                 case "3":
                     grammarController.createOrUpdateGrammarCourse(readCourseId(scanner),readTeacherId(scanner),readCourseName(scanner),readMaxStudents(scanner));
@@ -167,7 +167,7 @@ public class TeacherView {
                     grammarController.deleteCourse(readCourseId(scanner),readTeacherId(scanner));
                     break;
                 case "5":
-                    examController.createOrUpdateGrammarExam(readCourseId(scanner),readTeacherId(scanner),readExamName(scanner));
+                    examController.createOrUpdateGrammarExam(readExamId(scanner),readTeacherId(scanner),readExamName(scanner));
                     break;
                 case "6":
                     examController.deleteGrammarExam(readExamId(scanner),readTeacherId(scanner));
@@ -197,7 +197,7 @@ public class TeacherView {
                     vocabController.viewCourseTaughtByTeacher(readTeacherId(scanner));
                     break;
                 case "2":
-                    vocabController.viewStudents();
+                    vocabController.showStudentsEnrolledInVocabCourses();
                     break;
                 case "3":
                     vocabController.createOrUpdateVocabularyCourse(readCourseId(scanner),readTeacherId(scanner),readCourseName(scanner),readMaxStudents(scanner));
@@ -206,7 +206,7 @@ public class TeacherView {
                     vocabController.deleteVocabularyCourse(readCourseId(scanner),readTeacherId(scanner));
                     break;
                 case "5":
-                    examController.createOrUpdateVocabularyExam(readCourseId(scanner),readTeacherId(scanner),readExamName(scanner));
+                    examController.createOrUpdateVocabularyExam(readExamId(scanner),readTeacherId(scanner),readExamName(scanner));
                     break;
                 case "6":
                     examController.deleteVocabularyExam(readExamId(scanner),readTeacherId(scanner));
