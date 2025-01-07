@@ -1,3 +1,4 @@
+# German Language Club
 This repository contains a collaborative java application for managing the registration and evaluation 
 of the participants in a language club for learning German. Besides the students, the app tracks the 
 teachers of the German classes. A student can register to one or more classes, each class tackling specific 
