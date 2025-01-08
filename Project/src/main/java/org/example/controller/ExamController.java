@@ -1,238 +1,99 @@
 package org.example.controller;
-import org.example.service.ExamService;
+import org.example.service.ReadingExamService;
+import org.example.service.VocabularyExamService;
+import org.example.service.GrammarExamService;
+import org.example.model.Exceptions.*;
+import org.example.model.*;
 
-/**
- * The {@code ExamController} class acts as a mediator between the view and the {@code ExamService}.
- * It provides methods to handle various exam-related operations such as creating, updating, deleting,
- * taking exams, and viewing results.
- *
- * This class delegates the core logic to the {@code ExamService}.
- */
+import java.util.List;
+import java.util.Map;
+
 public class ExamController {
-    private ExamService examService;
+    private ReadingExamService readingExamService;
+    private GrammarExamService grammarExamService;
+    private VocabularyExamService vocabExamService;
 
-    /**
-     * Constructs an {@code ExamController} with the specified {@code ExamService}.
-     *
-     * @param examService the service layer for managing exam-related operations
-     */
-    public ExamController(ExamService examService){
-        this.examService=examService;
+    public ExamController(ReadingExamService readingExamService,GrammarExamService grammarExamService,VocabularyExamService vocabExamService)
+    {
+        this.readingExamService=readingExamService;
+        this.grammarExamService=grammarExamService;
+        this.vocabExamService=vocabExamService;
     }
 
-    /**
-     * Allows a student to take a reading exam.
-     *
-     * @param studentId the ID of the student
-     * @param examId the ID of the reading exam
-     */
-    public void takeReadingExam(Integer studentId, Integer examId){
-        examService.takeReadingExam(studentId,examId);
-    }
+    public List<Question> takeReadingExam(int studentId, int examId){return readingExamService.takeReadingExam(studentId,examId);}
 
-    /**
-     * Allows a student to take a grammar exam.
-     *
-     * @param studentId the ID of the student
-     * @param examId the ID of the grammar exam
-     */
+    public String handleReadingAnswer(int studentId, int questionId, String answer){return readingExamService.handleAnswer(studentId,questionId,answer);}
 
-    public void takeGrammarExam(Integer studentId, Integer examId){
-        examService.takeGrammarExam(studentId,examId);
-    }
+    public List<ExamResult> showReadingExamResults(int studentId){return readingExamService.showReadingExamResults(studentId);}
 
-    /**
-     * Allows a student to take a vocabulary exam.
-     *
-     * @param studentId the ID of the student
-     * @param examId the ID of the vocabulary exam
-     */
-    public void takeVocabExam(Integer studentId, Integer examId){
-        examService.takeVocabExam(studentId,examId);
-    }
+    public void addReadingResult(int studentId, int examId, Float result){ readingExamService.addResult(studentId,examId,result);}
 
-    /**
-     * Displays a student's results for all reading exams.
-     *
-     * @param studentId the ID of the student
-     */
-    public void showReadingResults(Integer studentId){examService.showReadingResults(studentId);}
+    public List<ReadingExam> showAllReadingExams(){return readingExamService.showAllReadingExams();}
 
-    /**
-     * Displays all reading exams available in the system.
-     */
-    public void showAllReadingExams(){examService.showAllReadingExams();}
+    public List<ReadingExam> readingExamsOfATeacher(int teacherId){return readingExamService.examsOfATeacher(teacherId);}
 
-    /**
-     * Displays a student's results for all grammar exams.
-     *
-     * @param studentId the ID of the student
-     */
-    public void showGrammarResults(Integer studentId){examService.showGrammarResults(studentId);}
+    public List<ExamResult> showAllResultsOfReadingTeacherExam(int teacherId, int examId){return readingExamService.showAllResultsOfTeacherExam(teacherId,examId);}
 
-    /**
-     * Displays a student's results for all vocabulary exams.
-     *
-     * @param studentId the ID of the student
-     */
-    public void showVocabResults(Integer studentId){examService.showVocabResults(studentId);}
+    public boolean removeReadingExam(int examId, int teacherId){return readingExamService.removeReadingExam(examId,teacherId);}
 
-    /**
-     * Allows a student to take a writing exam.
-     *
-     * @param studentId the ID of the student
-     * @param examId the ID of the writing exam
-     */
-    public void takeWritingExam(Integer studentId, Integer examId){
-        examService.takeWritingExam(studentId,examId);
-    }
+    public void setReadingText(int courseId, String title, String author, String text){readingExamService.setReadingText(courseId,title,author,text);}
 
-    /**
-     * Displays a student's results for all writing exams.
-     *
-     * @param studentId the ID of the student
-     */
-    public void showWritingResults(Integer studentId){examService.showWritingResults(studentId);}
+    public void createQuestion(int courseId, String question, String rightAnswer){readingExamService.createQuestion(courseId,question,rightAnswer);}
 
-    /**
-     * Displays the results of all students for a specific reading exam, accessible by the teacher.
-     *
-     * @param teacherId the ID of the teacher
-     */
-    public void showResultsOfAllStudentsOnReadingExam(Integer teacherId){
-        examService.showResultsOfAllStudentsOnReadingExam(teacherId);
-    }
+    public void createOrUpdateReadingExam(int examId, int teacherId, String examName){readingExamService.createOrUpdateReadingExam(examId,teacherId,examName);}
 
-    /**
-     * Creates or updates a reading exam for a specific course.
-     *
-     * @param courseId the ID of the course
-     * @param teacherId the ID of the teacher
-     * @param courseName the name of the course
-     */
-    public void createOrUpdateReadingExam(Integer courseId, Integer teacherId, String courseName){
-        examService.createOrUpdateReadingExam(courseId,teacherId,courseName);
-    }
+    public List<Student> filterStudentsByPassingGradeOnReadingExam(int teacherId, int examId){return readingExamService.filterStudentsByPassingGradeOnReadingExam(teacherId,examId);}
 
-    /**
-     * Deletes a specific reading exam, accessible by the teacher.
-     *
-     * @param examId the ID of the exam to delete
-     * @param teacherId the ID of the teacher
-     */
-    public void deleteReadingExam(Integer examId, Integer teacherId) {
-        examService.removeReadingExam(teacherId,examId);
-        //System.out.println("Removed course " + courseId);
-    }
+    public String getText(int examId){return readingExamService.getText(examId);}
 
-    /**
-     * Creates or updates a writing exam for a specific course.
-     *
-     * @param examId the ID of the exam
-     * @param teacherId the ID of the teacher
-     * @param courseName the name of the course
-     */
-    public void createOrUpdateWritingExam(Integer examId, Integer teacherId, String courseName) {
-        examService.createOrUpdateWritingExam(examId, teacherId, courseName);
-    }
+    public ReadingExam getReadingExamById(int readingId){return readingExamService.getReadingExamById(readingId);}
 
-    /**
-     * Deletes a specific writing exam, accessible by the teacher.
-     *
-     * @param examId the ID of the exam to delete
-     * @param teacherId the ID of the teacher
-     */
-    public void deleteWritingExam(Integer examId, Integer teacherId) {
-        examService.removeWritingExam(teacherId, examId);
-        // System.out.println("Removed exam " + examId);
-    }
 
-    /**
-     * Displays the results of all students for a specific writing exam, accessible by the teacher.
-     *
-     * @param teacherId the ID of the teacher
-     */
-    public void showResultsOfAllStudentsOnWritingExam(Integer teacherId) {
-        examService.showResultsOfAllStudentsOnWritingExam(teacherId);
-    }
 
-    /**
-     * Grades writing exams, accessible by the teacher.
-     *
-     * @param teacherId the ID of the teacher
-     * @param examId the ID of the exam to grade
-     */
-    public void gradeExams(Integer teacherId, Integer examId){
-        examService.gradeWritings(teacherId, examId);
-    }
+    public List<Question> takeGrammarExam(int studentId, int examId){return grammarExamService.takeGrammarExam(studentId,examId);}
 
-    /**
-     * Creates or updates a grammar exam for a specific course.
-     *
-     * @param examId the ID of the exam
-     * @param teacherId the ID of the teacher
-     * @param courseName the name of the course
-     */
-    public void createOrUpdateGrammarExam(Integer examId, Integer teacherId, String courseName) {
-        examService.createOrUpdateGrammarExam(examId, teacherId, courseName);
-    }
+    public String handleGrammarAnswer(int studentId, int questionId, String answer){return grammarExamService.handleAnswer(studentId,questionId,answer);}
 
-    /**
-     * Deletes a specific grammar exam, accessible by the teacher.
-     *
-     * @param examId the ID of the exam to delete
-     * @param teacherId the ID of the teacher
-     */
-    public void deleteGrammarExam(Integer examId, Integer teacherId) {
-        examService.removeGrammarExam(teacherId, examId);
-    }
+    public List<ExamResult> showGrammarExamResults(int studentId){return grammarExamService.showGrammarExamResults(studentId);}
 
-    /**
-     * Creates or updates a vocabulary exam for a specific course.
-     *
-     * @param examId the ID of the exam
-     * @param teacherId the ID of the teacher
-     * @param courseName the name of the course
-     */
-    public void createOrUpdateVocabularyExam(Integer examId, Integer teacherId, String courseName) {
-        examService.createOrUpdateVocabularyExam(examId, teacherId, courseName);
-    }
+    public void addGrammarResult(int studentId, int examId, Float result){ grammarExamService.addResult(studentId,examId,result);}
 
-    /**
-     * Deletes a specific vocabulary exam, accessible by the teacher.
-     *
-     * @param examId the ID of the exam to delete
-     * @param teacherId the ID of the teacher
-     */
-    public void deleteVocabularyExam(Integer examId, Integer teacherId) {
-        examService.removeVocabularyExam(teacherId, examId);
-    }
+    public List<GrammarExam> showAllGrammarExams(){return grammarExamService.showAllGrammarExams();}
 
-    /**
-     * Displays the results of all students for a specific vocabulary exam, accessible by the teacher.
-     *
-     * @param teacherId the ID of the teacher
-     */
-    public void showResultsOfAllStudentsOnVocabularyExam(Integer teacherId) {
-        examService.showResultsOfAllStudentsOnVocabularyExam(teacherId);
-    }
+    public List<GrammarExam> grammarExamsOfATeacher(int teacherId){return grammarExamService.examsOfATeacher(teacherId);}
 
-    /**
-     * Displays the results of all students for a specific grammar exam, accessible by the teacher.
-     *
-     * @param teacherId the ID of the teacher
-     */
-    public void showResultsOfAllStudentsOnGrammarExam(Integer teacherId) {
-        examService.showResultsOfAllStudentsOnGrammarExam(teacherId);
-    }
+    public List<ExamResult> showAllResultsOfGrammarTeacherExam(int teacherId, int examId){return grammarExamService.showAllResultsOfTeacherExam(teacherId,examId);}
 
-    /**
-     * Changes a teacher's access to a specific exam.
-     *
-     * @param teacherId the ID of the teacher
-     * @param examId the ID of the exam
-     */
-    public void changeTeacherAccessToExam(Integer teacherId, Integer examId){
-        examService.changeTeacherAccessToExam(teacherId, examId);
-    }
+    public boolean removeGrammarExam(int examId, int teacherId){return grammarExamService.removeGrammarExam(examId,teacherId);}
+
+    public void createGrammarQuestion(int courseId, String question, String rightAnswer){grammarExamService.createQuestion(courseId,question,rightAnswer);}
+
+    public void createOrUpdateGrammarExam(int examId, int teacherId, String examName){grammarExamService.createOrUpdateGrammarExam(examId,teacherId,examName);}
+
+    public Map<Student,Float> sortStudentsByGrade(int teacherId, int examId){return grammarExamService.sortStudentsByGrade(teacherId,examId);}
+
+
+
+    public List<Word> takeVocabExam(int studentId, int examId){return vocabExamService.takeVocabExam(studentId,examId);}
+
+    public String handleVocabAnswer(int studentId, int questionId, String answer){return vocabExamService.handleAnswer(studentId,questionId,answer);}
+
+    public List<ExamResult> showVocabExamResults(int studentId){return vocabExamService.showVocabExamResults(studentId);}
+
+    public void addVocabResult(int studentId, int examId, Float result){ vocabExamService.addResult(studentId,examId,result);}
+
+    public List<VocabularyExam> showAllVocabExams(){return vocabExamService.showAllVocabExams();}
+
+    public List<VocabularyExam> vocabExamsOfATeacher(int teacherId){return vocabExamService.examsOfATeacher(teacherId);}
+
+    public List<ExamResult> showAllResultsOfVocabTeacherExam(int teacherId, int examId){return vocabExamService.showAllResultsOfTeacherExam(teacherId,examId);}
+
+    public boolean removeVocabExam(int examId, int teacherId){return vocabExamService.removeVocabExam(examId,teacherId);}
+
+    public void createOrUpdateVocabExam(int examId, int teacherId, String examName){vocabExamService.createOrUpdateVocabExam(examId,teacherId,examName);}
+
+    public void createVocabQuestion(int courseId, String question, String rightAnswer){vocabExamService.createQuestion(courseId,question,rightAnswer);}
+
+    public List<Student> filterStudentsByBestGrade(int teacherId, int examId){return vocabExamService.filterStudentsByBestGrade(teacherId,examId);}
+
 }

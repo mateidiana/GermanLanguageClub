@@ -17,6 +17,8 @@ public class View {
         Scanner scanner = new Scanner(System.in);
         boolean continueLoop = true;
 
+        System.out.println("\n\n\nWelcome to our language club!");
+
         while(continueLoop){
             System.out.print("Select a role:\n\n1. Student\n2. Teacher\n3. Exit\n");
             String option = scanner.nextLine();
@@ -25,10 +27,10 @@ public class View {
                     continueLoop = false;
                     break;
                 case "1":
-                    studentView.start();
+                    studentView.registerOrSignIn();
                     break;
                 case "2":
-                    teacherView.start();
+                    teacherView.registerOrSignIn();
                     break;
                 default:
             }

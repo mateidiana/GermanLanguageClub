@@ -1,297 +1,322 @@
 package org.example.service;
-import java.util.Scanner;
-import java.util.List;
-import java.util.*;
 
 import org.example.model.*;
-import org.example.model.Vocabulary;
-import org.example.repo.ReadingRepository;
-import org.example.repo.TeacherRepository;
-import org.example.repo.VocabRepository;
-import org.example.repo.StudentRepository;
+import org.example.model.Exceptions.BusinessLogicException;
+import org.example.model.Exceptions.EntityNotFoundException;
+import org.example.model.Exceptions.ValidationException;
+import org.example.repo.IRepository;
 
-/**
- * Service class that provides business logic related to {@link Vocabulary} objects.
- * It interacts with the {@link VocabRepository}, {@link StudentRepository}, {@link TeacherRepository} to perform operations
- * like manipulating reading courses.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class VocabService {
-    private VocabRepository vocabRepo;
-    private StudentRepository studentRepo;
-    private TeacherRepository teacherRepo;
-    public VocabService(VocabRepository vocabRepo, StudentRepository studentRepo, TeacherRepository teacherRepo ) {
+    private final IRepository<Vocabulary> vocabRepo;
+
+    private final IRepository<Student> studentRepo;
+
+    private final IRepository<Teacher> teacherRepo;
+
+    private final IRepository<Word> wordRepo;
+
+    private final IRepository<Enrolled> enrolledRepo;
+
+    private final IRepository<PastVocabMistakes> pastMistakesRepo;
+
+
+    public VocabService(IRepository<Vocabulary> vocabRepo, IRepository<Student> studentRepo, IRepository<Teacher> teacherRepo, IRepository<Word> wordRepo, IRepository<Enrolled> enrolledRepo, IRepository<PastVocabMistakes> pastMistakesRepo) {
         this.vocabRepo = vocabRepo;
         this.studentRepo = studentRepo;
-        this.teacherRepo= teacherRepo;
+        this.teacherRepo = teacherRepo;
+        this.wordRepo = wordRepo;
+        this.enrolledRepo=enrolledRepo;
+        this.pastMistakesRepo=pastMistakesRepo;
     }
 
-    /**
-     * Enrolls a student in a specific vocabulary course
-     * @param studentId refers to the student to be enrolled
-     * @param vocabCourseId refers to the id of the course the student is being enrolled in
-     */
-    public void enroll(Integer studentId, Integer vocabCourseId) {
-        Student student = studentRepo.getById(studentId);
-        Vocabulary course = vocabRepo.getById(vocabCourseId);
-        studentRepo.delete(student);
-        vocabRepo.delete(course);
-        if (course.getAvailableSlots() > course.getEnrolledStudents().size()) {
-            course.getEnrolledStudents().add(student);
-            student.getCourses().add(course);
-            vocabRepo.save(course);
-            studentRepo.save(student);
+    public Student getStudentById(int studentId){
+        idDataCheck(studentId);
+        for (Student student : studentRepo.getAll()) {
+            if (student.getId()==studentId)
+                return student;
         }
+        throw new EntityNotFoundException("Student not found!");
     }
 
-    /**
-     * A student can practice German vocabulary by writing the meaning of words in English. Wrong answers
-     * can be reviewed later
-     * @param studentId Refers to a student who practices vocabulary
-     * @param courseId Refers to the course the student practices in
-     */
-    public void practiceVocabulary(Integer studentId, Integer courseId) {
-        Student student = studentRepo.getById(studentId);
-        Vocabulary course = vocabRepo.getById(courseId);
+    public Teacher getTeacherById(int teacherId){
+        idDataCheck(teacherId);
+        for (Teacher teacher : teacherRepo.getAll()) {
+            if (teacher.getId()==teacherId)
+                return teacher;
+        }
+        throw new EntityNotFoundException("Teacher not found!");
+    }
 
-        Scanner scanner = new Scanner(System.in);
-        int correctAnswers=0;
+    public Vocabulary getVocabularyById(int vocabId){
+        idDataCheck(vocabId);
+        for (Vocabulary vocab : vocabRepo.getAll()) {
+            if (vocab.getId()==vocabId)
+                return vocab;
+        }
+        throw new EntityNotFoundException("Vocabulary course not found!");
+    }
+
+    public Word getWordById(int wordId){
+        idDataCheck(wordId);
+        for (Word word : wordRepo.getAll()) {
+            if (word.getId()==wordId)
+                return word;
+        }
+        throw new EntityNotFoundException("Word not found!");
+    }
+
+    public List<Student> getEnrolled(int courseId){
+        List<Student> enrolled=new ArrayList<>();
+        idDataCheck(courseId);
+        for(Enrolled enrollment:enrolledRepo.getAll())
+            if(enrollment.getCourse()==courseId)
+                enrolled.add(getStudentById(enrollment.getStudent()));
+        return enrolled;
+
+    }
+
+    public List<Vocabulary> getVocabCourses(int studentId){
+        idDataCheck(studentId);
+        List<Vocabulary> vocabCourses=new ArrayList<>();
+        for (Vocabulary vocabulary:vocabRepo.getAll())
+            for (Enrolled enrolled:enrolledRepo.getAll())
+                if (vocabulary.getId()==enrolled.getCourse()&&enrolled.getStudent()==studentId)
+                    vocabCourses.add(vocabulary);
+        return vocabCourses;
+    }
+
+    public List<Word> getExercises(int courseId){
+        List<Word> questions=new ArrayList<>();
+        for (Word q:wordRepo.getAll())
+            if (q.getVocabId()==courseId)
+                questions.add(q);
+        return questions;
+    }
+
+    public List<Word> getPastMistakes(int studentId){
+        idDataCheck(studentId);
+        List<Word> pastMistakes=new ArrayList<>();
+        for (PastVocabMistakes mistake:pastMistakesRepo.getAll())
+            if (mistake.getStudent()==studentId)
+                for (Word w:wordRepo.getAll())
+                    if (w.getId()==mistake.getWord())
+                        pastMistakes.add(w);
+        return pastMistakes;
+
+    }
+
+    public void enroll(int studentId, int vocabCourseId) {
+        idDataCheck(studentId);
+        idDataCheck(vocabCourseId);
+        int alreadyEnrolled=0;
+
+        Student student = getStudentById(studentId);
+        Vocabulary course = getVocabularyById(vocabCourseId);
+
+        for (Vocabulary course1:getVocabCourses(studentId)){
+            if (course1.getId()==vocabCourseId)
+                alreadyEnrolled=1;
+        }
+
+        if (alreadyEnrolled==0){
+            if (course.getAvailableSlots() > getEnrolled(vocabCourseId).size()) {
+                int nextId=enrolledRepo.getAll().size();
+                if (nextId==0)
+                    nextId=1;
+                else nextId+=1;
+                Enrolled enrolled=new Enrolled(nextId,studentId,vocabCourseId);
+                enrolledRepo.create(enrolled);
+            }
+        }
+
+    }
+
+    public List<Vocabulary> showEnrolledVocabularyCourses(int studentId){
+        idDataCheck(studentId);
+        return getVocabCourses(studentId);
+    }
+
+    public List<Word> practiceVocabulary(int studentId, int courseId) {
+        idDataCheck(studentId);
+        idDataCheck(courseId);
+
         int foundCourse=0;
-        Map <String, String> tempother=new HashMap<>();
-        for (Course findCourse : student.getCourses()){
-            if (findCourse.getId()==course.getId())
-            {
+        for (Course findCourse : getVocabCourses(studentId)){
+            if (findCourse.getId()==courseId) {
                 foundCourse=1;
-                break;}
-            }
-        if (foundCourse==0){
-            System.out.println("\n\n\nYou are not enrolled in this course!");}
-        if(foundCourse==1){
-            System.out.println("PLease write the correct translation for evey word (capital letter if needed):");
-            String placeholderKey=new String();
-            String placeholderValue=new String();
-            for(int i=0; i<10; i++){
-                List<String> values = new ArrayList<>(course.getWorter().values());
-                Random random = new Random();
-                int randomIndex = random.nextInt(values.size());
-                String ubung = values.get(randomIndex);
-                System.out.println(ubung+": ");
-                String answer=scanner.nextLine();
-                boolean found=false;
-                for (Map.Entry<String, String> entry : course.getWorter().entrySet()) {
-                    String key=entry.getKey();
-                    String value=entry.getValue();
-                    if(value.equals(ubung) && key.equals(answer)){
-                        System.out.println("Correct!");
-                        found=true;
-                    }
-                    else{
-                        placeholderKey=key;
-                        placeholderKey=value;
-                    }
-                }
-                if(found==true)
-                    correctAnswers++;
-                else{
-                    tempother=student.getPastVocabMistakes();
-                    tempother.put(placeholderKey, placeholderValue);
-                    student.setPastVocabMistakes(tempother);
-                }
-            }
-            if(correctAnswers>5) System.out.println("You have passed this practice test with the grade "+correctAnswers+"!");
-            else System.out.println("You have failed this practice test with the grade "+correctAnswers+". Do better, loser");
-        }
-
-
-    }
-
-    /**
-     * A student can practice past vocabulary mistakes
-     * @param studentId Refers to a specific student
-     */
-    public void reviewPastMistakes(Integer studentId, Integer courseId) {
-        Student student = studentRepo.getById(studentId);
-        Vocabulary course = vocabRepo.getById(courseId);
-        Map <String, String> tempother=new HashMap<>();
-        Scanner scanner = new Scanner(System.in);
-        int foundCourse = 0;
-        for (Course findCourse : student.getCourses()) {
-            if (findCourse.getId() == course.getId()) {
-                foundCourse = 1;
                 break;
             }
         }
-        if (foundCourse == 0) {
-            System.out.println("\n\n\nYou are not enrolled in this course!");
+        if (foundCourse==0){
+            throw new BusinessLogicException("You are not enrolled in this course!");
         }
-        if (foundCourse == 1) {
-            System.out.println("PLease fill in the gaps with the correct word(use capital letter when noun):");
-            String placeholderKey = new String();
-            String placeholderValue = new String();
-            for (Map.Entry<String, String> entry : course.getWorter().entrySet()) {
-                String key = entry.getKey();
-                String value = entry.getValue();
-                System.out.println(value+": ");
-                String answer = scanner.nextLine();
-                if (answer == key) {
-                    System.out.println("Correct!");
-                } else {
-                    tempother.put(key, value);
-                }
-            }
-            student.setPastVocabMistakes(tempother);
+        return getExercises(courseId);
+    }
+
+    public String handleAnswer(int studentId, int wordId, String answer){
+        idDataCheck(studentId);
+        idDataCheck(wordId);
+        stringDataCheck(answer);
+        Word word=getWordById(wordId);
+        if (answer.equals(word.getMeaning()))
+            return "Correct!";
+        else{
+            int nextInt=pastMistakesRepo.getAll().size();
+            PastVocabMistakes mistake=new PastVocabMistakes(nextInt+1,studentId,wordId);
+            pastMistakesRepo.create(mistake);
+            return "Wrong!";
         }
     }
 
-    /**
-     *
-     * @return all vocabulary courses
-     */
-    public List<Vocabulary> getAvailableCourses() {
-        return vocabRepo.getObjects();
+    public List<Word> practicePastMistakes(int studentId){
+        idDataCheck(studentId);
+        return getPastMistakes(studentId);
+    }
+    public String handlePastMistakesAnswer(int studentId, int questionId, String answer){
+        idDataCheck(studentId);
+        idDataCheck(questionId);
+        stringDataCheck(answer);
+
+        Word word=getWordById(questionId);
+        if (answer.equals(word.getMeaning()))
+            return "Correct!";
+        else
+            return "Wrong!";
     }
 
-    /**
-     *
-     * @param courseId Refers to a specific vocabulary course
-     * @return all students enrolled in a vocabulary course
-     */
-    public List<Student> getEnrolledStudents(Integer courseId) {
-        Vocabulary course = vocabRepo.getById(courseId);
-        return course.getEnrolledStudents();
+
+    public List<Vocabulary> getAvailableVocabularyCourses(){
+        List<Vocabulary> availableCourses=new ArrayList<>();
+        for (Vocabulary vocabulary:vocabRepo.getAll())
+            if (vocabulary.getAvailableSlots()>getEnrolled(vocabulary.getId()).size())
+                availableCourses.add(vocabulary);
+        return availableCourses;
     }
 
-    public void removeCourse(Integer courseId) {
-        //this doesn't do anything yet
-    }
-
-    /**
-     *
-     * @return all students
-     */
     public List<Student> getAllStudents() {
-        return studentRepo.getObjects();
+        return studentRepo.getAll();
     }
 
-    /**
-     * Show all vocabulary courses of a teacher
-     * @param teacherId refers to a teacher
-     */
-    public void viewCourseTaughtByTeacher(Integer teacherId) {
-        Teacher teacher = teacherRepo.getById(teacherId);
-        for (Vocabulary course : vocabRepo.getObjects()) {
-            if (course.getTeacher().getId() == teacherId) {
-                System.out.println(course.getCourseName());
+    public List<Student> getEnrolledStudents(int courseId) {
+        idDataCheck(courseId);
+        return getEnrolled(courseId);
+    }
+
+    public List<Student> showStudentsEnrolledInVocabularyCourses(){
+        List<Student> studentList=new ArrayList<>();
+        for(Student student:studentRepo.getAll())
+            if (!getVocabCourses(student.getId()).isEmpty())
+                studentList.add(student);
+        return studentList;
+    }
+
+    public void deleteQuestionsOfCourse(int courseId){
+        for (Word w:wordRepo.getAll())
+            if (w.getVocabId()==courseId)
+            {
+                for (PastVocabMistakes mistakes:pastMistakesRepo.getAll())
+                    if (mistakes.getWord()==w.getId())
+                        pastMistakesRepo.delete(mistakes.getId());
+                wordRepo.delete(w.getId());
             }
-        }
+
     }
 
-    /**
-     * A teacher can either create or update a vocabulary course if the course already exists
-     * @param courseId refers to the course id that is to be updated or created
-     * @param teacherId refers to the teacher that updates the course
-     * @param courseName refers to the updated course name
-     * @param maxStudents refers to the maximum number of students that can enroll
-     */
-    public void createOrUpdateVocabularyCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
-        int found = 0;
-        for (Vocabulary course : vocabRepo.getObjects()) {
-            if (course.getId() == courseId) {
-                found = 1;
-                updateVocabularyCourse(courseId, teacherId, courseName, maxStudents);
+    public void deleteEnrollment(int courseId){
+        for (Enrolled enrolled:enrolledRepo.getAll())
+            if (enrolled.getCourse()==courseId)
+                enrolledRepo.delete(enrolled.getId());
+    }
+
+    public boolean removeCourse(int courseId, int teacherId) {
+        idDataCheck(courseId);
+        idDataCheck(teacherId);
+        Vocabulary course = getVocabularyById(courseId);
+        if (course.getTeacher()==teacherId){
+            deleteQuestionsOfCourse(courseId);
+            deleteEnrollment(courseId);
+            vocabRepo.delete(courseId);
+
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public void createQuestion(int courseId, String question, String rightAnswer){
+        idDataCheck(courseId);
+        Vocabulary vocab=getVocabularyById(courseId);
+        Word w=new Word(wordRepo.getAll().size()+1,question,rightAnswer);
+        w.setVocabId(vocab.getId());
+        wordRepo.create(w);
+    }
+
+    public void createOrUpdateVocabCourse(int courseId, int teacherId, String courseName, Integer maxStudents){
+        idDataCheck(courseId);
+        idDataCheck(teacherId);
+        stringDataCheck(courseName);
+        intDataCheck(maxStudents);
+
+
+        int found=0;
+        for (Vocabulary course: vocabRepo.getAll()){
+            if (course.getId()==courseId)
+            {
+                found=1;
+                updateVocabularyCourse(courseId,teacherId,courseName,maxStudents);
                 return;
             }
         }
-        if (found == 0) {
-            createVocabularyCourse(courseId, teacherId, courseName, maxStudents);
+        if (found==0){
+            createVocabularyCourse(courseId,teacherId,courseName,maxStudents);
         }
     }
 
-    public void createVocabularyCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
-        Teacher teacher = teacherRepo.getById(teacherId);
-        Vocabulary v1 = new Vocabulary(courseId, courseName, teacher, maxStudents);
-        Map<String, String> vocabularyExercises = new HashMap<>();
-        vocabularyExercises.put("Hund", "dog");
-        vocabularyExercises.put("Katze", "cat");
-        vocabularyExercises.put("Apfel", "apple");
-        vocabularyExercises.put("Buch", "book");
-        vocabularyExercises.put("Haus", "house");
-        vocabularyExercises.put("Auto", "car");
-        vocabularyExercises.put("Baum", "tree");
-        vocabularyExercises.put("Blume", "flower");
-        vocabularyExercises.put("Fisch", "fish");
-        vocabularyExercises.put("Brot", "bread");
-        vocabularyExercises.put("Schule", "school");
-        v1.setWorter(vocabularyExercises);
-        vocabRepo.save(v1);
+    public void createVocabularyCourse(int courseId, int teacherId, String courseName, Integer maxStudents) {
+
+        Vocabulary v1 = new Vocabulary(courseId, courseName, teacherId, maxStudents);
+        vocabRepo.create(v1);
     }
 
-    public void updateVocabularyCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
-        Vocabulary course = vocabRepo.getById(courseId);
-        Teacher teacher = teacherRepo.getById(teacherId);
-        Vocabulary v1 = new Vocabulary(courseId, courseName, teacher, maxStudents);
-        Map<String, String> vocabularyExercises = new HashMap<>();
-        vocabularyExercises.put("Hund", "dog");
-        vocabularyExercises.put("Katze", "cat");
-        vocabularyExercises.put("Apfel", "apple");
-        vocabularyExercises.put("Buch", "book");
-        vocabularyExercises.put("Haus", "house");
-        vocabularyExercises.put("Auto", "car");
-        vocabularyExercises.put("Baum", "tree");
-        vocabularyExercises.put("Blume", "flower");
-        vocabularyExercises.put("Fisch", "fish");
-        vocabularyExercises.put("Brot", "bread");
-        vocabularyExercises.put("Schule", "school");
-        v1.setWorter(vocabularyExercises);
-        vocabRepo.update(course, v1);
+    public void updateVocabularyCourse(int courseId, int teacherId, String courseName, Integer maxStudents) {
+
+        Vocabulary v1 = getVocabularyById(courseId);
+        if (getVocabularyById(courseId).getTeacher()!=teacherId)
+            throw new BusinessLogicException("You don't have access to this course!");
+        v1.setTeacher(teacherId);
+        v1.setCourseName(courseName);
+        v1.setAvailableSlots(maxStudents);
+        vocabRepo.update(v1);
+
     }
 
-    /**
-     * A teacher can remove a vocabulary course
-     * @param courseId Refers to a specific course
-     * @param teacherId Refers to the teacher who removes the course
-     */
-    public void removeVocabularyCourse(Integer courseId, Integer teacherId) {
-        Vocabulary course = vocabRepo.getById(courseId);
-        if (course.getTeacher().getId() == teacherId) {
-            vocabRepo.delete(course);
-        } else {
-            System.out.println("You don't have access to this course!");
-        }
+
+    public List<Vocabulary> viewVocabularyCoursesTaughtByTeacher(int teacherId){
+        idDataCheck(teacherId);
+        List<Vocabulary> taughtCourses=new ArrayList<>();
+        for(Vocabulary course:vocabRepo.getAll())
+            if (course.getTeacher()==teacherId)
+                taughtCourses.add(course);
+        return taughtCourses;
+
     }
 
-    /**
-     * Replaces the teacher of a vocabulary course with another
-     * @param teacherId New teacher responsible for vocabulary course
-     * @param courseId Exam whose teacher is being replaced
-     */
-    public void changeTeacherAccessToVocabCourse(Integer courseId, Integer teacherId){
-        Vocabulary course=vocabRepo.getById(courseId);
-        Teacher teacher=teacherRepo.getById(teacherId);
-        course.setTeacher(teacher);
+    public void idDataCheck(int id){
+        if (id<1)
+            throw new ValidationException("Id cannot be less than 1!");
     }
 
-    /**
-     * Shows all students enrolled in at least one vocabulary course
-     */
-    public void showStudentsEnrolledInVocabCourses(){
-        for(Student student:studentRepo.getObjects())
-            for(Course course:student.getCourses())
-                if(course.getCourseName().contains("Vocab"))
-                {
-                    System.out.println(student);
-                    break;
-                }
+    public void stringDataCheck(String string){
+        if (string.isEmpty())
+            throw new ValidationException("Name cannot be an empty string!");
     }
 
-    /**
-     * Displays all vocabulary courses a student is enrolled in
-     * @param studentId identifies a student
-     */
-    public void showEnrolledVocabCourses(Integer studentId){
-        Student student = studentRepo.getById(studentId);
-        for (Course course:student.getCourses())
-            if (course.getCourseName().contains("Vocab"))
-                System.out.println(course);
+    public void intDataCheck(int number){
+        if (number<1)
+            throw new ValidationException("Number cannot be null!");
     }
 
 }

@@ -1,307 +1,330 @@
 package org.example.service;
 
-import java.util.Scanner;
+import org.example.model.*;
+import org.example.model.Exceptions.EntityNotFoundException;
+import org.example.model.Exceptions.ValidationException;
+import org.example.model.Exceptions.BusinessLogicException;
+import org.example.repo.IRepository;
+
+import java.util.ArrayList;
 import java.util.List;
 
-import org.example.model.*;
-import org.example.repo.GrammarRepository;
-import org.example.repo.StudentRepository;
-import org.example.model.Student;
-import org.example.repo.TeacherRepository;
-
-/**
- * Service class that provides business logic related to {@link Grammar} objects.
- * It interacts with the {@link GrammarRepository}, {@link StudentRepository}, {@link TeacherRepository} to perform operations
- * like manipulating grammar courses.
- */
 public class GrammarService {
-    private GrammarRepository grammarRepo;
-    private StudentRepository studentRepo;
-    private TeacherRepository teacherRepo;
+    private final IRepository<Grammar> grammarRepo;
 
-    public GrammarService(GrammarRepository grammarRepo, StudentRepository studentRepo, TeacherRepository teacherRepo) {
+    private final IRepository<Student> studentRepo;
+
+    private final IRepository<Teacher> teacherRepo;
+
+    private final IRepository<Question> questionRepo;
+
+    private final IRepository<Enrolled> enrolledRepo;
+
+    private final IRepository<PastMistakes> pastMistakesRepo;
+
+
+    public GrammarService(IRepository<Grammar> grammarRepo, IRepository<Student> studentRepo, IRepository<Teacher> teacherRepo, IRepository<Question> questionRepo, IRepository<Enrolled> enrolledRepo, IRepository<PastMistakes> pastMistakesRepo) {
         this.grammarRepo = grammarRepo;
         this.studentRepo = studentRepo;
-        this.teacherRepo=teacherRepo;
+        this.teacherRepo = teacherRepo;
+        this.questionRepo = questionRepo;
+        this.enrolledRepo = enrolledRepo;
+        this.pastMistakesRepo=pastMistakesRepo;
     }
 
-    /**
-     * Updates a student's past mistakes in form of a matrix
-     * @param originalMatrix Refers to a student's past mistakes
-     * @param newRow Refers to the latest exercise added
-     * @return updated past mistakes
-     */
-    public static String[][] appendRow(String[][] originalMatrix, String[] newRow) {
-        if (originalMatrix==null||originalMatrix.length==0)
-        {
-            String[][] newMatrix = new String[1][100];
-            newMatrix[0]=newRow;
-            return newMatrix;
+    public Student getStudentById(int studentId){
+        idDataCheck(studentId);
+        for (Student student : studentRepo.getAll()) {
+            if (student.getId()==studentId)
+                return student;
         }
+        throw new EntityNotFoundException("Student not found!");
+    }
 
-        int numRows = originalMatrix.length;
-        int numCols = originalMatrix[0].length;
+    public Teacher getTeacherById(int teacherId){
+        idDataCheck(teacherId);
+        for (Teacher teacher : teacherRepo.getAll()) {
+            if (teacher.getId()==teacherId)
+                return teacher;
+        }
+        throw new EntityNotFoundException("Teacher not found!");
+    }
 
-        String[][] newMatrix = new String[numRows + 1][numCols];
+    public Grammar getGrammarById(int grammarId){
+        idDataCheck(grammarId);
+        for (Grammar grammar : grammarRepo.getAll()) {
+            if (grammar.getId()==grammarId)
+                return grammar;
+        }
+        throw new EntityNotFoundException("Grammar course not found!");
+    }
 
-        for (int i = 0; i < numRows; i++) {
-            for (int j = 0; j < numCols; j++) {
-                newMatrix[i][j] = originalMatrix[i][j];
+    public Question getQuestionById(int questionId){
+        idDataCheck(questionId);
+        for (Question question : questionRepo.getAll()) {
+            if (question.getId()==questionId)
+                return question;
+        }
+        throw new EntityNotFoundException("Question not found!");
+    }
+
+    public List<Student> getEnrolled(int courseId){
+        List<Student> enrolled=new ArrayList<>();
+        idDataCheck(courseId);
+        for(Enrolled enrollment:enrolledRepo.getAll())
+            if(enrollment.getCourse()==courseId)
+                enrolled.add(getStudentById(enrollment.getStudent()));
+        return enrolled;
+
+    }
+
+    public List<Grammar> getGrammarCourses(int studentId){
+        idDataCheck(studentId);
+        List<Grammar> grammarCourses=new ArrayList<>();
+        for (Grammar grammar:grammarRepo.getAll())
+            for (Enrolled enrolled:enrolledRepo.getAll())
+                if (grammar.getId()==enrolled.getCourse()&&enrolled.getStudent()==studentId)
+                    grammarCourses.add(grammar);
+        return grammarCourses;
+    }
+
+    public List<Question> getExercises(int courseId){
+        List<Question> questions=new ArrayList<>();
+        for (Question q:questionRepo.getAll())
+            if (q.getGrammarId()==courseId)
+                questions.add(q);
+        return questions;
+    }
+
+    public List<Question> getPastMistakes(int studentId){
+        idDataCheck(studentId);
+        List<Question> pastMistakes=new ArrayList<>();
+        for (PastMistakes mistake:pastMistakesRepo.getAll())
+            if (mistake.getStudent()==studentId && mistake.getGrammarQuestion()!=0)
+                for (Question q:questionRepo.getAll())
+                    if (q.getId()==mistake.getGrammarQuestion())
+                        pastMistakes.add(q);
+        return pastMistakes;
+
+    }
+
+    public void enroll(int studentId, int grammarCourseId) {
+        idDataCheck(studentId);
+        idDataCheck(grammarCourseId);
+        int alreadyEnrolled=0;
+
+        Student student = getStudentById(studentId);
+        Grammar course = getGrammarById(grammarCourseId);
+
+        for (Course course1:getGrammarCourses(studentId)){
+            if (course1.getId() == grammarCourseId) {
+                alreadyEnrolled = 1;
+                break;
             }
+
         }
 
-        for (int j = 0; j < numCols; j++) {
-            newMatrix[numRows][j] = newRow[j];
+        if (alreadyEnrolled==0){
+            if (course.getAvailableSlots() > getEnrolled(grammarCourseId).size()) {
+
+                int nextId=enrolledRepo.getAll().size();
+                if (nextId==0)
+                    nextId=1;
+                else nextId+=1;
+                Enrolled enrolled=new Enrolled(nextId,studentId,grammarCourseId);
+                enrolledRepo.create(enrolled);
+            }
+            else
+                throw new BusinessLogicException("This course has no more available slots!");
         }
 
-        return newMatrix;
     }
 
-    /**
-     * Enrolls a student in a specific grammar course
-     * @param studentId refers to the student to be enrolled
-     * @param grammarCourseId refers to the id of the course the student is being enrolled in
-     */
-    public void enroll(Integer studentId, Integer grammarCourseId) {
-        Student student = studentRepo.getById(studentId);
-        Grammar course = grammarRepo.getById(grammarCourseId);
-        studentRepo.delete(student);
-        grammarRepo.delete(course);
-        if (course.getAvailableSlots() > course.getEnrolledStudents().size()) {
-            course.getEnrolledStudents().add(student);
-            student.getCourses().add(course);
-            grammarRepo.save(course);
-            studentRepo.save(student);
-        }
+    public List<Grammar> showEnrolledGrammarCourses(int studentId){
+        idDataCheck(studentId);
+        return getGrammarCourses(studentId);
     }
 
-    /**
-     * A student can practice past mistakes
-     * @param studentId Refers to a specific student
-     * @param courseId Refers to the course a student made mistakes in
-     */
-    public void reviewPastMistakes(Integer studentId, Integer courseId) {
-        Student student = studentRepo.getById(studentId);
-        Grammar course = grammarRepo.getById(courseId);
-        String[][] newMistakes=new String[1][2];
-        String[][] pastGrammarMistakes = student.getPastGrammarMistakes();
-        String[] exercise;
-        Scanner scanner = new Scanner(System.in);
-        int foundCourse = 0;
-        for (Course findCourse : student.getCourses()) {
-            if (findCourse.getId() == course.getId()) {
-                foundCourse = 1;
+    public List<Question> practiceGrammar(int studentId, int courseId) {
+        idDataCheck(studentId);
+        idDataCheck(courseId);
+
+        int foundCourse=0;
+        for (Grammar findCourse : getGrammarCourses(studentId)){
+            if (findCourse.getId()==courseId) {
+                foundCourse=1;
                 break;
             }
         }
-        if (foundCourse == 0)
-            System.out.println("\n\n\nYou are not enrolled in this course!");
-        if (foundCourse == 1) {
-            System.out.println("PLease fill in the gaps with the correct word:");
-            for (int i = 1; i <student.getPastGrammarMistakes().length; i++) {
-                exercise = pastGrammarMistakes[i];
-                System.out.println("Question " + i + ": " + exercise[0]);
-                System.out.print("Answer: ");
-                String answer = scanner.nextLine();
-                if (!answer.equals(exercise[1]))
-                    newMistakes=appendRow(newMistakes, exercise);
-            }
-            student.setPastGrammarMistakes(newMistakes);
-        }
-    }
-
-    /**
-     * A student can practice German grammar by completing sentences with the correct form. Wrong answers
-     * can be reviewed later
-     * @param studentId Refers to a student who practices grammar
-     * @param courseId Refers to the course the student practices in
-     */
-    public void practiceGrammar(Integer studentId, Integer courseId) {
-        Student student = studentRepo.getById(studentId);
-        Grammar course = grammarRepo.getById(courseId);
-        String []exercise;
-        String[][] exercises=course.getExercises();
-        Scanner scanner = new Scanner(System.in);
-        int correctAnswers=0;
-        //aici e cu string matching merge matricea vietii si fac vf la atribute
-
-        int foundCourse=0;
-        for (Course findCourse : student.getCourses()){
-            if (findCourse.getId()==course.getId())
-            {
-                foundCourse=1;
-                break;}
-        }
         if (foundCourse==0){
-            System.out.println("\n\n\nYou are not enrolled in this course!");}
-        if(foundCourse==1){
-            System.out.println("PLease fill in the gaps with the correct word:");
-            for(int i=0; i<10; i++){
-                exercise=exercises[i];
-                System.out.println("Question "+i+": "+exercise[0]);
-                System.out.print("Answer: ");
-                String answer=scanner.nextLine();
-                if(answer.equals(exercise[1])) {
-                    correctAnswers++;
-                    System.out.println("Corect coaie!");
-                }
-                else{
-                    System.out.println(answer+" "+exercise[1]+" pt debug");
-                    student.setPastGrammarMistakes(appendRow(student.getPastGrammarMistakes(), exercise ));
-                }
-            }
-            if(correctAnswers>5) System.out.println("You have passed this practice test with the grade "+correctAnswers+"!");
-            else System.out.println("You have failed this practice test with the grade "+correctAnswers+". Do better, loser");
+            throw new BusinessLogicException("You are not enrolled in this course!");
+        }
+        return getExercises(courseId);
+    }
+
+    public String handleAnswer(int studentId, int questionId, String answer){
+        idDataCheck(studentId);
+        idDataCheck(questionId);
+        stringDataCheck(answer);
+
+
+        Question question=getQuestionById(questionId);
+        if (answer.equals(question.getRightAnswer()))
+            return "Correct!";
+        else {
+            int nextInt=pastMistakesRepo.getAll().size();
+            PastMistakes mistake=new PastMistakes(nextInt+1,studentId,0,questionId);
+            pastMistakesRepo.create(mistake);
+            return "Wrong!";
         }
 
     }
 
-    /**
-     *
-     * @return all students
-     */
+    public List<Question> practicePastMistakes(int studentId){
+        idDataCheck(studentId);
+        return getPastMistakes(studentId);
+    }
+    public String handlePastMistakesAnswer(int studentId, int questionId, String answer){
+        idDataCheck(studentId);
+        idDataCheck(questionId);
+        stringDataCheck(answer);
+
+        Question question=getQuestionById(questionId);
+        if (answer.equals(question.getRightAnswer()))
+            return "Correct!";
+        else
+            return "Wrong!";
+    }
+
+    public List<Grammar> getAvailableGrammarCourses(){
+        List<Grammar> availableCourses=new ArrayList<>();
+        for (Grammar grammar:grammarRepo.getAll())
+            if (grammar.getAvailableSlots()>getEnrolled(grammar.getId()).size())
+                availableCourses.add(grammar);
+        return availableCourses;
+    }
+
     public List<Student> getAllStudents() {
-        return studentRepo.getObjects();
+        return studentRepo.getAll();
     }
 
-    /**
-     *
-     * @return all grammar courses
-     */
-    public List<Grammar> getAvailableCourses() {
-        return grammarRepo.getObjects();
+    public List<Student> getEnrolledStudents(int courseId) {
+        idDataCheck(courseId);
+        return getEnrolled(courseId);
     }
 
-    /**
-     *
-     * @param courseId Refers to a specific grammar course
-     * @return all students enrolled in a grammar course
-     */
-    public List<Student> getEnrolledStudents(Integer courseId) {
-        Grammar course = grammarRepo.getById(courseId);
-        return course.getEnrolledStudents();
+    public List<Student> showStudentsEnrolledInGrammarCourses(){
+        List<Student> studentList=new ArrayList<>();
+        for(Student student:studentRepo.getAll())
+            if (!getGrammarCourses(student.getId()).isEmpty())
+                studentList.add(student);
+        return studentList;
     }
 
-    /**
-     * A teacher can remove a grammar course
-     * @param courseId Refers to a specific course
-     * @param teacherId Refers to the teacher who removes the course
-     */
-    public void removeCourse(Integer courseId, Integer teacherId) {
-        Grammar course = grammarRepo.getById(courseId);
-        if (course.getTeacher().getId() == teacherId) {
-            grammarRepo.delete(course);
-        } else {
-            System.out.println("You don't have access to this course!");
-        }
-    }
+    public void deleteQuestionsOfCourse(int courseId){
+        for (Question q:questionRepo.getAll())
+            if (q.getGrammarId()==courseId){
 
-    /**
-     * A teacher can view the courses taught by them
-     * @param teacherId refers to a specific teacher
-     */
-    public void viewCourseTaughtByTeacher(Integer teacherId) {
-        Teacher teacher = teacherRepo.getById(teacherId);
-        for (Grammar course : grammarRepo.getObjects()) {
-            if (course.getTeacher().getId() == teacherId) {
-                System.out.println(course.getCourseName());
+                for (PastMistakes mistakes:pastMistakesRepo.getAll())
+                    if (mistakes.getGrammarQuestion()==q.getId())
+                        pastMistakesRepo.delete(mistakes.getId());
+                questionRepo.delete(q.getId());
             }
-        }
+
     }
 
-    /**
-     * A teacher can either create or update a grammar course if the course already exists
-     * @param courseId refers to the course id that is to be updated or created
-     * @param teacherId refers to the teacher that updates the course
-     * @param courseName refers to the updated course name
-     * @param maxStudents refers to the maximum number of students that can enroll
-     */
-    public void createOrUpdateGrammarCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
-        int found = 0;
-        for (Grammar course : grammarRepo.getObjects()) {
-            if (course.getId() == courseId) {
-                found = 1;
-                updateGrammarCourse(courseId, teacherId, courseName, maxStudents);
+    public void deleteEnrollment(int courseId){
+        for (Enrolled enrolled:enrolledRepo.getAll())
+            if (enrolled.getCourse()==courseId)
+                enrolledRepo.delete(enrolled.getId());
+    }
+
+
+    public boolean removeCourse(int courseId, int teacherId) {
+        idDataCheck(courseId);
+        idDataCheck(teacherId);
+        Grammar course = getGrammarById(courseId);
+        if (course.getTeacher()==teacherId){
+            deleteQuestionsOfCourse(courseId);
+            deleteEnrollment(courseId);
+            grammarRepo.delete(courseId);
+
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public void createQuestion(int courseId, String question, String rightAnswer){
+        idDataCheck(courseId);
+        Grammar grammar=getGrammarById(courseId);
+        Question q=new Question(questionRepo.getAll().size()+1,question,rightAnswer);
+        q.setGrammarId(grammar.getId());
+        questionRepo.create(q);
+    }
+
+    public void createOrUpdateGrammarCourse(int courseId, int teacherId, String courseName, Integer maxStudents){
+        idDataCheck(courseId);
+        idDataCheck(teacherId);
+        stringDataCheck(courseName);
+        intDataCheck(maxStudents);
+
+
+
+        int found=0;
+        for (Grammar course: grammarRepo.getAll()){
+            if (course.getId()==courseId)
+            {
+                found=1;
+                updateGrammarCourse(courseId,teacherId,courseName,maxStudents);
                 return;
             }
         }
-        if (found == 0) {
-            createGrammarCourse(courseId, teacherId, courseName, maxStudents);
+        if (found==0){
+            createGrammarCourse(courseId,teacherId,courseName,maxStudents);
         }
     }
 
-    public void createGrammarCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
-        Teacher teacher = teacherRepo.getById(teacherId);
-        Grammar g1 = new Grammar(courseId, courseName, teacher, maxStudents);
-        String [][] grammarExercises={
-                { "Du (brauchen) _ Hilfe.", "brauchst" },
-                { "Ich bin _ Hause.", "zu" },
-                { "Er trägt _.", "bei" },
-                { "Diana (setzen)_ sich auf das Sofa.", "setzt" },
-                { "Stefi klettert auf _ Baum.", "den" },
-                { "Ich (besuchen) _ diese Kirche.", "besuche" },
-                { "Wir spielen DOTA in _ Klasse.", "der" },
-                { "Mama kocht immer (lecker)_ Essen", "leckeres" },
-                { "Der Ball ist unter _ Tisch gerollt.", "den" },
-                { "Mein Mann kommt immer betrunken _ Hause.", "nach" }
-        };
-        g1.setExercises(grammarExercises);
-        grammarRepo.save(g1);
+    public void createGrammarCourse(int courseId, int teacherId, String courseName, Integer maxStudents) {
+        Grammar g1 = new Grammar(courseId, courseName, teacherId, maxStudents);
+        grammarRepo.create(g1);
+
     }
 
-    public void updateGrammarCourse(Integer courseId, Integer teacherId, String courseName, Integer maxStudents) {
-        Grammar course = grammarRepo.getById(courseId);
-        Teacher teacher = teacherRepo.getById(teacherId);
-        Grammar g1 = new Grammar(courseId, courseName, teacher, maxStudents);
-        String [][] grammarExercises={
-                { "Du (brauchen) _ Hilfe.", "brauchst" },
-                { "Ich bin _ Hause.", "zu" },
-                { "Er trägt _.", "bei" },
-                { "Diana (setzen)_ sich auf das Sofa.", "setzt" },
-                { "Stefi klettert auf _ Baum.", "den" },
-                { "Ich (besuchen) _ diese Kirche.", "besuche" },
-                { "Wir spielen DOTA in _ Klasse.", "der" },
-                { "Mama kocht immer (lecker)_ Essen", "leckeres" },
-                { "Der Ball ist unter _ Tisch gerollt.", "den" },
-                { "Mein Mann kommt immer betrunken _ Hause.", "nach" }
-        };
-        g1.setExercises(grammarExercises);
-        grammarRepo.update(course, g1);
+    public void updateGrammarCourse(int courseId, int teacherId, String courseName, Integer maxStudents) {
+        if (getGrammarById(courseId).getTeacher()!=teacherId)
+            throw new BusinessLogicException("You don't have access to this course!");
+        Grammar g1 = getGrammarById(courseId);
+        g1.setTeacher(teacherId);
+        g1.setCourseName(courseName);
+        g1.setAvailableSlots(maxStudents);
+        grammarRepo.update(g1);
     }
 
-    /**
-     * Replaces the teacher of a grammar course with another
-     * @param teacherId New teacher responsible for grammar course
-     * @param courseId Exam whose teacher is being replaced
-     */
-    public void changeTeacherAccessToGrammarCourse(Integer courseId, Integer teacherId){
-        Grammar course=grammarRepo.getById(courseId);
-        Teacher teacher=teacherRepo.getById(teacherId);
-        course.setTeacher(teacher);
+    public List<Grammar> viewGrammarCoursesTaughtByTeacher(int teacherId){
+        idDataCheck(teacherId);
+        List<Grammar> taughtCourses=new ArrayList<>();
+        for(Grammar course:grammarRepo.getAll())
+            if (course.getTeacher()==teacherId)
+                taughtCourses.add(course);
+        return taughtCourses;
+
     }
 
-    /**
-     * Shows all students enrolled in grammar courses
-     */
-    public void showStudentsEnrolledInGrammarCourses(){
-        for(Student student:studentRepo.getObjects())
-            for(Course course:student.getCourses())
-                if(course.getCourseName().contains("Grammar"))
-                {
-                    System.out.println(student);
-                    break;
-                }
+
+    public void idDataCheck(int id){
+        if (id<1)
+            throw new ValidationException("Id cannot be less than 1!");
     }
 
-    /**
-     * Displays all grammar courses a student is enrolled in
-     * @param studentId identifies a student
-     */
-    public void showEnrolledGrammarCourses(Integer studentId){
-        Student student = studentRepo.getById(studentId);
-        for (Course course:student.getCourses())
-            if (course.getCourseName().contains("Grammar"))
-                System.out.println(course);
+    public void stringDataCheck(String string){
+        if (string.isEmpty())
+            throw new ValidationException("Name cannot be an empty string!");
     }
 
+
+    public void intDataCheck(int number){
+        if (number<1)
+            throw new ValidationException("Number cannot be null!");
+    }
 }

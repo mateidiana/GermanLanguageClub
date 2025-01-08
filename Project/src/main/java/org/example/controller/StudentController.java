@@ -1,30 +1,22 @@
 package org.example.controller;
 import org.example.service.StudentService;
+import org.example.model.Exceptions.*;
+import org.example.model.*;
 
-/**
- * The {@code StudentController} class manages operations related to students.
- * It serves as a bridge between the view and the {@code StudentService}, handling
- * functionalities such as creating and managing student information.
- */
 public class StudentController {
     private StudentService studentService;
 
-    /**
-     * Constructs a {@code StudentController} with the specified {@code StudentService}.
-     *
-     * @param studentService the service layer for managing student-related operations
-     */
     public StudentController(StudentService studentService){
         this.studentService=studentService;
     }
 
-    /**
-     * Creates a new student with the specified ID and name.
-     *
-     * @param studentId the unique identifier for the student
-     * @param name the name of the student
-     */
-    public void createStudent(Integer studentId, String name){
-        studentService.createStudent(studentId,name);
+    public boolean createStudent(int studentId, String name){
+        return studentService.createStudent(studentId,name);
+    }
+
+    public boolean logInAsStudent(int studentId, String name){return studentService.logInAsStudent(studentId,name);}
+
+    public Student getStudentById(int studentId){
+        return studentService.getStudentById(studentId);
     }
 }
