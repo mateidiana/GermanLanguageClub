@@ -47,7 +47,7 @@ As a teacher, you can create exams or courses and view your student's activity.
 
 ## Technologies Used 
 - Java for implementation
-- Storage of data in dat files
+- Storage of data in .dat files
 - MySQL database for data storage
 - Object Oriented Programming
 
